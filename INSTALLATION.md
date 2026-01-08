@@ -59,6 +59,8 @@ PORT=5000
 npx prisma generate
 ```
 
+⚠️ **Pas besoin de `npx prisma db seed`** : La base Neon est déjà peuplée avec des données de test ! 🎉
+
 ---
 
 ## 🎯 Lancer l'application
@@ -162,6 +164,7 @@ lsof -ti:5000 | xargs kill -9
 - ⚠️ Si vous supprimez une offre, elle disparaît pour tout le monde
 - ✅ Testez dans des comptes différents pour éviter les conflits
 - ✅ Communiquez avant de modifier massivement les données
+- ✅ **Les données existent déjà** : 10 offres, 6 utilisateurs, 5 entreprises
 
 ### 📊 Base de données partagée
 ```

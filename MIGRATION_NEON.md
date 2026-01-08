@@ -56,7 +56,10 @@ cd backend && npm run dev
 cd frontend && npm run dev
 ```
 
-**C'est tout !** Pas besoin de Docker 🎉
+**C'est tout !** 
+- ✅ Pas besoin de Docker
+- ✅ Pas besoin de `npx prisma db seed` (données déjà présentes)
+- ✅ Connexion instantanée à la base partagée
 
 ---
 
