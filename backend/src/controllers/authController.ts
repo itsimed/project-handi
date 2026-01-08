@@ -15,7 +15,7 @@ export const register = async (req: Request, res: Response) =>
 {
     try
     {
-        const { email, password, firstName, lastName, role, companyId } = req.body;
+        const { email, password, firstName, lastName, role, companyId, companyName } = req.body;
 
         const existingUser = await userService.findUserByEmail(email);
 
@@ -39,7 +39,8 @@ export const register = async (req: Request, res: Response) =>
                 firstName,
                 lastName,
                 role,
-                companyId: companyId ? Number(companyId) : undefined
+                companyId: companyId ? Number(companyId) : undefined,
+                companyName: companyName || undefined
             }
         );
 
@@ -114,7 +115,8 @@ export const login = async (req: Request, res: Response) =>
                     email: user.email,
                     firstName: user.firstName,
                     lastName: user.lastName,
-                    role: user.role
+                    role: user.role,
+                    company: user.company ? { id: user.company.id, name: user.company.name } : null
                 }
             }
         );

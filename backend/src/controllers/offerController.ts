@@ -1,7 +1,7 @@
 // project-handi/backend/src/controllers/offerController.ts
 
 import { Response, Request } from 'express';
-import { ContractType, RemotePolicy, DisabilityCategory } from '@prisma/client';
+import { ContractType, RemotePolicy, DisabilityCategory, ExperienceLevel } from '@prisma/client';
 import { AuthRequest } from '../middlewares/authMiddleware';
 import * as offerService from '../services/offerService';
 
@@ -87,15 +87,23 @@ export const getOffers = async( req: Request, res: Response ) =>
     try 
     {
         // Extraction et typage des filtres depuis l'URL
-        const { contract, location, remote, disability, dateMin } = req.query;
+        const { contract, location, remote, disability, dateMin, title, experience } = req.query;
+
+        // Gérer les paramètres multiples (tableaux)
+        const contractArray = contract ? (Array.isArray(contract) ? contract : [contract]) : undefined;
+        const remoteArray = remote ? (Array.isArray(remote) ? remote : [remote]) : undefined;
+        const disabilityArray = disability ? (Array.isArray(disability) ? disability : [disability]) : undefined;
+        const experienceArray = experience ? (Array.isArray(experience) ? experience : [experience]) : undefined;
 
         const filters: offerService.OfferFilters = 
         {
-            contract: contract as ContractType,
+            contract: contractArray as ContractType[] | undefined,
             location: location as string,
-            remote: remote as RemotePolicy,
-            disability: disability as DisabilityCategory,
-            dateMin: dateMin as string
+            remote: remoteArray as RemotePolicy[] | undefined,
+            disability: disabilityArray as DisabilityCategory[] | undefined,
+            dateMin: dateMin as string,
+            title: title as string,
+            experience: experienceArray as ExperienceLevel[] | undefined
         };
 
         const offers = await offerService.getAllOffers

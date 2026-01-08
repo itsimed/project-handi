@@ -11,7 +11,7 @@ interface OfferCardProps {
     id: number;
     title: string;
     location: string;
-    contract: string;
+    contract: string[];
     createdAt: string;
     company: {
       name: string;
@@ -45,6 +45,10 @@ export const OfferCard: React.FC<OfferCardProps> = ({
     return labels[contract] || contract;
   };
 
+  const getContractLabels = (contracts: string[]): string => {
+    return contracts.map(c => getContractLabel(c)).join(' • ');
+  };
+
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     const now = new Date();
@@ -66,9 +70,9 @@ export const OfferCard: React.FC<OfferCardProps> = ({
       <div className="flex justify-between items-start mb-4">
         <span
           className="bg-sky-500/10 text-sky-400 text-xs font-bold px-3 py-1 rounded-full border border-sky-500/30"
-          aria-label={`Type de contrat: ${getContractLabel(offer.contract)}`}
+          aria-label={`Types de contrat: ${getContractLabels(offer.contract)}`}
         >
-          {getContractLabel(offer.contract)}
+          {getContractLabels(offer.contract)}
         </span>
         <time
           dateTime={offer.createdAt}

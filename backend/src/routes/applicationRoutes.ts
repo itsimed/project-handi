@@ -60,11 +60,11 @@ router.get(
 );
 
 /**
- * @route   PATCH /api/v1/applications/:id/status
+ * @route   PUT /api/v1/applications/:id/status
  * @desc    Permet à un recruteur de modifier le statut d'une candidature (ACCEPTED/REJECTED)
  * @access  Privé (Rôle: RECRUITER, ADMIN)
  */
-router.patch(
+router.put(
     '/:id/status', 
     authenticateToken, 
     authorizeRole(['RECRUITER', 'ADMIN']), 

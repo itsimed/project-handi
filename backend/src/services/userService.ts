@@ -2,6 +2,7 @@
 
 import { PrismaClient, UserRole } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import type { CreateUserData, UpdateUserData } from '../types';
 
 const prisma = new PrismaClient();
 
@@ -41,19 +42,35 @@ export async function findUserByEmail(email: string)
 }
 
 // Créer un nouvel utilisateur
-export async function createUser
-(
-  userData :
-  {
-    email : string; 
-    password : string; 
-    firstName : string; 
-    lastName : string; 
-    role : UserRole;
-    companyId? : number 
-  }
-)
+export async function createUser(userData: CreateUserData)
 {
+  let finalCompanyId = userData.companyId;
+
+  // Si c'est un recruteur avec un nom d'entreprise, créer ou trouver l'entreprise
+  if (userData.role === 'RECRUITER' && userData.companyName && !userData.companyId)
+  {
+    // Vérifier si l'entreprise existe déjà
+    let company = await prisma.company.findUnique
+    (
+      {
+        where: { name: userData.companyName }
+      }
+    );
+
+    // Si elle n'existe pas, la créer
+    if (!company)
+    {
+      company = await prisma.company.create
+      (
+        {
+          data: { name: userData.companyName }
+        }
+      );
+    }
+
+    finalCompanyId = company.id;
+  }
+
   return prisma.user.create
   (
     {
@@ -64,7 +81,7 @@ export async function createUser
         firstName : userData.firstName,
         lastName : userData.lastName,
         role : userData.role,
-        ...(userData.companyId && {company : { connect : { id : userData.companyId } } } )
+        ...(finalCompanyId && {company : { connect : { id : finalCompanyId } } } )
       }
     }
   );
@@ -87,4 +104,43 @@ export async function findUserById(id: number)
       }
     }
   );
+}
+
+// Supprimer un utilisateur et toutes ses données associées
+export async function deleteUser(userId: number)
+{
+  // Prisma gère la suppression en cascade si configuré dans le schéma
+  // Sinon, nous devons supprimer manuellement les relations
+  
+  // 1. Supprimer toutes les candidatures de l'utilisateur
+  await prisma.application.deleteMany({
+    where: { userId }
+  });
+
+  // 2. Si c'est un recruteur, supprimer ses offres (et leurs candidatures associées)
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { role: true }
+  });
+
+  if (user?.role === 'RECRUITER') {
+    // Supprimer les candidatures liées aux offres du recruteur
+    await prisma.application.deleteMany({
+      where: {
+        offer: {
+          recruiterId: userId
+        }
+      }
+    });
+
+    // Supprimer les offres du recruteur
+    await prisma.offer.deleteMany({
+      where: { recruiterId: userId }
+    });
+  }
+
+  // 3. Supprimer l'utilisateur
+  return prisma.user.delete({
+    where: { id: userId }
+  });
 }

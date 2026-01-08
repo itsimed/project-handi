@@ -1,6 +1,6 @@
 // project-handi/backend/src/services/offerService.ts
 
-import { PrismaClient, ContractType, RemotePolicy, DisabilityCategory } from '@prisma/client';
+import { PrismaClient, ContractType, RemotePolicy, DisabilityCategory, ExperienceLevel } from '@prisma/client';
 const prisma = new PrismaClient();
 
 /**
@@ -8,11 +8,13 @@ const prisma = new PrismaClient();
  */
 export interface OfferFilters
 {
-  contract?: ContractType;
+  contract?: ContractType | ContractType[];
   location?: string;
-  remote?: RemotePolicy;
-  disability?: DisabilityCategory;
-  dateMin?: string; 
+  remote?: RemotePolicy | RemotePolicy[];
+  disability?: DisabilityCategory | DisabilityCategory[];
+  dateMin?: string;
+  title?: string;
+  experience?: ExperienceLevel | ExperienceLevel[];
 }
 
 /**
@@ -27,14 +29,45 @@ export async function getAllOffers(filters?: OfferFilters)
     {
       where :
       {
-        contract: filters?.contract,
+        // Filtre contract : accepte une valeur unique ou un tableau, vérifie si au moins un contrat correspond
+        contract: filters?.contract
+          ? Array.isArray(filters.contract)
+            ? { hasSome: filters.contract }
+            : { has: filters.contract }
+          : undefined,
+        
+        // Filtre title : recherche partielle insensible à la casse
+        title: filters?.title 
+          ? { contains: filters.title, mode: 'insensitive' } 
+          : undefined,
+        
+        // Filtre location : recherche partielle insensible à la casse
         location: filters?.location 
           ? { contains: filters.location, mode: 'insensitive' } 
           : undefined,
-        remote: filters?.remote,
-        disabilityCompatible: filters?.disability 
-          ? { has: filters.disability } 
+        
+        // Filtre remote : accepte une valeur unique ou un tableau
+        remote: filters?.remote
+          ? Array.isArray(filters.remote)
+            ? { in: filters.remote }
+            : filters.remote
           : undefined,
+        
+        // Filtre experience : accepte une valeur unique ou un tableau
+        experience: filters?.experience
+          ? Array.isArray(filters.experience)
+            ? { in: filters.experience }
+            : filters.experience
+          : undefined,
+        
+        // Filtre disability : vérifie si au moins une valeur du tableau est présente
+        disabilityCompatible: filters?.disability 
+          ? Array.isArray(filters.disability)
+            ? { hasSome: filters.disability }
+            : { has: filters.disability }
+          : undefined,
+        
+        // Filtre date minimum
         createdAt: filters?.dateMin 
           ? { gte: new Date(filters.dateMin) } 
           : undefined,
@@ -58,6 +91,13 @@ export async function getAllOffers(filters?: OfferFilters)
             firstName: true,
             lastName: true,
             email: true
+          }
+        },
+
+        // Ajouter le comptage des candidatures
+        _count: {
+          select: {
+            applications: true
           }
         }
       },

@@ -2,6 +2,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApplications } from '../hooks/useApplications';
+import { Navbar } from '../components/Navbar';
 
 /**
  * Page conforme RGAA pour afficher les candidatures de l'utilisateur
@@ -49,9 +50,12 @@ export const MyApplicationsPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-900 text-white">
+        <div className="min-h-screen bg-slate-950 text-white">
+            {/* Navigation */}
+            <Navbar variant="dashboard" />
+
             {/* Header sémantique accessible */}
-            <header className="border-b border-slate-800 p-8">
+            <header className="border-b border-slate-800/50 bg-slate-900/50 p-8">
                 <div className="flex justify-between items-center">
                     <div>
                         <h1 className="text-3xl font-bold text-sky-400">Mes Candidatures</h1>

@@ -3,36 +3,60 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
+import { RegisterPage } from './pages/RegisterPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { MyApplicationsPage } from './pages/MyApplicationsPage';
 import { ApplicationDetailPage } from './pages/ApplicationDetailPage';
 import { OfferDetailPage } from './pages/OfferDetailPage';
+import { ProfilePage } from './pages/ProfilePage';
+import { RecruiterDashboard } from './pages/RecruiterDashboard';
+import { PublishOfferPage } from './pages/PublishOfferPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { RoleBasedRoute } from './components/RoleBasedRoute';
+import { ScrollToTop } from './components/ScrollToTop';
 
 function App() 
 {
     return (
         <Router>
+            <ScrollToTop />
             <Routes>
                 {/* 1. Page d'accueil avec hero et recherche */}
                 <Route path="/" element={<HomePage />} />
                 
-                {/* 2. Page de résultats avec filtres */}
-                <Route path="/dashboard" element={<DashboardPage />} />
+                {/* 2. Page de résultats avec filtres (redirige selon le rôle) */}
+                <Route 
+                    path="/dashboard" 
+                    element={
+                        <RoleBasedRoute>
+                            <DashboardPage />
+                        </RoleBasedRoute>
+                    } 
+                />
                 
                 {/* 3. Page de détail d'une offre */}
                 <Route path="/offres/:id" element={<OfferDetailPage />} />
                 
                 {/* 4. Authentification */}
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
 
-                {/* 5. Liste de mes candidatures (protégée) */}
+                {/* 5. Dashboard recruteur (protégé) */}
+                <Route path="/recruteur/dashboard" element={<ProtectedRoute><RecruiterDashboard /></ProtectedRoute>} />
+
+                {/* 6. Publier une offre - Recruteur uniquement (protégé) */}
+                <Route path="/recruteur/publier-offre" element={<ProtectedRoute><PublishOfferPage /></ProtectedRoute>} />
+
+                {/* 7. Profil utilisateur (protégé) */}
+                <Route path="/profil" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+
+                {/* 8. Liste de mes candidatures (protégée) */}
                 <Route path="/mes-candidatures" element={<ProtectedRoute><MyApplicationsPage /></ProtectedRoute>}/>
                 
-                {/* 6. Détail d'une candidature (protégée) */}
+                {/* 9. Détail d'une candidature (protégée) */}
                 <Route path="/mes-candidatures/:id" element={<ProtectedRoute><ApplicationDetailPage /></ProtectedRoute>}/>
                 
-                {/* 7. Gestion de l'erreur 404 */}
+                {/* 10. Gestion de l'erreur 404 */}
                 <Route path="*" element={
                     <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center text-white">
                         <h1 className="text-6xl font-bold text-sky-500 mb-4">404</h1>

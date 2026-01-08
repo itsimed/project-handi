@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useApplications } from '../hooks/useApplications';
 import { useOfferFilters } from '../hooks/useOfferFilters';
 import { useCompanies } from '../hooks/useCompanies';
+import { Navbar } from '../components/Navbar';
 import { SearchBarCompact } from '../components/SearchBarCompact';
 import { FiltersPanel } from '../components/FiltersPanel';
 import { OfferCard } from '../components/OfferCard';
@@ -130,27 +131,13 @@ export const DashboardPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-900 text-white">
-            {/* Header sticky avec recherche compacte */}
-            <header className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 p-4 shadow-lg">
-                <div className="container mx-auto flex items-center gap-6">
-                    {/* Logo cliquable */}
-                    <h1 
-                        onClick={() => navigate('/')}
-                        className="text-2xl font-bold text-sky-400 cursor-pointer hover:text-sky-300 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-900 rounded px-2 py-1"
-                        tabIndex={0}
-                        role="button"
-                        aria-label="Retour à l'accueil"
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                navigate('/');
-                            }
-                        }}
-                    >
-                        Project Handi
-                    </h1>
-                    
+        <div className="min-h-screen bg-slate-950 text-white">
+            {/* Navigation principale */}
+            <Navbar variant="dashboard" />
+
+            {/* Header avec recherche compacte */}
+            <header className="bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 p-4 shadow-lg">
+                <div className="container mx-auto">
                     {/* SearchBar compacte */}
                     <SearchBarCompact 
                         onSearch={handleSearch}
@@ -158,33 +145,6 @@ export const DashboardPage = () => {
                         initialWhat={initialWhat}
                         initialWhere={initialWhere}
                     />
-                    
-                    {/* Navigation */}
-                    <nav aria-label="Navigation principale" className="flex items-center gap-4">
-                        {isLoggedIn && (
-                            <button 
-                                type="button"
-                                onClick={() => navigate('/mes-candidatures')}
-                                className="text-slate-300 hover:text-sky-400 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-900 px-3 py-2 rounded-lg whitespace-nowrap"
-                                aria-label="Voir mes candidatures"
-                            >
-                                Mes candidatures
-                            </button>
-                        )}
-
-                        <button 
-                            type="button"
-                            onClick={handleAuthAction}
-                            className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-900 whitespace-nowrap ${
-                                isLoggedIn 
-                                ? "bg-red-500/10 text-red-400 border border-red-500/50 hover:bg-red-500 hover:text-white text-sm" 
-                                : "bg-sky-500 text-white hover:bg-sky-600"
-                            }`}
-                            aria-label={isLoggedIn ? 'Se déconnecter de votre compte' : 'Se connecter ou créer un compte'}
-                        >
-                            {isLoggedIn ? 'Déconnexion' : 'Connexion'}
-                        </button>
-                    </nav>
                 </div>
             </header>
 
@@ -297,14 +257,6 @@ export const DashboardPage = () => {
                                     </div>
                                 )}
                             </section>
-
-                            {/* Section entreprises */}
-                            {!isLoadingOffers && offers.length > 0 && (
-                                <CompaniesSection 
-                                    companies={companies}
-                                    isLoading={isLoadingCompanies}
-                                />
-                            )}
                         </div>
                     </div>
                 </div>

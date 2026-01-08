@@ -99,10 +99,14 @@ export const updateApplicationStatus = async (req: AuthRequest, res: Response) =
  * RÉCUPÉRER MES CANDIDATURES (Candidat)
  * GET /api/v1/applications/me
  */
-export const getMyApplications = async (req: any, res: Response) => {
+export const getMyApplications = async (req: AuthRequest, res: Response) => {
     try {
-        // req.user.id est injecté par le middleware authenticateToken
-        const userId = req.user.id;
+        // req.user.userId est injecté par le middleware authenticateToken
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            return res.status(401).json({ error: "Utilisateur non identifié." });
+        }
 
         const applications = await prisma.application.findMany({
             where :

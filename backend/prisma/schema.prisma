@@ -87,7 +87,7 @@ model Offer {
   title        String
   description  String
   location     String
-  contract     ContractType
+  contract     ContractType[]     // Modifié pour accepter plusieurs types de contrat
   experience   ExperienceLevel
   remote       RemotePolicy       @default(NO_REMOTE)
   

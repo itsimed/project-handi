@@ -15,7 +15,7 @@ interface OfferDetail {
   title: string;
   description: string;
   location: string;
-  contract: string;
+  contract: string[];
   experience: string;
   remote: string;
   createdAt: string;
@@ -104,6 +104,10 @@ export const OfferDetailPage = () => {
       ALTERNANCE: 'Alternance',
     };
     return labels[contract] || contract;
+  };
+
+  const getContractLabels = (contracts: string[]): string => {
+    return contracts.map(c => getContractLabel(c)).join(', ');
   };
 
   const getRemoteLabel = (remote: string): string => {
@@ -230,7 +234,7 @@ export const OfferDetailPage = () => {
               {/* Badges */}
               <div className="flex flex-wrap gap-3 mb-4">
                 <span className="bg-sky-500/10 text-sky-400 text-sm font-bold px-4 py-2 rounded-full border border-sky-500/30">
-                  {getContractLabel(offer.contract)}
+                  {getContractLabels(offer.contract)}
                 </span>
                 <span className="bg-slate-800 text-slate-300 text-sm px-4 py-2 rounded-full border border-slate-700 flex items-center gap-2">
                   <Icon name="location" size={16} className="text-sky-400" /> {offer.location}
@@ -341,7 +345,7 @@ export const OfferDetailPage = () => {
               <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
                   <dt className="text-slate-500 text-sm mb-1">Type de contrat</dt>
-                  <dd className="text-slate-100 font-semibold">{getContractLabel(offer.contract)}</dd>
+                  <dd className="text-slate-100 font-semibold">{getContractLabels(offer.contract)}</dd>
                 </div>
                 <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
                   <dt className="text-slate-500 text-sm mb-1">Localisation</dt>
