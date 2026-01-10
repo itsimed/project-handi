@@ -4,6 +4,7 @@ import { Request, Response } from 'express';
 import * as userService from '../services/userService';
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { logger } from '../utils/logger';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'ma_cle_secrete_super_secure';
 
@@ -54,11 +55,10 @@ export const register = async (req: Request, res: Response) =>
     }
     catch (error: any)
     {
-        console.error
-        (
-            "Erreur détaillée:", 
-            error
-        );
+        logger.error("Erreur lors de l'inscription", {
+            message: error.message,
+            stack: error.stack
+        });
 
         res.status(500).json
         (
@@ -77,37 +77,34 @@ export const login = async (req: Request, res: Response) =>
 {
     try
     {
+        logger.info('[LOGIN] Début de la tentative de connexion');
         const { email, password } = req.body;
+        logger.info('[LOGIN] Email reçu', { email });
 
-        console.log('🔐 [LOGIN] Tentative de connexion');
-        console.log('📧 Email reçu:', email);
-        console.log('🔑 Mot de passe reçu:', password ? `${password.length} caractères` : 'VIDE');
-
+        logger.info('[LOGIN] Recherche de l\'utilisateur...');
         const user = await userService.findUserByEmail(email);
+        logger.info('[LOGIN] Utilisateur trouvé', { found: !!user, userId: user?.id });
 
         if (!user)
         {
-            console.log('❌ [LOGIN] Utilisateur non trouvé:', email);
             return res.status(401).json({ error: "Identifiants incorrects." });
         }
 
-        console.log('✅ [LOGIN] Utilisateur trouvé:', user.email);
-        console.log('🔐 [LOGIN] Hash en BDD:', user.password.substring(0, 20) + '...');
-
+        logger.info('[LOGIN] Vérification du mot de passe...');
         const isPasswordValid = await bcrypt.compare
         (
             password, 
             user.password
         );
-
-        console.log('🔐 [LOGIN] Résultat bcrypt.compare:', isPasswordValid ? '✅ VALIDE' : '❌ INVALIDE');
+        logger.info('[LOGIN] Mot de passe valide', { valid: isPasswordValid });
 
         if (!isPasswordValid)
         {
-            console.log('❌ [LOGIN] Mot de passe invalide pour:', email);
+            logger.warn('[LOGIN] Mot de passe incorrect');
             return res.status(401).json({ error: "Identifiants incorrects." });
         }
 
+        logger.info('[LOGIN] Génération du token JWT...');
         const token = jwt.sign
         (
             { userId: user.id, role: user.role },
@@ -115,9 +112,7 @@ export const login = async (req: Request, res: Response) =>
             { expiresIn: '24h' }
         );
 
-        console.log('✅ [LOGIN] Connexion réussie pour:', user.email);
-        console.log('🎫 [LOGIN] Token généré');
-
+        logger.info('[LOGIN] ✅ Connexion réussie', { email, userId: user.id });
         res.json
         (
             {
@@ -135,10 +130,18 @@ export const login = async (req: Request, res: Response) =>
             }
         );
     }
-    catch (error)
+    catch (error: any)
     {
-        console.error('❌ [LOGIN] Erreur lors de la connexion:', error);
+        logger.error('[LOGIN] ❌ ERREUR lors de la connexion', {
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+            name: error.constructor.name
+        });
 
-        res.status(500).json({ error: "Erreur lors de la connexion." });
+        res.status(500).json({ 
+            error: "Erreur lors de la connexion.",
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
     }
 };

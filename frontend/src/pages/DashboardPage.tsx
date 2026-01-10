@@ -10,6 +10,7 @@ import { SearchBarCompact } from '../components/SearchBarCompact';
 import { FiltersPanel } from '../components/FiltersPanel';
 import { OfferCard } from '../components/OfferCard';
 import { CompaniesSection } from '../components/CompaniesSection';
+import { ApplicationModal } from '../components/ApplicationModal';
 
 export const DashboardPage = () => {
     const navigate = useNavigate();
@@ -50,6 +51,10 @@ export const DashboardPage = () => {
         companies,
         isLoading: isLoadingCompanies,
     } = useCompanies(offers);
+
+    // État pour la modale de candidature
+    const [selectedOffer, setSelectedOffer] = useState<{ id: number; title: string; company: { name: string } } | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     // Appliquer les filtres initiaux depuis l'URL au montage
     useEffect(() => {
@@ -111,24 +116,27 @@ export const DashboardPage = () => {
     };
 
     /**
-     * Gestion accessible de la candidature
+     * Gestion accessible de la candidature - Ouvre la modale
      */
-    const handleApply = async (offerId: number) => {
+    const handleApply = (offerId: number) => {
         if (!isLoggedIn) {
             navigate('/login');
             return;
         }
 
-        try {
-            await applyToOffer(offerId);
-            // Le successMessage sera affiché automatiquement via role="alert"
-            // Redirection après 2s pour laisser le temps de lire le message
-            setTimeout(() => {
-                navigate('/mes-candidatures');
-            }, 2000);
-        } catch (error) {
-            // L'erreur est déjà gérée par le hook et affichée via role="alert"
+        const offer = offers.find(o => o.id === offerId);
+        if (offer) {
+            setSelectedOffer({
+                id: offer.id,
+                title: offer.title,
+                company: offer.company
+            });
+            setIsModalOpen(true);
         }
+    };
+
+    const handleModalSuccess = () => {
+        fetchMyApplications();
     };
 
     return (
@@ -265,6 +273,21 @@ export const DashboardPage = () => {
                     </div>
                 </div>
             </main>
+
+            {/* Application Modal */}
+            {selectedOffer && (
+                <ApplicationModal
+                    isOpen={isModalOpen}
+                    onClose={() => {
+                        setIsModalOpen(false);
+                        setSelectedOffer(null);
+                    }}
+                    offerId={selectedOffer.id}
+                    offerTitle={selectedOffer.title}
+                    companyName={selectedOffer.company.name}
+                    onSuccess={handleModalSuccess}
+                />
+            )}
         </div>
     );
 };

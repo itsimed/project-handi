@@ -6,6 +6,7 @@ import offerRoutes from './offerRoutes';
 import userRoutes from './userRoutes'; 
 import companyRoutes from './companyRoutes';
 import applicationRoutes from './applicationRoutes';
+import documentRoutes from './documentRoutes';
 
 const router = Router();
 
@@ -28,6 +29,9 @@ router.use('/users', userRoutes);
 
 // --- Candidatures ---
 router.use('/applications', applicationRoutes);
+
+// --- Documents ---
+router.use('/documents', documentRoutes);
 
 // Route de test (Health Check)
 router.get('/', (req, res) =>

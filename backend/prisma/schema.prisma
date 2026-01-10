@@ -52,6 +52,11 @@ enum ApplicationStatus {
   REJECTED
 }
 
+enum DocumentType {
+  CV
+  COVER_LETTER
+}
+
 // --- MODELES ---
 
 model User {
@@ -145,5 +150,32 @@ model Application {
   companyId Int?
   company   Company?          @relation("CompanyToApplications", fields: [companyId], references: [id])
 
+  // Relation vers les documents uploadés
+  documents ApplicationDocument[]
+
   @@unique([userId, offerId]) // Optionnel : Empêche un utilisateur de postuler deux fois à la même offre
+}
+
+model ApplicationDocument {
+  id            Int          @id @default(autoincrement())
+  applicationId Int
+  application   Application  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  
+  // Métadonnées du fichier
+  fileName      String       // Nom pour affichage
+  originalName  String       // Nom original du fichier uploadé
+  mimeType      String       // "application/pdf", "application/msword", etc.
+  fileSize      Int          // Taille en bytes
+  
+  // Localisation (agnostique du backend de stockage)
+  storageType   String       @default("local") // "local" ou "s3" (futur)
+  storagePath   String       // Chemin relatif ou S3 key
+  
+  // Type de document
+  documentType  DocumentType // CV ou COVER_LETTER
+  
+  uploadedAt    DateTime     @default(now())
+  
+  @@map("application_documents")
+  @@index([applicationId])
 }

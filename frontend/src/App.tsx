@@ -1,6 +1,7 @@
 // project-handi/frontend/src/App.tsx
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
@@ -12,6 +13,7 @@ import { ProfilePage } from './pages/ProfilePage';
 import { SettingsPage } from './pages/SettingsPage';
 import { RecruiterDashboard } from './pages/RecruiterDashboard';
 import { PublishOfferPage } from './pages/PublishOfferPage';
+import { ApplicationDocumentsPage } from './pages/ApplicationDocumentsPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { RoleBasedRoute } from './components/RoleBasedRoute';
 import { ScrollToTop } from './components/ScrollToTop';
@@ -21,6 +23,7 @@ function App()
     return (
         <Router>
             <ScrollToTop />
+            <Toaster />
             <Routes>
                 {/* 1. Page d'accueil avec hero et recherche */}
                 <Route path="/" element={<HomePage />} />
@@ -54,10 +57,13 @@ function App()
                 {/* 8. Paramètres utilisateur (protégé) */}
                 <Route path="/parametres" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
 
-                {/* 9. Liste de mes candidatures (protégée) */}
+                {/* 9. Documents de candidature (protégée) */}
+                <Route path="/mes-candidatures/:applicationId/documents" element={<ProtectedRoute><ApplicationDocumentsPage /></ProtectedRoute>} />
+
+                {/* 10. Liste de mes candidatures (protégée) */}
                 <Route path="/mes-candidatures" element={<ProtectedRoute><MyApplicationsPage /></ProtectedRoute>}/>
                 
-                {/* 10. Détail d'une candidature (protégée) */}
+                {/* 11. Détail d'une candidature (protégée) */}
                 <Route path="/mes-candidatures/:id" element={<ProtectedRoute><ApplicationDetailPage /></ProtectedRoute>}/>
                 
                 {/* 11. Gestion de l'erreur 404 */}

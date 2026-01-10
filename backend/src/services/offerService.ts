@@ -1,7 +1,7 @@
 // project-handi/backend/src/services/offerService.ts
 
-import { PrismaClient, ContractType, RemotePolicy, DisabilityCategory, ExperienceLevel } from '@prisma/client';
-const prisma = new PrismaClient();
+import { ContractType, RemotePolicy, DisabilityCategory, ExperienceLevel } from '@prisma/client';
+import prisma from '../config/prisma';
 
 /**
  * Interface définissant les critères de filtrage pour la recherche d'offres.

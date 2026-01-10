@@ -2,6 +2,7 @@
 
 import { Router } from 'express';
 import * as authController from '../controllers/authController';
+import { logger } from '../utils/logger';
 
 const router = Router();
 
@@ -17,6 +18,9 @@ router.post('/register', authController.register);
  * @desc    Authentifie l'utilisateur et renvoie un token JWT
  * @access  Public
  */
-router.post('/login', authController.login);
+router.post('/login', (req, res, next) => {
+  logger.info('[AUTH ROUTE] Requête POST /login reçue', req.body);
+  next();
+}, authController.login);
 
 export default router;

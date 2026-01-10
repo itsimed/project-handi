@@ -10,6 +10,7 @@ import { useApplications } from '../hooks/useApplications';
 import apiClient from '../api/apiClient';
 import { Icon } from '../components/Icon';
 import { Breadcrumb } from '../components/Breadcrumb';
+import { ApplicationModal } from '../components/ApplicationModal';
 import { CheckIcon } from '../components/icons';
 
 interface OfferDetail {
@@ -40,6 +41,7 @@ export const OfferDetailPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [similarOffers, setSimilarOffers] = useState<any[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
     isLoading: isApplying,
@@ -80,7 +82,7 @@ export const OfferDetailPage = () => {
     }
   }, [id, isLoggedIn, fetchMyApplications]);
 
-  const handleApply = async () => {
+  const handleApply = () => {
     if (!isLoggedIn) {
       navigate('/login');
       return;
@@ -88,13 +90,12 @@ export const OfferDetailPage = () => {
 
     if (!offer) return;
 
-    try {
-      await applyToOffer(offer.id);
-      // Scroll vers le message de succès
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch (error) {
-      // Erreur déjà gérée par le hook
-    }
+    setIsModalOpen(true);
+  };
+
+  const handleModalSuccess = () => {
+    fetchMyApplications();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const getContractLabel = (contract: string): string => {
@@ -420,6 +421,18 @@ export const OfferDetailPage = () => {
           )}
         </div>
       </main>
+
+      {/* Application Modal */}
+      {offer && (
+        <ApplicationModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          offerId={offer.id}
+          offerTitle={offer.title}
+          companyName={offer.company.name}
+          onSuccess={handleModalSuccess}
+        />
+      )}
     </div>
   );
 };

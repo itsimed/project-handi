@@ -5,6 +5,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import apiClient from '../api/apiClient';
+import { toastService } from '../services/toastService';
 
 interface OfferFilters {
   contractTypes?: string[];
@@ -109,7 +110,7 @@ export const useOfferFilters = (
         err.response?.data?.message ||
         'Erreur lors de la récupération des offres';
       setError(errorMessage);
-      console.error('Error fetching offers:', err);
+      toastService.error('Erreur lors du chargement des offres');
     } finally {
       setIsLoading(false);
     }

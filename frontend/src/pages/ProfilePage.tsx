@@ -12,6 +12,7 @@ import { Breadcrumb } from '../components/Breadcrumb';
 import { STORAGE_KEYS } from '../constants';
 import type { User } from '../types';
 import { AlertIcon } from '../components/icons';
+import { toastService } from '../services/toastService';
 
 export const ProfilePage = () => {
   // ==================== STATE ====================
@@ -57,15 +58,22 @@ export const ProfilePage = () => {
   const handleSave = async () => {
     setIsSaving(true);
     
-    // Simuler une sauvegarde (à connecter avec l'API plus tard)
-    setTimeout(() => {
-      // Mettre à jour le localStorage
-      const updatedUser = { ...user, ...formData };
+    try {
+      const response = await apiClient.put(`/users/${user?.id}/profile`, formData);
+      
+      // Mettre à jour le localStorage avec les nouvelles données
+      const updatedUser = { ...user, ...response.data.user };
       localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(updatedUser));
       setUser(updatedUser as User);
+      
       setIsEditing(false);
+      toastService.success('Profil mis à jour avec succès !');
+    } catch (error: any) {
+      const errorMsg = error.response?.data?.error || 'Erreur lors de la sauvegarde';
+      toastService.error(errorMsg);
+    } finally {
       setIsSaving(false);
-    }, 1000);
+    }
   };
 
   const handleCancel = () => {
@@ -89,13 +97,16 @@ export const ProfilePage = () => {
       // Appeler l'API pour supprimer le compte
       await apiClient.delete(`/users/${user.id}`);
 
+      toastService.success('Compte supprimé avec succès.');
+      
       // Déconnexion et redirection
       localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
       localStorage.removeItem(STORAGE_KEYS.USER_DATA);
-      navigate('/');
+      
+      setTimeout(() => navigate('/'), 1500);
     } catch (error: any) {
-      console.error('Erreur suppression compte:', error);
-      alert(`Erreur lors de la suppression : ${error.response?.data?.message || 'Une erreur est survenue'}`);
+      const errorMsg = error.response?.data?.message || 'Une erreur est survenue';
+      toastService.error(`Erreur : ${errorMsg}`);
     } finally {
       setIsDeleting(false);
       setShowDeleteModal(false);

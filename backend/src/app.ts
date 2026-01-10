@@ -1,12 +1,24 @@
 // project-handi/backend/src/app.ts
 
-import express from 'express';
+// IMPORTANT: Charger dotenv en PREMIER, avant tous les autres imports
+// qui pourraient utiliser des variables d'environnement (comme Prisma)
 import dotenv from 'dotenv';
+dotenv.config();
+
+// Vérifier que les variables essentielles sont chargées
+if (!process.env.DATABASE_URL) {
+  console.error('❌ ERREUR CRITIQUE: DATABASE_URL n\'est pas défini');
+  console.error('Vérifiez que le fichier .env existe et contient DATABASE_URL');
+  process.exit(1);
+}
+
+import express from 'express';
 import cors from 'cors';
-import allRoutes from './routes'; 
+import allRoutes from './routes';
+import { logger } from './utils/logger'; 
 
 // 1. Configuration
-dotenv.config();
+// dotenv est déjà chargé en haut du fichier
 const app = express();
 
 // 2. Middlewares Globaux
@@ -15,6 +27,22 @@ app.use( cors({ origin: '*' }) );
 app.use( express.json({ limit: '10mb' }) );
 
 app.use( express.urlencoded({ extended: true }) );
+
+// Middleware de logging pour toutes les requêtes (APRÈS le parsing du body)
+app.use((req, res, next) => {
+  logger.info(`${req.method} ${req.path}`, req.body && Object.keys(req.body).length > 0 ? req.body : undefined);
+  next();
+});
+
+// Middleware de gestion d'erreurs global (doit être avant les routes)
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  logger.error('[GLOBAL ERROR HANDLER]', { message: err.message, stack: err.stack });
+  
+  res.status(500).json({ 
+    error: "Erreur interne du serveur",
+    details: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
+});
 
 // 3. Définition des Routes
 app.use( '/api/v1', allRoutes );
@@ -40,11 +68,27 @@ app.get
 // Note: Le port 5000 est souvent utilisé par AirPlay sur macOS
 const PORT = process.env.PORT || 4000;
 
-app.listen
-(
-    PORT, () => 
-    {
-        console.log(`🚀 Server is flying on port ${PORT}`);
-        console.log(`📡 Base URL: http://localhost:${PORT}/api/v1`);
-    }
-);
+  const server = app.listen
+  (
+      PORT, () => 
+      {
+          console.log(`🚀 Server is flying on port ${PORT}`);
+          console.log(`📡 Base URL: http://localhost:${PORT}/api/v1`);
+      }
+  );
+
+// Gestion propre de l'arrêt du serveur
+process.on('SIGTERM', () => {
+    console.log('SIGTERM signal received: closing HTTP server');
+    server.close(() => {
+        console.log('HTTP server closed');
+    });
+});
+
+process.on('SIGINT', () => {
+    console.log('SIGINT signal received: closing HTTP server');
+    server.close(() => {
+        console.log('HTTP server closed');
+        process.exit(0);
+    });
+});

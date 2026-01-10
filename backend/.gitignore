@@ -3,3 +3,10 @@ node_modules
 .env
 
 /src/generated/prisma
+
+# Uploads directory (fichiers uploadés par les utilisateurs)
+uploads/
+!uploads/.gitkeep
+
+# Logs directory
+logs/

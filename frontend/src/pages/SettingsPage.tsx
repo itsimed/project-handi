@@ -12,6 +12,7 @@ import { Breadcrumb } from '../components/Breadcrumb';
 import { STORAGE_KEYS } from '../constants';
 import type { User } from '../types';
 import { AlertIcon, LockIcon } from '../components/icons';
+import { toastService } from '../services/toastService';
 
 export const SettingsPage = () => {
   // ==================== STATE ====================
@@ -79,23 +80,23 @@ export const SettingsPage = () => {
     setIsChangingPassword(true);
 
     try {
-      // TODO: Implémenter l'API de changement de mot de passe
-      // await apiClient.put(`/users/${user?.id}/password`, {
-      //   currentPassword: passwordData.currentPassword,
-      //   newPassword: passwordData.newPassword,
-      // });
-
-      // Simuler un délai
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await apiClient.put(`/users/${user?.id}/password`, {
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
+      });
 
       setPasswordSuccess('Mot de passe modifié avec succès !');
+      toastService.success('Mot de passe modifié avec succès !');
+      
       setPasswordData({
         currentPassword: '',
         newPassword: '',
         confirmPassword: '',
       });
     } catch (error: any) {
-      setPasswordError(error.response?.data?.message || 'Erreur lors de la modification du mot de passe.');
+      const errorMsg = error.response?.data?.error || 'Erreur lors de la modification du mot de passe.';
+      setPasswordError(errorMsg);
+      toastService.error(errorMsg);
     } finally {
       setIsChangingPassword(false);
     }
@@ -106,15 +107,15 @@ export const SettingsPage = () => {
     setIsSavingPreferences(true);
 
     try {
-      // TODO: Implémenter l'API de sauvegarde des préférences
+      // TODO: Implémenter l'API de sauvegarde des préférences plus tard
       // await apiClient.put(`/users/${user?.id}/preferences`, notifications);
 
       // Simuler un délai
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      alert('Préférences sauvegardées avec succès !');
+      toastService.success('Préférences sauvegardées avec succès !');
     } catch (error: any) {
-      alert('Erreur lors de la sauvegarde des préférences.');
+      toastService.error('Erreur lors de la sauvegarde des préférences.');
     } finally {
       setIsSavingPreferences(false);
     }
@@ -123,7 +124,7 @@ export const SettingsPage = () => {
   /** Suppression du compte */
   const handleDeleteAccount = async () => {
     if (deleteConfirmation !== 'SUPPRIMER') {
-      alert('Veuillez taper "SUPPRIMER" pour confirmer.');
+      toastService.warning('Veuillez taper "SUPPRIMER" pour confirmer.');
       return;
     }
 
@@ -135,13 +136,16 @@ export const SettingsPage = () => {
       // Appeler l'API pour supprimer le compte
       await apiClient.delete(`/users/${user.id}`);
 
+      toastService.success('Compte supprimé avec succès. À bientôt !');
+      
       // Déconnexion et redirection
       localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
       localStorage.removeItem(STORAGE_KEYS.USER_DATA);
-      navigate('/');
+      
+      setTimeout(() => navigate('/'), 1500);
     } catch (error: any) {
-      console.error('Erreur suppression compte:', error);
-      alert(`Erreur lors de la suppression : ${error.response?.data?.message || 'Une erreur est survenue'}`);
+      const errorMsg = error.response?.data?.error || 'Une erreur est survenue';
+      toastService.error(`Erreur : ${errorMsg}`);
     } finally {
       setIsDeleting(false);
       setShowDeleteModal(false);

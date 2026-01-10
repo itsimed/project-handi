@@ -11,7 +11,8 @@ import { Navbar } from '../components/Navbar';
 import { Breadcrumb } from '../components/Breadcrumb';
 import { STORAGE_KEYS } from '../constants';
 import type { User, Offer, Application } from '../types';
-import { CheckIcon, CloseIcon, WaveIcon, DocumentIcon, LocationIcon } from '../components/icons';
+import { CheckIcon, CloseIcon, WaveIcon, DocumentIcon, LocationIcon, UsersIcon, ClockIcon } from '../components/icons';
+import { toastService } from '../services/toastService';
 
 interface OfferWithApplications extends Offer {
   applications: Application[];
@@ -82,7 +83,7 @@ export const RecruiterDashboard = () => {
         pendingApplications: 0, // sera calculé après récupération des candidatures
       });
     } catch (error) {
-      console.error('Erreur chargement offres:', error);
+      toastService.error('Erreur lors du chargement des offres');
     } finally {
       setIsLoadingOffers(false);
     }
@@ -101,7 +102,7 @@ export const RecruiterDashboard = () => {
       
       setStats(prev => ({ ...prev, pendingApplications: pending }));
     } catch (error) {
-      console.error('Erreur chargement candidatures:', error);
+      toastService.error('Erreur lors du chargement des candidatures');
     }
   };
 
@@ -119,7 +120,7 @@ export const RecruiterDashboard = () => {
         setSelectedOffer({ ...offer, applications: offerApplications });
       }
     } catch (error) {
-      console.error('Erreur chargement candidatures:', error);
+      toastService.error('Erreur lors du chargement des candidatures de l\'offre');
     } finally {
       setIsLoadingApplications(false);
     }
@@ -138,7 +139,7 @@ export const RecruiterDashboard = () => {
         await fetchApplicationsForOffer(selectedOffer.id);
       }
     } catch (error) {
-      console.error('Erreur mise à jour statut:', error);
+      toastService.error('Erreur lors de la mise à jour du statut');
     }
   };
 
@@ -148,8 +149,7 @@ export const RecruiterDashboard = () => {
   };
 
   const handleCreateOffer = () => {
-    // TODO: Naviguer vers une page de création d'offre
-    alert('Fonctionnalité de création d\'offre à venir');
+    navigate('/recruteur/publier-offre');
   };
 
   // ==================== RENDER ====================
@@ -210,7 +210,7 @@ export const RecruiterDashboard = () => {
 
           <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-3">
-              <div className="text-4xl">👥</div>
+              <UsersIcon size={40} className="text-purple-400" aria-hidden="true" />
               <div className="text-3xl font-bold text-purple-400">
                 {stats.totalApplications}
               </div>
@@ -220,7 +220,7 @@ export const RecruiterDashboard = () => {
 
           <div className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-3">
-              <div className="text-4xl">⏳</div>
+              <ClockIcon size={40} className="text-yellow-400" aria-hidden="true" />
               <div className="text-3xl font-bold text-yellow-400">
                 {stats.pendingApplications}
               </div>

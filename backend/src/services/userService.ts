@@ -1,10 +1,9 @@
 // project-handi/backend/src/services/userService.ts
 
-import { PrismaClient, UserRole } from '@prisma/client';
+import { UserRole } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import type { CreateUserData, UpdateUserData } from '../types';
-
-const prisma = new PrismaClient();
+import prisma from '../config/prisma';
 
 // --- Fonctions CRUD pour l'utilisateur ---
 
@@ -142,5 +141,75 @@ export async function deleteUser(userId: number)
   // 3. Supprimer l'utilisateur
   return prisma.user.delete({
     where: { id: userId }
+  });
+}
+
+// Changer le mot de passe d'un utilisateur
+export async function updatePassword(
+  userId: number, 
+  currentPassword: string, 
+  newPassword: string
+)
+{
+  // 1. Récupérer l'utilisateur avec son mot de passe
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, password: true }
+  });
+
+  if (!user) {
+    throw new Error('Utilisateur non trouvé');
+  }
+
+  // 2. Vérifier l'ancien mot de passe
+  const isValid = await bcrypt.compare(currentPassword, user.password);
+  if (!isValid) {
+    throw new Error('Mot de passe actuel incorrect');
+  }
+
+  // 3. Hasher le nouveau mot de passe
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  // 4. Mettre à jour en base
+  return prisma.user.update({
+    where: { id: userId },
+    data: { password: hashedPassword },
+    select: { id: true, email: true }
+  });
+}
+
+// Mettre à jour le profil d'un utilisateur
+export async function updateProfile(
+  userId: number,
+  data: { firstName?: string; lastName?: string; email?: string }
+)
+{
+  // Vérifier si l'email est déjà utilisé par un autre utilisateur
+  if (data.email) {
+    const existingUser = await prisma.user.findUnique({
+      where: { email: data.email }
+    });
+
+    if (existingUser && existingUser.id !== userId) {
+      throw new Error('Cet email est déjà utilisé');
+    }
+  }
+
+  // Mettre à jour l'utilisateur
+  return prisma.user.update({
+    where: { id: userId },
+    data: {
+      ...(data.firstName && { firstName: data.firstName }),
+      ...(data.lastName && { lastName: data.lastName }),
+      ...(data.email && { email: data.email })
+    },
+    select: {
+      id: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      role: true,
+      company: true
+    }
   });
 }

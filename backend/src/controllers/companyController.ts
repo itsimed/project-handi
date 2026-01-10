@@ -25,8 +25,12 @@ export const getCompanies = async (req: Request, res: Response) =>
     const companies = await companyService.getAllCompanies();
     res.json(companies);
   }
-  catch (error)
+  catch (error: any)
   {
-    res.status(500).json({ error: "Erreur lors de la récupération des entreprises" });
+    console.error('Erreur getCompanies:', error);
+    res.status(500).json({ 
+      error: "Erreur lors de la récupération des entreprises",
+      details: error.message 
+    });
   }
 };

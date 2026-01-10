@@ -19,3 +19,5 @@ export { LockIcon } from './LockIcon';
 export { UserIcon } from './UserIcon';
 export { SettingsIcon } from './SettingsIcon';
 export { LogoutIcon } from './LogoutIcon';
+export { UsersIcon } from './UsersIcon';
+export { ClockIcon } from './ClockIcon';

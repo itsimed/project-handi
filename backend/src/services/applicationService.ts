@@ -1,7 +1,5 @@
 // project-handi/backend/src/services/applicationService.ts
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../config/prisma';
 
 /**
  * Enregistre une candidature après avoir vérifié que le candidat n'a pas déjà postulé.

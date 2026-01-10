@@ -114,7 +114,7 @@ export const HomePage = () => {
           activeRecruiters: Math.floor(companiesResponse.data.length * 1.5), // Estimation
         });
       } catch (error) {
-        console.error('[HomePage] Failed to fetch stats:', error);
+        toastService.error('Impossible de charger les statistiques');
         setStats({ totalOffers: 0, totalCompanies: 0 });
       } finally {
         setIsLoadingStats(false);

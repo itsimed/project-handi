@@ -4,6 +4,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import apiClient from '../api/apiClient';
+import { toastService } from '../services/toastService';
 
 interface Company {
   id: number;
@@ -79,7 +80,7 @@ export const useCompanies = (offers?: Offer[]): UseCompaniesReturn => {
         err.response?.data?.message ||
         'Erreur lors de la récupération des entreprises';
       setError(errorMessage);
-      console.error('Error fetching companies:', err);
+      toastService.error('Erreur lors du chargement des entreprises');
     } finally {
       setIsLoading(false);
     }

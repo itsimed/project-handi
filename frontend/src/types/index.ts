@@ -158,6 +158,23 @@ export interface ApiSuccess<T = any> {
   data?: T;
 }
 
+// ==================== DOCUMENTS ====================
+
+export type DocumentType = 'CV' | 'COVER_LETTER';
+
+export interface ApplicationDocument {
+  id: number;
+  applicationId: number;
+  fileName: string;
+  originalName: string;
+  mimeType: string;
+  fileSize: number;
+  storageType: string;
+  storagePath: string;
+  documentType: DocumentType;
+  uploadedAt: string;
+}
+
 // ==================== PAGINATION ====================
 
 export interface PaginatedResponse<T> {
