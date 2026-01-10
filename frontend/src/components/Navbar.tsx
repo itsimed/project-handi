@@ -4,8 +4,11 @@
  * - Indicateur de page active en bas
  */
 
+import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { STORAGE_KEYS } from '../constants';
+import { UserAvatar } from './UserAvatar';
+import { UserMenu } from './UserMenu';
 
 interface NavbarProps {
   variant?: 'home' | 'dashboard' | 'profile' | 'recruiter';
@@ -17,6 +20,7 @@ export const Navbar = ({ variant = 'home' }: NavbarProps) => {
   const isLoggedIn = !!localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
   const userData = localStorage.getItem(STORAGE_KEYS.USER_DATA);
   const user = userData ? JSON.parse(userData) : null;
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
@@ -32,31 +36,20 @@ export const Navbar = ({ variant = 'home' }: NavbarProps) => {
     }
   };
 
-  const handleNavigateToApplications = () => {
-    if (user?.role === 'RECRUITER') {
-      navigate('/recruteur/dashboard');
-    } else {
-      navigate('/mes-candidatures');
-    }
-  };
-
   // Vérifier si un chemin est actif
   const isActive = (path: string) => location.pathname === path;
 
   // Si l'utilisateur n'est pas connecté, afficher seulement le header simple
   if (!isLoggedIn) {
     return (
-      <header className="backdrop-blur-xl bg-slate-900/80 border-b border-slate-800/50 transition-all duration-300 h-16">
+      <header className="backdrop-blur-xl bg-slate-900/80 border-b border-slate-800/50 transition-all duration-300 h-16 relative z-50">
         <div className="container mx-auto px-6 h-full">
           <div className="flex justify-between items-center h-full">
             {/* Logo à gauche */}
             <button
               onClick={() => navigate('/')}
-              className="group flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded-lg p-2 -ml-2"
+              className="group focus:outline-none focus:ring-2 focus:ring-sky-500 rounded-lg p-2 -ml-2"
             >
-              <div className="w-10 h-10 bg-gradient-to-br from-sky-400 to-blue-600 rounded-xl flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                <span className="text-2xl" role="img" aria-label="Logo">♿</span>
-              </div>
               <h1 className="text-xl font-bold bg-gradient-to-r from-sky-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
                 Project Handi
               </h1>
@@ -89,95 +82,81 @@ export const Navbar = ({ variant = 'home' }: NavbarProps) => {
 
   // Si l'utilisateur est connecté, afficher la navbar complète
   return (
-    <header className="backdrop-blur-xl bg-slate-900/80 border-b border-slate-800/50 transition-all duration-300 h-16">
+    <header className="backdrop-blur-xl bg-slate-900/80 border-b border-slate-800/50 transition-all duration-300 h-16 relative z-50">
       <div className="container mx-auto px-6 h-full">
         <div className="flex justify-between items-center h-full">
           {/* Logo & Brand */}
           <button
             onClick={() => navigate('/')}
-            className="group flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded-lg p-2 -ml-2 h-full"
+            className="group text-left focus:outline-none focus:ring-2 focus:ring-sky-500 rounded-lg p-2 -ml-2 h-full"
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-sky-400 to-blue-600 rounded-xl flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-              <span className="text-2xl" role="img" aria-label="Logo">♿</span>
-            </div>
-            <div className="text-left">
-              <h1 className="text-xl font-bold bg-gradient-to-r from-sky-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                Project Handi
-              </h1>
-              <p className="text-xs text-slate-400 font-medium">
-                {variant === 'profile' ? 'Mon profil' : 
-                 variant === 'recruiter' ? 'Espace recruteur' : 
-                 'Recrutement inclusif'}
-              </p>
-            </div>
+            <h1 className="text-xl font-bold bg-gradient-to-r from-sky-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+              Project Handi
+            </h1>
+            <p className="text-xs text-slate-400 font-medium">
+              {variant === 'profile' ? 'Mon profil' : 
+               variant === 'recruiter' ? 'Espace recruteur' : 
+               'Recrutement inclusif'}
+            </p>
           </button>
 
           {/* Navigation */}
-          <nav aria-label="Navigation principale" className="flex items-center h-full -mb-px">
-            {/* Dashboard/Offres - Pour tous les utilisateurs */}
-            <button
-              type="button"
-              onClick={handleNavigateToDashboard}
-              className={`relative flex items-center gap-2 px-4 h-full text-slate-300 hover:text-white hover:bg-slate-800/50 transition-all duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500 ${
-                isActive('/dashboard') || isActive('/recruteur/dashboard') ? 'text-white' : ''
-              }`}
-              aria-label="Voir les offres"
-            >
-              <span>Offres</span>
-              {(isActive('/dashboard') || isActive('/recruteur/dashboard')) && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-sky-400 to-blue-500"></span>
-              )}
-            </button>
-
-            {/* Publier une offre (recruteurs uniquement) */}
-            {user?.role === 'RECRUITER' && (
+          <div className="flex items-center gap-4 h-full">
+            <nav aria-label="Navigation principale" className="flex items-center h-full -mb-px">
+              {/* Dashboard/Offres - Pour tous les utilisateurs */}
               <button
                 type="button"
-                onClick={() => navigate('/recruteur/publier-offre')}
+                onClick={handleNavigateToDashboard}
                 className={`relative flex items-center gap-2 px-4 h-full text-slate-300 hover:text-white hover:bg-slate-800/50 transition-all duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500 ${
-                  isActive('/recruteur/publier-offre') ? 'text-white' : ''
+                  isActive('/dashboard') || isActive('/recruteur/dashboard') ? 'text-white' : ''
                 }`}
-                aria-label="Publier une offre"
+                aria-label="Voir les offres"
               >
-                <span>Publier une offre</span>
-                {isActive('/recruteur/publier-offre') && (
+                <span>Offres</span>
+                {(isActive('/dashboard') || isActive('/recruteur/dashboard')) && (
                   <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-sky-400 to-blue-500"></span>
                 )}
               </button>
-            )}
 
-            {/* Mes candidatures (candidats uniquement) */}
-            {user?.role !== 'RECRUITER' && variant !== 'home' && (
-              <button
-                type="button"
-                onClick={handleNavigateToApplications}
-                className={`relative flex items-center gap-2 px-4 h-full text-slate-300 hover:text-white hover:bg-slate-800/50 transition-all duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500 ${
-                  isActive('/mes-candidatures') ? 'text-white' : ''
-                }`}
-                aria-label="Voir mes candidatures"
-              >
-                <span>Mes candidatures</span>
-                {isActive('/mes-candidatures') && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-sky-400 to-blue-500"></span>
-                )}
-              </button>
-            )}
-
-            {/* Profil */}
-            <button
-              type="button"
-              onClick={() => navigate('/profil')}
-              className={`relative flex items-center gap-2 px-4 h-full text-slate-300 hover:text-white hover:bg-slate-800/50 transition-all duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500 ${
-                isActive('/profil') ? 'text-white' : ''
-              }`}
-              aria-label="Voir mon profil"
-            >
-              <span>Profil</span>
-              {isActive('/profil') && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-sky-400 to-blue-500"></span>
+              {/* Publier une offre (recruteurs uniquement) */}
+              {user?.role === 'RECRUITER' && (
+                <button
+                  type="button"
+                  onClick={() => navigate('/recruteur/publier-offre')}
+                  className={`relative flex items-center gap-2 px-4 h-full text-slate-300 hover:text-white hover:bg-slate-800/50 transition-all duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                    isActive('/recruteur/publier-offre') ? 'text-white' : ''
+                  }`}
+                  aria-label="Publier une offre"
+                >
+                  <span>Publier une offre</span>
+                  {isActive('/recruteur/publier-offre') && (
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-sky-400 to-blue-500"></span>
+                  )}
+                </button>
               )}
-            </button>
-          </nav>
+            </nav>
+
+            {/* Menu utilisateur */}
+            <div className="relative flex items-center z-50">
+              <UserAvatar
+                firstName={user?.firstName || ''}
+                lastName={user?.lastName || ''}
+                role={user?.role || 'APPLICANT'}
+                isExpanded={isMenuOpen}
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              />
+              <UserMenu
+                user={{
+                  firstName: user?.firstName || '',
+                  lastName: user?.lastName || '',
+                  role: user?.role || 'APPLICANT',
+                }}
+                isOpen={isMenuOpen}
+                onClose={() => setIsMenuOpen(false)}
+                onLogout={handleLogout}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </header>

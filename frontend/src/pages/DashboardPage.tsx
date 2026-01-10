@@ -5,6 +5,7 @@ import { useApplications } from '../hooks/useApplications';
 import { useOfferFilters } from '../hooks/useOfferFilters';
 import { useCompanies } from '../hooks/useCompanies';
 import { Navbar } from '../components/Navbar';
+import { Breadcrumb } from '../components/Breadcrumb';
 import { SearchBarCompact } from '../components/SearchBarCompact';
 import { FiltersPanel } from '../components/FiltersPanel';
 import { OfferCard } from '../components/OfferCard';
@@ -134,6 +135,9 @@ export const DashboardPage = () => {
         <div className="min-h-screen bg-slate-950 text-white">
             {/* Navigation principale */}
             <Navbar variant="dashboard" />
+            
+            {/* Fil d'Ariane */}
+            <Breadcrumb />
 
             {/* Header avec recherche compacte */}
             <header className="bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 p-4 shadow-lg">

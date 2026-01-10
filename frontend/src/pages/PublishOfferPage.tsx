@@ -6,8 +6,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
+import { Breadcrumb } from '../components/Breadcrumb';
 import apiClient from '../api/apiClient';
 import { STORAGE_KEYS } from '../constants';
+import { CheckIcon } from '../components/icons';
 
 interface FormData {
   title: string;
@@ -113,6 +115,9 @@ export const PublishOfferPage = () => {
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       <Navbar variant="recruiter" />
+      
+      {/* Fil d'Ariane */}
+      <Breadcrumb />
 
       <main className="container mx-auto px-6 py-12 max-w-4xl">
         {/* Header */}
@@ -315,7 +320,10 @@ export const PublishOfferPage = () => {
                   Publication en cours...
                 </span>
               ) : success ? (
-                'Offre publiée ✓'
+                <span className="flex items-center gap-2">
+                  <CheckIcon size={18} aria-hidden="true" />
+                  Offre publiée
+                </span>
               ) : (
                 'Publier l\'offre'
               )}

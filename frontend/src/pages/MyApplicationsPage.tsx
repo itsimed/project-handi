@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApplications } from '../hooks/useApplications';
 import { Navbar } from '../components/Navbar';
+import { Breadcrumb } from '../components/Breadcrumb';
 
 /**
  * Page conforme RGAA pour afficher les candidatures de l'utilisateur
@@ -53,6 +54,9 @@ export const MyApplicationsPage = () => {
         <div className="min-h-screen bg-slate-950 text-white">
             {/* Navigation */}
             <Navbar variant="dashboard" />
+            
+            {/* Fil d'Ariane */}
+            <Breadcrumb />
 
             {/* Header sémantique accessible */}
             <header className="border-b border-slate-800/50 bg-slate-900/50 p-8">

@@ -37,6 +37,7 @@ app.get
 );
 
 // 4. Démarrage du Serveur
+// Note: Le port 5000 est souvent utilisé par AirPlay sur macOS
 const PORT = process.env.PORT || 4000;
 
 app.listen

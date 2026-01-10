@@ -9,6 +9,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useApplications } from '../hooks/useApplications';
 import apiClient from '../api/apiClient';
 import { Icon } from '../components/Icon';
+import { Breadcrumb } from '../components/Breadcrumb';
+import { CheckIcon } from '../components/icons';
 
 interface OfferDetail {
   id: number;
@@ -191,6 +193,9 @@ export const OfferDetailPage = () => {
           </button>
         </div>
       </header>
+      
+      {/* Fil d'Ariane */}
+      <Breadcrumb />
 
       {/* Messages d'alerte */}
       <div className="container mx-auto px-6 mt-6">
@@ -295,11 +300,16 @@ export const OfferDetailPage = () => {
                 }`}
                 aria-label={alreadyApplied ? 'Vous avez déjà postulé à cette offre' : 'Envoyer votre candidature pour cette offre'}
               >
-                {alreadyApplied
-                  ? '✓ Candidature envoyée'
-                  : isApplying
-                  ? 'Envoi en cours...'
-                  : 'Postuler maintenant'}
+                {alreadyApplied ? (
+                  <span className="flex items-center gap-2">
+                    <CheckIcon size={18} aria-hidden="true" />
+                    Candidature envoyée
+                  </span>
+                ) : isApplying ? (
+                  'Envoi en cours...'
+                ) : (
+                  'Postuler maintenant'
+                )}
               </button>
             </div>
 

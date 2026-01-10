@@ -8,8 +8,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../api/apiClient';
 import { Navbar } from '../components/Navbar';
+import { Breadcrumb } from '../components/Breadcrumb';
 import { STORAGE_KEYS } from '../constants';
 import type { User } from '../types';
+import { AlertIcon } from '../components/icons';
 
 export const ProfilePage = () => {
   // ==================== STATE ====================
@@ -118,6 +120,9 @@ export const ProfilePage = () => {
     <div className="min-h-screen bg-slate-950 text-white">
       {/* ==================== HEADER ==================== */}
       <Navbar variant="profile" />
+      
+      {/* Fil d'Ariane */}
+      <Breadcrumb />
 
       {/* ==================== MAIN CONTENT ==================== */}
       <main className="container mx-auto px-6 py-12 max-w-4xl">
@@ -370,7 +375,10 @@ export const ProfilePage = () => {
                 Êtes-vous absolument sûr(e) de vouloir supprimer votre compte ?
               </p>
               <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
-                <p className="text-sm text-red-300 font-semibold mb-2">⚠️ Cette action :</p>
+                <p className="text-sm text-red-300 font-semibold mb-2 flex items-center gap-2">
+                  <AlertIcon size={16} aria-label="Attention" />
+                  Cette action :
+                </p>
                 <ul className="text-sm text-slate-400 space-y-1 ml-4">
                   <li>• Supprimera toutes vos données personnelles</li>
                   <li>• Supprimera toutes vos candidatures</li>

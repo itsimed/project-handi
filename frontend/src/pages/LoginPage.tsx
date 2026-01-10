@@ -16,6 +16,7 @@ import {
   VALIDATION_RULES,
   STORAGE_KEYS,
 } from '../constants';
+import { CloseIcon, LightbulbIcon } from '../components/icons';
 
 interface FormData {
   email: string;
@@ -110,11 +111,6 @@ export const LoginPage = () => {
       <div className="w-full max-w-md">
         {/* Logo / Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-sky-500 rounded-full mb-4">
-            <span className="text-3xl" role="img" aria-label="Logo accessibilité">
-              ♿
-            </span>
-          </div>
           <h1 className="text-3xl font-bold text-white mb-2">
             Project Handi
           </h1>
@@ -135,9 +131,10 @@ export const LoginPage = () => {
             <div 
               role="alert" 
               aria-live="assertive"
-              className="mb-6 p-4 bg-red-900/50 border border-red-500 rounded-lg text-red-300 text-sm"
+              className="mb-6 p-4 bg-red-900/50 border border-red-500 rounded-lg text-red-300 text-sm flex items-center gap-2"
             >
-              ✕ {errors.general}
+              <CloseIcon size={16} aria-hidden="true" />
+              {errors.general}
             </div>
           )}
 
@@ -272,7 +269,10 @@ export const LoginPage = () => {
 
         {/* Comptes de test (dev uniquement) */}
         <div className="mt-6 p-4 bg-slate-800/50 rounded-lg border border-slate-700">
-          <p className="text-xs text-slate-400 mb-2 font-semibold">💡 Comptes de test :</p>
+          <p className="text-xs text-slate-400 mb-2 font-semibold flex items-center gap-2">
+            <LightbulbIcon size={14} aria-hidden="true" />
+            Comptes de test :
+          </p>
           <div className="text-xs text-slate-500 space-y-1">
             <p>• Candidat : marie.dupont@example.com / password123</p>
             <p>• Recruteur : recruiter@techinclusion.com / password123</p>

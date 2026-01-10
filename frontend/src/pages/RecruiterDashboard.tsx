@@ -8,8 +8,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../api/apiClient';
 import { Navbar } from '../components/Navbar';
+import { Breadcrumb } from '../components/Breadcrumb';
 import { STORAGE_KEYS } from '../constants';
 import type { User, Offer, Application } from '../types';
+import { CheckIcon, CloseIcon, WaveIcon, DocumentIcon, LocationIcon } from '../components/icons';
 
 interface OfferWithApplications extends Offer {
   applications: Application[];
@@ -177,13 +179,17 @@ export const RecruiterDashboard = () => {
     <div className="min-h-screen bg-slate-950 text-white">
       {/* ==================== HEADER ==================== */}
       <Navbar variant="recruiter" />
+      
+      {/* Fil d'Ariane */}
+      <Breadcrumb />
 
       {/* ==================== MAIN CONTENT ==================== */}
       <main className="container mx-auto px-6 py-12 max-w-7xl">
         {/* Header Section */}
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-slate-100 mb-2">
-            Bonjour {user.firstName} 👋
+          <h2 className="text-3xl font-bold text-slate-100 mb-2 flex items-center gap-3">
+            Bonjour {user.firstName}
+            <WaveIcon size={28} className="text-sky-400" aria-label="Salutation" />
           </h2>
           <p className="text-slate-400">
             Gérez vos offres d'emploi et consultez les candidatures reçues
@@ -194,7 +200,7 @@ export const RecruiterDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-gradient-to-br from-sky-500/10 to-blue-500/10 border border-sky-500/20 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-3">
-              <div className="text-4xl">📝</div>
+              <DocumentIcon size={40} className="text-sky-400" aria-hidden="true" />
               <div className="text-3xl font-bold text-sky-400">
                 {stats.totalOffers}
               </div>
@@ -273,8 +279,9 @@ export const RecruiterDashboard = () => {
                         {getContractLabel(offer.contract)}
                       </span>
                     </div>
-                    <p className="text-sm text-slate-400 mb-3">
-                      📍 {offer.location}
+                    <p className="text-sm text-slate-400 mb-3 flex items-center gap-2">
+                      <LocationIcon size={14} aria-hidden="true" />
+                      {offer.location}
                     </p>
                     <div className="flex items-center gap-2 text-xs text-slate-500">
                       <span>👥 {offer._count?.applications || 0} candidatures</span>
@@ -338,15 +345,17 @@ export const RecruiterDashboard = () => {
                         <div className="flex gap-2">
                           <button
                             onClick={() => updateApplicationStatus(app.id, 'ACCEPTED')}
-                            className="flex-1 px-3 py-2 bg-green-500/10 text-green-400 border border-green-500/30 rounded-lg hover:bg-green-500/20 transition-all text-sm font-medium focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="flex-1 px-3 py-2 bg-green-500/10 text-green-400 border border-green-500/30 rounded-lg hover:bg-green-500/20 transition-all text-sm font-medium focus:outline-none focus:ring-2 focus:ring-green-500 flex items-center justify-center gap-2"
                           >
-                            ✓ Accepter
+                            <CheckIcon size={16} aria-hidden="true" />
+                            Accepter
                           </button>
                           <button
                             onClick={() => updateApplicationStatus(app.id, 'REJECTED')}
-                            className="flex-1 px-3 py-2 bg-red-500/10 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/20 transition-all text-sm font-medium focus:outline-none focus:ring-2 focus:ring-red-500"
+                            className="flex-1 px-3 py-2 bg-red-500/10 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/20 transition-all text-sm font-medium focus:outline-none focus:ring-2 focus:ring-red-500 flex items-center justify-center gap-2"
                           >
-                            ✕ Refuser
+                            <CloseIcon size={16} aria-hidden="true" />
+                            Refuser
                           </button>
                         </div>
                       )}

@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import apiClient from '../api/apiClient';
+import { Breadcrumb } from '../components/Breadcrumb';
 
 interface ApplicationDetail {
   id: number;
@@ -132,6 +133,9 @@ export const ApplicationDetailPage = () => {
           </h1>
         </div>
       </header>
+      
+      {/* Fil d'Ariane */}
+      <Breadcrumb />
 
       {/* Contenu principal */}
       <main className="container mx-auto px-6 py-8 max-w-4xl">

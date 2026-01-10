@@ -79,12 +79,20 @@ export const login = async (req: Request, res: Response) =>
     {
         const { email, password } = req.body;
 
+        console.log('🔐 [LOGIN] Tentative de connexion');
+        console.log('📧 Email reçu:', email);
+        console.log('🔑 Mot de passe reçu:', password ? `${password.length} caractères` : 'VIDE');
+
         const user = await userService.findUserByEmail(email);
 
         if (!user)
         {
+            console.log('❌ [LOGIN] Utilisateur non trouvé:', email);
             return res.status(401).json({ error: "Identifiants incorrects." });
         }
+
+        console.log('✅ [LOGIN] Utilisateur trouvé:', user.email);
+        console.log('🔐 [LOGIN] Hash en BDD:', user.password.substring(0, 20) + '...');
 
         const isPasswordValid = await bcrypt.compare
         (
@@ -92,8 +100,11 @@ export const login = async (req: Request, res: Response) =>
             user.password
         );
 
+        console.log('🔐 [LOGIN] Résultat bcrypt.compare:', isPasswordValid ? '✅ VALIDE' : '❌ INVALIDE');
+
         if (!isPasswordValid)
         {
+            console.log('❌ [LOGIN] Mot de passe invalide pour:', email);
             return res.status(401).json({ error: "Identifiants incorrects." });
         }
 
@@ -103,6 +114,9 @@ export const login = async (req: Request, res: Response) =>
             JWT_SECRET,
             { expiresIn: '24h' }
         );
+
+        console.log('✅ [LOGIN] Connexion réussie pour:', user.email);
+        console.log('🎫 [LOGIN] Token généré');
 
         res.json
         (
@@ -123,11 +137,7 @@ export const login = async (req: Request, res: Response) =>
     }
     catch (error)
     {
-        console.error
-        (
-            "Erreur Login:", 
-            error
-        );
+        console.error('❌ [LOGIN] Erreur lors de la connexion:', error);
 
         res.status(500).json({ error: "Erreur lors de la connexion." });
     }

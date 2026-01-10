@@ -14,6 +14,14 @@ import { Navbar } from '../components/Navbar';
 import { Icon } from '../components/Icon';
 import { useCompanies } from '../hooks/useCompanies';
 import apiClient from '../api/apiClient';
+import { 
+  AccessibilityIcon, 
+  GraduationIcon, 
+  TargetIcon, 
+  BriefcaseIcon, 
+  LightningIcon, 
+  LockIcon 
+} from '../components/icons';
 
 // ==================== TYPES ====================
 interface Stats {
@@ -25,25 +33,47 @@ interface Stats {
 interface QuickAccessButton {
   id: string;
   label: string;
-  icon: string;
+  icon: 'graduation' | 'target' | 'briefcase' | 'lightning';
   contract: string;
   gradient: string;
 }
 
 // ==================== CONFIGURATION ====================
 const QUICK_ACCESS_FILTERS: QuickAccessButton[] = [
-  { id: 'stage', label: 'Stages & Jobs étudiants', icon: '🎓', contract: 'STAGE', gradient: 'from-blue-500 to-cyan-500' },
-  { id: 'alternance', label: 'Alternance', icon: '🎯', contract: 'ALTERNANCE', gradient: 'from-purple-500 to-pink-500' },
-  { id: 'cdi', label: 'CDI', icon: '💼', contract: 'CDI', gradient: 'from-emerald-500 to-teal-500' },
-  { id: 'interim', label: 'Missions Intérim', icon: '⚡', contract: 'INTERIM', gradient: 'from-orange-500 to-red-500' },
+  { id: 'stage', label: 'Stages & Jobs étudiants', icon: 'graduation', contract: 'STAGE', gradient: 'from-blue-500 to-cyan-500' },
+  { id: 'alternance', label: 'Alternance', icon: 'target', contract: 'ALTERNANCE', gradient: 'from-purple-500 to-pink-500' },
+  { id: 'cdi', label: 'CDI', icon: 'briefcase', contract: 'CDI', gradient: 'from-emerald-500 to-teal-500' },
+  { id: 'interim', label: 'Missions Intérim', icon: 'lightning', contract: 'INTERIM', gradient: 'from-orange-500 to-red-500' },
 ];
 
 const BENEFITS = [
-  { icon: '♿', title: 'Accessibilité universelle', desc: 'Entreprises engagées dans l\'inclusion' },
-  { icon: '🎯', title: 'Matching intelligent', desc: 'Offres adaptées à votre profil' },
-  { icon: '🔒', title: 'Confidentialité garantie', desc: 'Vos données personnelles protégées' },
-  { icon: '⚡', title: 'Candidature rapide', desc: 'Postulez en quelques clics' },
+  { icon: 'accessibility', title: 'Accessibilité universelle', desc: 'Entreprises engagées dans l\'inclusion' },
+  { icon: 'target', title: 'Matching intelligent', desc: 'Offres adaptées à votre profil' },
+  { icon: 'lock', title: 'Confidentialité garantie', desc: 'Vos données personnelles protégées' },
+  { icon: 'lightning', title: 'Candidature rapide', desc: 'Postulez en quelques clics' },
 ];
+
+// Helper pour rendre les icônes
+const renderIcon = (iconType: string, size: number = 40) => {
+  const iconProps = { size, className: 'text-white' };
+  
+  switch (iconType) {
+    case 'graduation':
+      return <GraduationIcon {...iconProps} />;
+    case 'target':
+      return <TargetIcon {...iconProps} />;
+    case 'briefcase':
+      return <BriefcaseIcon {...iconProps} />;
+    case 'lightning':
+      return <LightningIcon {...iconProps} />;
+    case 'accessibility':
+      return <AccessibilityIcon {...iconProps} />;
+    case 'lock':
+      return <LockIcon {...iconProps} />;
+    default:
+      return null;
+  }
+};
 
 export const HomePage = () => {
   // ==================== HOOKS ====================
@@ -250,8 +280,8 @@ export const HomePage = () => {
                   <div className={`absolute inset-0 bg-gradient-to-br ${filter.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
                   
                   <div className="relative z-10">
-                    <div className="text-4xl mb-3 transform group-hover:scale-110 transition-transform duration-300">
-                      {filter.icon}
+                    <div className="mb-3 transform group-hover:scale-110 transition-transform duration-300">
+                      {renderIcon(filter.icon, 40)}
                     </div>
                     <h4 className="text-lg font-semibold text-slate-100 mb-1">
                       {filter.label}
@@ -285,8 +315,8 @@ export const HomePage = () => {
                   key={index}
                   className="group p-6 bg-slate-800/30 border border-slate-700/50 rounded-2xl hover:bg-slate-800/50 hover:border-sky-500/30 transition-all duration-300"
                 >
-                  <div className="text-5xl mb-4 transform group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300">
-                    {benefit.icon}
+                  <div className="mb-4 transform group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300">
+                    {renderIcon(benefit.icon, 48)}
                   </div>
                   <h4 className="text-lg font-semibold text-slate-100 mb-2">
                     {benefit.title}
@@ -387,15 +417,10 @@ export const HomePage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             {/* Brand */}
             <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-sky-400 to-blue-600 rounded-xl flex items-center justify-center">
-                  <span className="text-2xl" role="img" aria-label="Logo">♿</span>
-                </div>
-                <div>
+              <div className="mb-4">
                   <h3 className="text-lg font-bold bg-gradient-to-r from-sky-400 to-blue-400 bg-clip-text text-transparent">
                     Project Handi
                   </h3>
-                </div>
               </div>
               <p className="text-slate-400 text-sm leading-relaxed">
                 La plateforme de recrutement qui met l'accessibilité

@@ -5,6 +5,7 @@
 
 import { useNavigate } from 'react-router-dom';
 import { Icon } from './Icon';
+import { CheckIcon } from './icons';
 
 interface OfferCardProps {
   offer: {
@@ -118,7 +119,7 @@ export const OfferCard: React.FC<OfferCardProps> = ({
           type="button"
           onClick={() => onApply(offer.id)}
           disabled={isApplying || hasApplied}
-          className={`flex-1 py-3 rounded-xl font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800 ${
+          className={`flex-1 py-3 rounded-xl font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800 flex items-center justify-center ${
             hasApplied
               ? 'bg-slate-700 text-slate-500 cursor-not-allowed'
               : isApplying
@@ -131,11 +132,16 @@ export const OfferCard: React.FC<OfferCardProps> = ({
               : `Postuler à l'offre ${offer.title} chez ${offer.company.name}`
           }
         >
-          {hasApplied
-            ? '✓ Postulé'
-            : isApplying
-            ? 'Envoi...'
-            : 'Postuler'}
+          {hasApplied ? (
+            <span className="flex items-center justify-center gap-2">
+              <CheckIcon size={16} aria-hidden="true" />
+              Postulé
+            </span>
+          ) : isApplying ? (
+            'Envoi...'
+          ) : (
+            'Postuler'
+          )}
         </button>
       </div>
     </article>

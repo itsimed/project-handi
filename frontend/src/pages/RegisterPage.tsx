@@ -172,11 +172,6 @@ export const RegisterPage = () => {
       <div className="w-full max-w-2xl">
         {/* Header */}
         <div className="text-center mb-8">
-          <Link to={ROUTES.HOME} className="inline-flex items-center justify-center w-16 h-16 bg-sky-500 rounded-full mb-4 hover:bg-sky-600 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-900">
-            <span className="text-3xl" role="img" aria-label="Logo accessibilité">
-              ♿
-            </span>
-          </Link>
           <h1 className="text-3xl font-bold text-white mb-2">
             Créer un compte
           </h1>

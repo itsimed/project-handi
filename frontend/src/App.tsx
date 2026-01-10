@@ -9,6 +9,7 @@ import { MyApplicationsPage } from './pages/MyApplicationsPage';
 import { ApplicationDetailPage } from './pages/ApplicationDetailPage';
 import { OfferDetailPage } from './pages/OfferDetailPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { SettingsPage } from './pages/SettingsPage';
 import { RecruiterDashboard } from './pages/RecruiterDashboard';
 import { PublishOfferPage } from './pages/PublishOfferPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -50,13 +51,16 @@ function App()
                 {/* 7. Profil utilisateur (protégé) */}
                 <Route path="/profil" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
 
-                {/* 8. Liste de mes candidatures (protégée) */}
+                {/* 8. Paramètres utilisateur (protégé) */}
+                <Route path="/parametres" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+
+                {/* 9. Liste de mes candidatures (protégée) */}
                 <Route path="/mes-candidatures" element={<ProtectedRoute><MyApplicationsPage /></ProtectedRoute>}/>
                 
-                {/* 9. Détail d'une candidature (protégée) */}
+                {/* 10. Détail d'une candidature (protégée) */}
                 <Route path="/mes-candidatures/:id" element={<ProtectedRoute><ApplicationDetailPage /></ProtectedRoute>}/>
                 
-                {/* 10. Gestion de l'erreur 404 */}
+                {/* 11. Gestion de l'erreur 404 */}
                 <Route path="*" element={
                     <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center text-white">
                         <h1 className="text-6xl font-bold text-sky-500 mb-4">404</h1>

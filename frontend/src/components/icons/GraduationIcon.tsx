@@ -1,0 +1,36 @@
+/**
+ * GraduationIcon - Icône de diplôme/études
+ * Remplace l'emoji 🎓
+ */
+
+interface IconProps {
+  size?: number;
+  className?: string;
+  'aria-label'?: string;
+}
+
+export const GraduationIcon = ({ 
+  size = 20, 
+  className = '', 
+  'aria-label': ariaLabel 
+}: IconProps) => {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-label={ariaLabel}
+      role={ariaLabel ? 'img' : undefined}
+      aria-hidden={!ariaLabel}
+    >
+      <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+      <path d="M6 12v5c3 3 9 3 12 0v-5" />
+    </svg>
+  );
+};
