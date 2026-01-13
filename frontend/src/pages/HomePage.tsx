@@ -251,8 +251,8 @@ export const HomePage = () => {
             }}
           />
 
-          {/* Image Hero en arrière-plan */}
-          <div className="absolute inset-x-4 top-4 sm:inset-x-8 sm:top-6 lg:inset-x-12 lg:top-8 z-0">
+          {/* Image Hero en arrière-plan - Bandeau pleine largeur */}
+          <div className="absolute inset-0 z-0">
             <picture>
               <source media="(max-width: 768px)" srcSet="/hero%20mobile.webp" />
               <source media="(min-width: 769px)" srcSet="/hero.webp" />
@@ -260,34 +260,20 @@ export const HomePage = () => {
                 src="/hero.webp"
                 alt=""
                 aria-hidden="true"
-                className="w-full h-auto object-cover opacity-80"
+                className="w-full h-full object-cover opacity-80"
                 style={{ 
-                  borderRadius: '20px',
-                  maxHeight: '550px'
+                  borderRadius: '0',
+                  maxHeight: 'none'
                 }}
               />
             </picture>
             {/* Overlay sombre pour mobile uniquement */}
             <div 
-              className="absolute inset-0 md:hidden rounded-[20px]" 
+              className="absolute inset-0 md:hidden" 
               style={{ 
                 background: 'linear-gradient(to bottom, rgba(35, 2, 46, 0.3), rgba(35, 2, 46, 0.5))'
               }}
             />
-            <style>{`
-              @media (min-width: 640px) {
-                img[src="/hero.webp"] {
-                  border-radius: 24px;
-                  max-height: 500px;
-                }
-              }
-              @media (min-width: 1024px) {
-                img[src="/hero.webp"] {
-                  border-radius: 32px;
-                  max-height: 520px;
-                }
-              }
-            `}</style>
           </div>
 
           <div className="relative z-10 container mx-auto px-6 py-20">

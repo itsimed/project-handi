@@ -5,8 +5,9 @@
 
 import { useState } from 'react';
 import { Icon } from './Icon';
+import { CloseIcon } from './icons';
 import { useTheme } from '../contexts/ThemeContext';
-import type { ContractType, ExperienceLevel, RemotePolicy, DisabilityCategory } from '../../../src/types/index';
+import type { ContractType, ExperienceLevel, RemotePolicy, DisabilityCategory } from '../types/index';
 
 interface FiltersPanelProps {
   filters: {
@@ -17,6 +18,8 @@ interface FiltersPanelProps {
   };
   onFilterChange: (filters: any) => void;
   activeCount: number;
+  isOpen?: boolean; // Pour le mode drawer : contrôle l'ouverture/fermeture
+  onClose?: () => void; // Pour le mode drawer : callback de fermeture
 }
 
 /**
@@ -27,6 +30,8 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
   filters,
   onFilterChange,
   activeCount,
+  isOpen = false, // Fermé par défaut
+  onClose,
 }) => {
   const { colors } = useTheme();
   // États pour gérer l'ouverture/fermeture des sections
@@ -125,23 +130,101 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
   };
 
   return (
-    <aside
-      role="complementary"
-      aria-label="Filtres de recherche"
-      className="w-full md:w-80 rounded-2xl border-2 sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto"
-      style={{ 
-        backgroundColor: colors.bg,
-        borderColor: colors.border
-      }}
-    >
-      <div className="p-6">
-        {/* Header avec compteur */}
-        <div className="flex justify-between items-center mb-6">
+    <>
+      {/* Overlay sombre qui se ferme au clic */}
+      {onClose && isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300"
+          onClick={onClose}
+          aria-hidden="true"
+        />
+      )}
+      
+      <aside
+        role="complementary"
+        aria-label="Filtres de recherche"
+        className={`
+          w-full max-w-sm md:max-w-md lg:max-w-lg rounded-2xl border-2 
+          max-h-[calc(100vh-4rem)] overflow-hidden
+          fixed
+          top-16 left-0 h-[calc(100vh-4rem)]
+          z-50
+          transform transition-transform duration-300 ease-in-out
+          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+        `}
+        style={{ 
+          backgroundColor: colors.bg,
+          borderColor: colors.border
+        }}
+      >
+        {/* Header du drawer avec bouton fermer */}
+        {onClose && (
+          <div className="flex justify-between items-center p-4 border-b" style={{ borderColor: colors.border }}>
+            <h2 
+              className="text-xl font-bold flex items-center gap-2"
+              style={{ color: colors.text }}
+            >
+              <div style={{ color: colors.text }}>
+                <Icon name="filter" size={24} />
+              </div>
+              Filtres
+            </h2>
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-2 rounded-lg transition-colors focus:outline-none focus:ring-2"
+              style={{
+                color: colors.text,
+                backgroundColor: 'transparent',
+              }}
+              aria-label="Fermer les filtres"
+            >
+              <CloseIcon size={24} />
+            </button>
+          </div>
+        )}
+        
+      <div 
+        className="h-full overflow-y-auto pr-2 scrollbar-custom"
+        style={{ maxHeight: 'calc(100vh - 4rem)' }}
+      >
+        <style>{`
+          .scrollbar-custom {
+            scrollbar-width: thin;
+            scrollbar-color: ${colors.border} ${colors.bg};
+          }
+          
+          .scrollbar-custom::-webkit-scrollbar {
+            width: 8px;
+          }
+          
+          .scrollbar-custom::-webkit-scrollbar-track {
+            background: ${colors.bg};
+            border-radius: 0 12px 12px 0;
+            margin: 8px 0;
+          }
+          
+          .scrollbar-custom::-webkit-scrollbar-thumb {
+            background: ${colors.border};
+            border-radius: 4px;
+            border: 2px solid ${colors.bg};
+          }
+          
+          .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+            background: ${colors.text};
+            opacity: 0.7;
+          }
+        `}</style>
+        <div className="p-6">
+        {/* Header avec compteur - Masqué si onClose est fourni (car présent dans le header du drawer) */}
+        <div className={`flex justify-between items-center mb-6 ${onClose ? 'hidden' : 'flex'}`}>
         <h2 
           className="text-xl font-bold flex items-center gap-2"
           style={{ color: colors.text }}
         >
-          <Icon name="filter" size={24} style={{ color: colors.text }} />
+          <div style={{ color: colors.text }}>
+            <Icon name="filter" size={24} />
+          </div>
           Filtres
         </h2>
         {activeCount > 0 && (
@@ -189,7 +272,9 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
             aria-controls="contract-filters"
           >
             <span className="flex items-center gap-2">
-              <Icon name="briefcase" size={16} style={{ color: colors.text }} />
+              <div style={{ color: colors.text }}>
+                <Icon name="briefcase" size={16} />
+              </div>
               Type de contrat
               {filters.contractTypes && filters.contractTypes.length > 0 && (
                 <span 
@@ -203,11 +288,12 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
                 </span>
               )}
             </span>
-            <Icon
-              name={openSections.contract ? 'chevron-up' : 'chevron-down'}
-              size={20}
-              style={{ color: colors.text, opacity: 0.6 }}
-            />
+            <div style={{ color: colors.text, opacity: 0.6 }}>
+              <Icon
+                name={openSections.contract ? 'chevron-up' : 'chevron-down'}
+                size={20}
+              />
+            </div>
           </button>
           
           {openSections.contract && (
@@ -255,7 +341,9 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
             aria-controls="experience-filters"
           >
             <span className="flex items-center gap-2">
-              <Icon name="star" size={16} style={{ color: colors.text }} />
+              <div style={{ color: colors.text }}>
+                <Icon name="star" size={16} />
+              </div>
               Niveau d'expérience
               {filters.experienceLevels && filters.experienceLevels.length > 0 && (
                 <span 
@@ -269,11 +357,12 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
                 </span>
               )}
             </span>
-            <Icon
-              name={openSections.experience ? 'chevron-up' : 'chevron-down'}
-              size={20}
-              style={{ color: colors.text, opacity: 0.6 }}
-            />
+            <div style={{ color: colors.text, opacity: 0.6 }}>
+              <Icon
+                name={openSections.experience ? 'chevron-up' : 'chevron-down'}
+                size={20}
+              />
+            </div>
           </button>
           
           {openSections.experience && (
@@ -321,7 +410,9 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
             aria-controls="remote-filters"
           >
             <span className="flex items-center gap-2">
-              <Icon name="home" size={16} style={{ color: colors.text }} />
+              <div style={{ color: colors.text }}>
+                <Icon name="home" size={16} />
+              </div>
               Télétravail
               {filters.remote && filters.remote.length > 0 && (
                 <span 
@@ -335,11 +426,12 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
                 </span>
               )}
             </span>
-            <Icon
-              name={openSections.remote ? 'chevron-up' : 'chevron-down'}
-              size={20}
-              style={{ color: colors.text, opacity: 0.6 }}
-            />
+            <div style={{ color: colors.text, opacity: 0.6 }}>
+              <Icon
+                name={openSections.remote ? 'chevron-up' : 'chevron-down'}
+                size={20}
+              />
+            </div>
           </button>
           
           {openSections.remote && (
@@ -387,7 +479,9 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
             aria-controls="disability-filters"
           >
             <span className="flex items-center gap-2">
-              <Icon name="accessibility" size={16} style={{ color: '#22c55e' }} />
+              <div style={{ color: '#22c55e' }}>
+                <Icon name="accessibility" size={16} />
+              </div>
               Compatibilité handicap
               {filters.disabilityCompatible && filters.disabilityCompatible.length > 0 && (
                 <span 
@@ -401,11 +495,12 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
                 </span>
               )}
             </span>
-            <Icon
-              name={openSections.disability ? 'chevron-up' : 'chevron-down'}
-              size={20}
-              style={{ color: colors.text, opacity: 0.6 }}
-            />
+            <div style={{ color: colors.text, opacity: 0.6 }}>
+              <Icon
+                name={openSections.disability ? 'chevron-up' : 'chevron-down'}
+                size={20}
+              />
+            </div>
           </button>
           
           {openSections.disability && (
@@ -439,9 +534,11 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
             </div>
           )}
         </div>
+        </div>
       </div>
       </div>
     </aside>
+    </>
   );
 };
 

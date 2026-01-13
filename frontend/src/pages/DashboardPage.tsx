@@ -13,6 +13,7 @@ import { CompaniesSection } from '../components/CompaniesSection';
 import { ApplicationModal } from '../components/ApplicationModal';
 import { useTheme } from '../contexts/ThemeContext';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
+import { MenuIcon } from '../components/icons';
 
 export const DashboardPage = () => {
     const navigate = useNavigate();
@@ -58,6 +59,9 @@ export const DashboardPage = () => {
     // État pour la modale de candidature
     const [selectedOffer, setSelectedOffer] = useState<{ id: number; title: string; company: { name: string } } | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    
+    // État pour le panneau de filtres (fermé par défaut)
+    const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
     // Appliquer les filtres initiaux depuis l'URL au montage
     useEffect(() => {
@@ -230,18 +234,44 @@ export const DashboardPage = () => {
 
                 {/* Layout principal avec filtres et offres */}
                 <div className="container mx-auto px-6 py-8">
-                    <div className="flex flex-col lg:flex-row gap-8">
-                        {/* Sidebar filtres */}
-                        <div className="lg:w-80 flex-shrink-0">
-                            <FiltersPanel
-                                filters={currentFilters}
-                                onFilterChange={handleFilterChange}
-                                activeCount={activeFiltersCount}
-                            />
-                        </div>
+                    {/* Bouton burger pour ouvrir les filtres */}
+                    <button
+                        type="button"
+                        onClick={() => setIsFiltersOpen(true)}
+                        className="mb-4 flex items-center gap-2 px-4 py-2 rounded-xl border-2 transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2"
+                        style={{
+                            backgroundColor: colors.bg,
+                            borderColor: colors.border,
+                            color: colors.text
+                        }}
+                        aria-label="Ouvrir les filtres"
+                    >
+                        <MenuIcon size={20} />
+                        <span className="font-semibold">Filtres</span>
+                        {activeFiltersCount > 0 && (
+                            <span 
+                                className="ml-auto px-2 py-1 rounded-full text-xs font-bold"
+                                style={{
+                                    backgroundColor: colors.text,
+                                    color: colors.bg
+                                }}
+                            >
+                                {activeFiltersCount}
+                            </span>
+                        )}
+                    </button>
 
-                        {/* Contenu principal */}
-                        <div className="flex-1">
+                    {/* Drawer de filtres - En position fixed, hors du flux normal */}
+                    <FiltersPanel
+                        filters={currentFilters}
+                        onFilterChange={handleFilterChange}
+                        activeCount={activeFiltersCount}
+                        isOpen={isFiltersOpen}
+                        onClose={() => setIsFiltersOpen(false)}
+                    />
+
+                    {/* Contenu principal */}
+                    <div>
                             {/* Section offres */}
                             <section aria-label="Liste des offres">
                                 <div className="flex justify-between items-center mb-6">
@@ -317,7 +347,6 @@ export const DashboardPage = () => {
                                     </div>
                                 )}
                             </section>
-                        </div>
                     </div>
                 </div>
             </main>
