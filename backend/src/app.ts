@@ -30,7 +30,10 @@ app.use( express.urlencoded({ extended: true }) );
 
 // Middleware de logging pour toutes les requêtes (APRÈS le parsing du body)
 app.use((req, res, next) => {
-  logger.info(`${req.method} ${req.path}`, req.body && Object.keys(req.body).length > 0 ? req.body : undefined);
+  // Ne logger que les requêtes importantes (pas les GET simples)
+  if (req.method !== 'GET' || req.path.includes('/auth') || req.path.includes('/applications')) {
+    logger.info(`${req.method} ${req.path}`, req.body && Object.keys(req.body).length > 0 ? req.body : undefined);
+  }
   next();
 });
 

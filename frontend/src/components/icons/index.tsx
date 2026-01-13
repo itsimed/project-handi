@@ -21,3 +21,4 @@ export { SettingsIcon } from './SettingsIcon';
 export { LogoutIcon } from './LogoutIcon';
 export { UsersIcon } from './UsersIcon';
 export { ClockIcon } from './ClockIcon';
+export { MenuIcon } from './MenuIcon';
