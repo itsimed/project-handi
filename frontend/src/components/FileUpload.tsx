@@ -114,16 +114,16 @@ export const FileUpload = ({
 
   return (
     <div className="space-y-3">
-      <label className="block text-sm font-medium text-slate-300">
+      <label className="block text-xs sm:text-sm font-medium text-slate-300">
         {label}
       </label>
 
       {existingDocument ? (
-        <div className="flex items-center justify-between p-4 bg-slate-800/50 border border-slate-700 rounded-lg">
-          <div className="flex items-center gap-3">
-            <DocumentIcon size={24} className="text-purple-400" />
-            <div>
-              <p className="text-sm font-medium text-slate-200">
+        <div className="flex items-center justify-between p-3 sm:p-4 bg-slate-800/50 border border-slate-700 rounded-lg">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+            <DocumentIcon size={20} className="sm:w-6 sm:h-6 text-purple-400 flex-shrink-0" />
+            <div className="min-w-0 flex-1">
+              <p className="text-xs sm:text-sm font-medium text-slate-200 truncate">
                 {existingDocument.fileName}
               </p>
               <p className="text-xs text-slate-400">
@@ -147,7 +147,7 @@ export const FileUpload = ({
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
             className={`
-              relative border-2 border-dashed rounded-lg p-6 text-center cursor-pointer
+              relative border-2 border-dashed rounded-lg p-4 sm:p-6 text-center cursor-pointer
               transition-all duration-200
               ${dragOver 
                 ? 'border-purple-400 bg-purple-400/10' 
@@ -167,11 +167,11 @@ export const FileUpload = ({
               aria-label={`Sélectionner ${label}`}
             />
 
-            <DocumentIcon size={40} className="mx-auto mb-3 text-slate-500" />
+            <DocumentIcon size={32} className="sm:w-10 sm:h-10 mx-auto mb-2 sm:mb-3 text-slate-500" />
             
             {file ? (
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-slate-200">
+              <div className="space-y-1 sm:space-y-2">
+                <p className="text-xs sm:text-sm font-medium text-slate-200 truncate px-2">
                   {file.name}
                 </p>
                 <p className="text-xs text-slate-400">
@@ -180,8 +180,8 @@ export const FileUpload = ({
               </div>
             ) : (
               <div className="space-y-1">
-                <p className="text-sm text-slate-300">
-                  Glissez-déposez ou cliquez pour sélectionner
+                <p className="text-xs sm:text-sm text-slate-300">
+                  <span className="hidden sm:inline">Glissez-déposez ou </span>cliquez pour sélectionner
                 </p>
                 <p className="text-xs text-slate-500">
                   PDF, DOC, DOCX (max 5MB)
@@ -201,7 +201,7 @@ export const FileUpload = ({
               onClick={handleUpload}
               disabled={uploading}
               className={`
-                w-full py-2 px-4 rounded-lg font-medium transition-all
+                w-full py-2.5 sm:py-2 px-4 rounded-lg text-sm sm:text-base font-medium transition-all
                 ${uploading
                   ? 'bg-slate-700 text-slate-400 cursor-not-allowed'
                   : 'bg-purple-600 hover:bg-purple-500 text-white'

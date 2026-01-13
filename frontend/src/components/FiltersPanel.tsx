@@ -126,12 +126,12 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
     <aside
       role="complementary"
       aria-label="Filtres de recherche"
-      className="w-full md:w-80 bg-slate-800 rounded-2xl border border-slate-700 sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto"
+      className="w-full bg-slate-800 rounded-2xl border border-slate-700 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto"
     >
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         {/* Header avec compteur */}
         <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2">
+        <h2 className="text-lg sm:text-xl font-bold text-slate-100 flex items-center gap-2">
           <Icon name="filter" size={24} className="text-sky-400" />
           Filtres
         </h2>

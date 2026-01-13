@@ -35,13 +35,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, isLoading = fals
       onSubmit={handleSubmit}
       className="w-full max-w-4xl mx-auto"
     >
-      <div className="bg-slate-800 rounded-2xl border border-slate-700 p-6 shadow-xl">
-        <div className="flex flex-col md:flex-row gap-4">
+      <div className="bg-slate-800 rounded-2xl border border-slate-700 p-4 sm:p-6 shadow-xl">
+        <div className="flex flex-col md:flex-row gap-3 sm:gap-4">
           {/* Champ "Quoi ?" */}
           <div className="flex-1">
             <label 
               htmlFor="search-what" 
-              className="block text-sm font-medium text-slate-300 mb-2"
+              className="block text-xs sm:text-sm font-medium text-slate-300 mb-2"
             >
               Quoi ?
             </label>
@@ -52,7 +52,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, isLoading = fals
               onChange={(e) => setWhat(e.target.value)}
               placeholder="Métier, entreprise, compétence..."
               aria-label="Rechercher par métier, entreprise ou compétence"
-              className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800 transition-all"
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-slate-900 border border-slate-700 rounded-lg text-sm sm:text-base text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800 transition-all"
             />
           </div>
 
@@ -60,7 +60,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, isLoading = fals
           <div className="flex-1">
             <label 
               htmlFor="search-where" 
-              className="block text-sm font-medium text-slate-300 mb-2"
+              className="block text-xs sm:text-sm font-medium text-slate-300 mb-2"
             >
               Où ?
             </label>
@@ -71,7 +71,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, isLoading = fals
               onChange={(e) => setWhere(e.target.value)}
               placeholder="Ville, département, code postal..."
               aria-label="Rechercher par ville, département ou code postal"
-              className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800 transition-all"
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-slate-900 border border-slate-700 rounded-lg text-sm sm:text-base text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800 transition-all"
             />
           </div>
 
@@ -80,10 +80,10 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, isLoading = fals
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full md:w-auto px-8 py-3 bg-sky-500 hover:bg-sky-600 disabled:bg-slate-700 disabled:cursor-not-allowed text-white font-bold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800 flex items-center justify-center gap-2"
+              className="w-full md:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-sky-500 hover:bg-sky-600 disabled:bg-slate-700 disabled:cursor-not-allowed text-white text-sm sm:text-base font-bold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800 flex items-center justify-center gap-2"
               aria-label="Lancer la recherche"
             >
-              <Icon name="search" size={20} />
+              <Icon name="search" size={18} className="sm:w-5 sm:h-5" />
               <span>{isLoading ? 'Recherche...' : 'Rechercher'}</span>
             </button>
           </div>

@@ -15,7 +15,6 @@ import { RecruiterDashboard } from './pages/RecruiterDashboard';
 import { PublishOfferPage } from './pages/PublishOfferPage';
 import { ApplicationDocumentsPage } from './pages/ApplicationDocumentsPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
-import { RoleBasedRoute } from './components/RoleBasedRoute';
 import { ScrollToTop } from './components/ScrollToTop';
 
 function App() 
@@ -28,14 +27,10 @@ function App()
                 {/* 1. Page d'accueil avec hero et recherche */}
                 <Route path="/" element={<HomePage />} />
                 
-                {/* 2. Page de résultats avec filtres (redirige selon le rôle) */}
+                {/* 2. Page de résultats avec filtres (accessible sans connexion) */}
                 <Route 
                     path="/dashboard" 
-                    element={
-                        <RoleBasedRoute>
-                            <DashboardPage />
-                        </RoleBasedRoute>
-                    } 
+                    element={<DashboardPage />} 
                 />
                 
                 {/* 3. Page de détail d'une offre */}

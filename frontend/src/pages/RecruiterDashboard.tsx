@@ -184,66 +184,66 @@ export const RecruiterDashboard = () => {
       <Breadcrumb />
 
       {/* ==================== MAIN CONTENT ==================== */}
-      <main className="container mx-auto px-6 py-12 max-w-7xl">
+      <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-7xl">
         {/* Header Section */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-slate-100 mb-2 flex items-center gap-3">
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-slate-100 mb-2 flex items-center gap-2 sm:gap-3">
             Bonjour {user.firstName}
-            <WaveIcon size={28} className="text-sky-400" aria-label="Salutation" />
+            <WaveIcon size={24} className="sm:w-7 sm:h-7 text-sky-400" aria-label="Salutation" />
           </h2>
-          <p className="text-slate-400">
+          <p className="text-sm sm:text-base text-slate-400">
             Gérez vos offres d'emploi et consultez les candidatures reçues
           </p>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-sky-500/10 to-blue-500/10 border border-sky-500/20 rounded-2xl p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <div className="bg-gradient-to-br from-sky-500/10 to-blue-500/10 border border-sky-500/20 rounded-2xl p-4 sm:p-6">
             <div className="flex items-center justify-between mb-3">
-              <DocumentIcon size={40} className="text-sky-400" aria-hidden="true" />
-              <div className="text-3xl font-bold text-sky-400">
+              <DocumentIcon size={32} className="sm:w-10 sm:h-10 text-sky-400" aria-hidden="true" />
+              <div className="text-2xl sm:text-3xl font-bold text-sky-400">
                 {stats.totalOffers}
               </div>
             </div>
-            <p className="text-slate-300 font-semibold">Offres publiées</p>
+            <p className="text-sm sm:text-base text-slate-300 font-semibold">Offres publiées</p>
           </div>
 
-          <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-2xl p-6">
+          <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-2xl p-4 sm:p-6">
             <div className="flex items-center justify-between mb-3">
-              <UsersIcon size={40} className="text-purple-400" aria-hidden="true" />
-              <div className="text-3xl font-bold text-purple-400">
+              <UsersIcon size={32} className="sm:w-10 sm:h-10 text-purple-400" aria-hidden="true" />
+              <div className="text-2xl sm:text-3xl font-bold text-purple-400">
                 {stats.totalApplications}
               </div>
             </div>
-            <p className="text-slate-300 font-semibold">Candidatures reçues</p>
+            <p className="text-sm sm:text-base text-slate-300 font-semibold">Candidatures reçues</p>
           </div>
 
-          <div className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 rounded-2xl p-6">
+          <div className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 rounded-2xl p-4 sm:p-6 sm:col-span-2 lg:col-span-1">
             <div className="flex items-center justify-between mb-3">
-              <ClockIcon size={40} className="text-yellow-400" aria-hidden="true" />
-              <div className="text-3xl font-bold text-yellow-400">
+              <ClockIcon size={32} className="sm:w-10 sm:h-10 text-yellow-400" aria-hidden="true" />
+              <div className="text-2xl sm:text-3xl font-bold text-yellow-400">
                 {stats.pendingApplications}
               </div>
             </div>
-            <p className="text-slate-300 font-semibold">En attente</p>
+            <p className="text-sm sm:text-base text-slate-300 font-semibold">En attente</p>
           </div>
         </div>
 
         {/* Action Button */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <button
             onClick={handleCreateOffer}
-            className="px-6 py-3 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg shadow-sky-500/30 focus:outline-none focus:ring-2 focus:ring-sky-500"
+            className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white text-sm sm:text-base font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg shadow-sky-500/30 focus:outline-none focus:ring-2 focus:ring-sky-500"
           >
             + Publier une nouvelle offre
           </button>
         </div>
 
         {/* Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Left Column - Offers List */}
-          <div className="bg-slate-900/50 border border-slate-800/50 rounded-2xl p-6">
-            <h3 className="text-xl font-bold text-slate-100 mb-6 flex items-center gap-3">
+          <div className="bg-slate-900/50 border border-slate-800/50 rounded-2xl p-4 sm:p-6">
+            <h3 className="text-lg sm:text-xl font-bold text-slate-100 mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
               <svg className="w-6 h-6 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>

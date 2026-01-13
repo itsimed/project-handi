@@ -99,26 +99,26 @@ export const ApplicationModal = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4 bg-black/70 backdrop-blur-sm"
       onClick={handleClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="application-modal-title"
     >
       <div
-        className="bg-slate-900 rounded-2xl border border-slate-700 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl"
+        className="bg-slate-900 rounded-none sm:rounded-2xl border-0 sm:border border-slate-700 w-full h-full sm:h-auto sm:max-w-2xl sm:max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-slate-700">
-          <div>
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-700 sticky top-0 bg-slate-900 z-10">
+          <div className="flex-1 min-w-0 pr-2">
             <h2
               id="application-modal-title"
-              className="text-2xl font-bold text-white"
+              className="text-xl sm:text-2xl font-bold text-white"
             >
               Postuler à l'offre
             </h2>
-            <p className="text-sm text-slate-400 mt-1">
+            <p className="text-xs sm:text-sm text-slate-400 mt-1 truncate">
               {offerTitle} - {companyName}
             </p>
           </div>
@@ -133,7 +133,7 @@ export const ApplicationModal = ({
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-6">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
           {creatingApplication ? (
             <div className="text-center py-8">
               <p className="text-slate-400">Création de la candidature...</p>

@@ -32,14 +32,43 @@ export const UserMenu = ({ user, isOpen, onClose, onLogout }: UserMenuProps) => 
   useEffect(() => {
     if (!isOpen) return;
 
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        onClose();
+    let isClickInside = false;
+
+    const handleMouseDown = (event: MouseEvent) => {
+      const target = event.target as Node;
+      // Marquer si le clic est à l'intérieur du menu
+      if (menuRef.current && menuRef.current.contains(target)) {
+        isClickInside = true;
+      } else {
+        isClickInside = false;
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    const handleClick = (event: MouseEvent) => {
+      // Si le clic était à l'intérieur, ne pas fermer
+      if (isClickInside) {
+        isClickInside = false;
+        return;
+      }
+
+      const target = event.target as Node;
+      // Vérifier que le clic n'est pas dans le menu
+      if (menuRef.current && !menuRef.current.contains(target)) {
+        // Vérifier aussi que ce n'est pas un clic sur le bouton qui ouvre le menu
+        const clickedElement = target as HTMLElement;
+        if (!clickedElement.closest('[aria-haspopup="true"]')) {
+          onClose();
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('click', handleClick);
+
+    return () => {
+      document.removeEventListener('mousedown', handleMouseDown);
+      document.removeEventListener('click', handleClick);
+    };
   }, [isOpen, onClose]);
 
   // Gestion des touches clavier
@@ -135,7 +164,7 @@ export const UserMenu = ({ user, isOpen, onClose, onLogout }: UserMenuProps) => 
       ref={menuRef}
       role="menu"
       aria-label="Menu utilisateur"
-      className="absolute top-full right-0 mt-2 w-56 bg-slate-800 rounded-lg shadow-xl border border-slate-700 py-2 z-[9999]"
+      className="absolute top-full right-0 mt-2 w-56 sm:w-64 bg-slate-800 rounded-lg shadow-xl border border-slate-700 py-2 z-[9999]"
     >
       {/* En-tête du menu avec info utilisateur */}
       <div className="px-4 py-3 border-b border-slate-700">
@@ -157,7 +186,11 @@ export const UserMenu = ({ user, isOpen, onClose, onLogout }: UserMenuProps) => 
               ref={(el) => (menuItemsRef.current[index] = el)}
               role="menuitem"
               type="button"
-              onClick={item.onClick}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                item.onClick();
+              }}
               aria-label={item.ariaLabel}
               className={`
                 w-full text-left px-4 py-2.5 text-sm

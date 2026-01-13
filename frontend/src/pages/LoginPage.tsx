@@ -107,22 +107,22 @@ export const LoginPage = () => {
 
   // ==================== RENDER ====================
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-4 py-8 sm:py-12">
       <div className="w-full max-w-md">
         {/* Logo / Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
             Project Handi
           </h1>
-          <p className="text-slate-400">
+          <p className="text-sm sm:text-base text-slate-400">
             Plateforme inclusive de recrutement
           </p>
         </div>
 
         {/* Formulaire */}
-        <div className="bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 p-8">
+        <div className="bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 p-6 sm:p-8">
           {/* Titre */}
-          <h2 className="text-2xl font-bold text-sky-400 mb-6 text-center">
+          <h2 className="text-xl sm:text-2xl font-bold text-sky-400 mb-4 sm:mb-6 text-center">
             Connexion
           </h2>
 
@@ -154,7 +154,7 @@ export const LoginPage = () => {
                 autoComplete="email"
                 value={formData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
-                className={`w-full px-4 py-3 rounded-lg bg-slate-700 text-white border ${
+                className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-lg bg-slate-700 text-white border ${
                   errors.email ? 'border-red-500' : 'border-slate-600'
                 } focus:border-sky-500 focus:ring-2 focus:ring-sky-500/50 outline-none transition-all`}
                 placeholder="marie.dupont@example.com"
@@ -184,7 +184,7 @@ export const LoginPage = () => {
                   autoComplete="current-password"
                   value={formData.password}
                   onChange={(e) => handleInputChange('password', e.target.value)}
-                  className={`w-full px-4 py-3 pr-12 rounded-lg bg-slate-700 text-white border ${
+                  className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 sm:pr-12 text-sm sm:text-base rounded-lg bg-slate-700 text-white border ${
                     errors.password ? 'border-red-500' : 'border-slate-600'
                   } focus:border-sky-500 focus:ring-2 focus:ring-sky-500/50 outline-none transition-all`}
                   placeholder="••••••••"
@@ -227,7 +227,7 @@ export const LoginPage = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-sky-500 hover:bg-sky-600 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800"
+              className="w-full bg-sky-500 hover:bg-sky-600 disabled:bg-slate-600 disabled:cursor-not-allowed text-white text-sm sm:text-base font-semibold py-2.5 sm:py-3 px-6 rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">

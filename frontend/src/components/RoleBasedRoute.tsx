@@ -19,8 +19,8 @@ export const RoleBasedRoute = ({ children }: RoleBasedRouteProps) => {
   useEffect(() => {
     const userData = localStorage.getItem(STORAGE_KEYS.USER_DATA);
     
+    // Si pas d'utilisateur connecté, permettre l'accès (ne pas rediriger)
     if (!userData) {
-      navigate('/login');
       return;
     }
 
@@ -38,7 +38,7 @@ export const RoleBasedRoute = ({ children }: RoleBasedRouteProps) => {
       }
     } catch (error) {
       console.error('Erreur de parsing user data:', error);
-      navigate('/login');
+      // Ne pas rediriger en cas d'erreur, permettre l'accès
     }
   }, [navigate]);
 

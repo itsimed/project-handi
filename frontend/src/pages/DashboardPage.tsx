@@ -11,6 +11,8 @@ import { FiltersPanel } from '../components/FiltersPanel';
 import { OfferCard } from '../components/OfferCard';
 import { CompaniesSection } from '../components/CompaniesSection';
 import { ApplicationModal } from '../components/ApplicationModal';
+import { Icon } from '../components/Icon';
+import { CloseIcon } from '../components/icons';
 
 export const DashboardPage = () => {
     const navigate = useNavigate();
@@ -55,6 +57,7 @@ export const DashboardPage = () => {
     // État pour la modale de candidature
     const [selectedOffer, setSelectedOffer] = useState<{ id: number; title: string; company: { name: string } } | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
     // Appliquer les filtres initiaux depuis l'URL au montage
     useEffect(() => {
@@ -72,20 +75,11 @@ export const DashboardPage = () => {
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
-        // Charger les candidatures si connecté
+        // Charger les candidatures si connecté (optionnel, pas de redirection)
         if (isLoggedIn) {
             fetchMyApplications();
         }
     }, [isLoggedIn, fetchMyApplications]);
-
-    const handleAuthAction = () => {
-        if (isLoggedIn) {
-            localStorage.removeItem('token');
-            window.location.reload(); 
-        } else {
-            navigate('/login');
-        }
-    };
 
     /**
      * Gestion de la recherche depuis la SearchBarCompact
@@ -113,6 +107,8 @@ export const DashboardPage = () => {
             ...currentFilters,
             ...newFilters,
         });
+        // Fermer le drawer mobile après changement de filtre
+        setIsFiltersOpen(false);
     };
 
     /**
@@ -148,7 +144,7 @@ export const DashboardPage = () => {
             <Breadcrumb />
 
             {/* Header avec recherche compacte */}
-            <header className="bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 p-4 shadow-lg">
+            <header className="bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 p-3 sm:p-4 shadow-lg">
                 <div className="container mx-auto">
                     {/* SearchBar compacte */}
                     <SearchBarCompact 
@@ -164,7 +160,7 @@ export const DashboardPage = () => {
             <main>
 
                 {/* Messages d'alerte accessibles ARIA */}
-                <div className="container mx-auto px-6 mt-6">
+                <div className="container mx-auto px-4 sm:px-6 mt-4 sm:mt-6">
                     {applicationError && (
                         <div 
                             role="alert" 
@@ -208,10 +204,62 @@ export const DashboardPage = () => {
                 </div>
 
                 {/* Layout principal avec filtres et offres */}
-                <div className="container mx-auto px-6 py-8">
-                    <div className="flex flex-col lg:flex-row gap-8">
-                        {/* Sidebar filtres */}
-                        <div className="lg:w-80 flex-shrink-0">
+                <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+                    {/* Bouton flottant pour ouvrir les filtres sur mobile */}
+                    <button
+                        type="button"
+                        onClick={() => setIsFiltersOpen(true)}
+                        className="lg:hidden fixed bottom-6 right-6 z-[60] bg-sky-500 hover:bg-sky-600 text-white px-4 py-3 rounded-full shadow-2xl shadow-sky-500/50 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-950 flex items-center gap-2 min-w-[120px] justify-center"
+                        aria-label="Ouvrir les filtres"
+                    >
+                        <Icon name="filter" size={20} />
+                        <span className="text-sm font-semibold">Filtres</span>
+                        {activeFiltersCount > 0 && (
+                            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center border-2 border-slate-950">
+                                {activeFiltersCount}
+                            </span>
+                        )}
+                    </button>
+
+                    {/* Drawer mobile pour les filtres */}
+                    {isFiltersOpen && (
+                        <>
+                            {/* Overlay */}
+                            <div
+                                className="lg:hidden fixed inset-0 bg-black/50 z-[55]"
+                                onClick={() => setIsFiltersOpen(false)}
+                                aria-hidden="true"
+                            />
+                            {/* Drawer */}
+                            <div className="lg:hidden fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-slate-900 z-[60] shadow-xl overflow-y-auto">
+                                <div className="sticky top-0 bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center">
+                                    <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
+                                        <Icon name="filter" size={20} className="text-sky-400" />
+                                        Filtres
+                                    </h2>
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsFiltersOpen(false)}
+                                        className="p-2 text-slate-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 rounded-lg"
+                                        aria-label="Fermer les filtres"
+                                    >
+                                        <CloseIcon size={20} aria-hidden="true" />
+                                    </button>
+                                </div>
+                                <div className="p-4">
+                                    <FiltersPanel
+                                        filters={currentFilters}
+                                        onFilterChange={handleFilterChange}
+                                        activeCount={activeFiltersCount}
+                                    />
+                                </div>
+                            </div>
+                        </>
+                    )}
+
+                    <div className="flex flex-col lg:flex-row gap-6 sm:gap-8">
+                        {/* Sidebar filtres - Desktop */}
+                        <div className="lg:w-80 flex-shrink-0 hidden lg:block">
                             <FiltersPanel
                                 filters={currentFilters}
                                 onFilterChange={handleFilterChange}
@@ -223,8 +271,8 @@ export const DashboardPage = () => {
                         <div className="flex-1">
                             {/* Section offres */}
                             <section aria-label="Liste des offres">
-                                <div className="flex justify-between items-center mb-6">
-                                    <h2 className="text-2xl font-bold text-slate-200">
+                                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4 sm:mb-6">
+                                    <h2 className="text-xl sm:text-2xl font-bold text-slate-200">
                                         Offres disponibles
                                     </h2>
                                     {activeFiltersCount > 0 && (
@@ -256,7 +304,7 @@ export const DashboardPage = () => {
                                         )}
                                     </div>
                                 ) : (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                                         {offers.map((offer) => (
                                             <OfferCard
                                                 key={offer.id}

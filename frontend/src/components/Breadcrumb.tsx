@@ -118,9 +118,9 @@ export const Breadcrumb = () => {
   return (
     <nav 
       aria-label="Fil d'Ariane" 
-      className="bg-slate-900/50 border-b border-slate-800/50 px-6 py-3"
+      className="bg-slate-900/50 border-b border-slate-800/50 px-4 sm:px-6 py-2 sm:py-3"
     >
-      <ol className="container mx-auto flex items-center gap-2 text-sm">
+      <ol className="container mx-auto flex items-center gap-1 sm:gap-2 text-xs sm:text-sm overflow-x-auto">
         {breadcrumbs.map((item, index) => (
           <li key={item.path} className="flex items-center gap-2">
             {!item.isLast ? (
