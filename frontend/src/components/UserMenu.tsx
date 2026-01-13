@@ -7,6 +7,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserIcon, BriefcaseIcon, DocumentIcon, SettingsIcon, LogoutIcon } from './icons';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface UserMenuProps {
   user: {
@@ -21,6 +22,7 @@ interface UserMenuProps {
 
 export const UserMenu = ({ user, isOpen, onClose, onLogout }: UserMenuProps) => {
   const navigate = useNavigate();
+  const { colors } = useTheme();
   const menuRef = useRef<HTMLDivElement>(null);
   const [focusedIndex, setFocusedIndex] = useState(0);
   const menuItemsRef = useRef<(HTMLButtonElement | null)[]>([]);
@@ -135,14 +137,25 @@ export const UserMenu = ({ user, isOpen, onClose, onLogout }: UserMenuProps) => 
       ref={menuRef}
       role="menu"
       aria-label="Menu utilisateur"
-      className="absolute top-full right-0 mt-2 w-56 bg-slate-800 rounded-lg shadow-xl border border-slate-700 py-2 z-[9999]"
+      className="absolute top-full right-0 mt-2 w-56 rounded-lg shadow-xl py-2 z-[9999]"
+      style={{ 
+        backgroundColor: colors.bg,
+        borderColor: `${colors.border}33`,
+        border: `1px solid ${colors.border}33`
+      }}
     >
       {/* En-tête du menu avec info utilisateur */}
-      <div className="px-4 py-3 border-b border-slate-700">
-        <p className="text-sm font-semibold text-white">
+      <div 
+        className="px-4 py-3 border-b"
+        style={{ 
+          color: colors.text,
+          borderColor: `${colors.border}33`
+        }}
+      >
+        <p className="text-sm font-semibold">
           {user.firstName} {user.lastName}
         </p>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs" style={{ color: colors.text, opacity: 0.6 }}>
           {user.role === 'RECRUITER' ? 'Recruteur' : 'Candidat'}
         </p>
       </div>
@@ -163,13 +176,20 @@ export const UserMenu = ({ user, isOpen, onClose, onLogout }: UserMenuProps) => 
                 w-full text-left px-4 py-2.5 text-sm
                 flex items-center gap-3
                 transition-colors duration-150
-                focus:outline-none focus:ring-2 focus:ring-inset focus:ring-sky-500
-                ${item.isDanger 
-                  ? 'text-red-400 hover:bg-red-500/10 hover:text-red-300' 
-                  : 'text-slate-300 hover:bg-slate-700 hover:text-white'
-                }
-                ${focusedIndex === index ? 'bg-slate-700' : ''}
+                focus:outline-none focus:ring-2 focus:ring-inset rounded-lg
               `}
+              style={{
+                color: item.isDanger ? '#dc2626' : colors.text,
+                backgroundColor: focusedIndex === index ? `${colors.text}10` : 'transparent',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = `${colors.text}10`;
+              }}
+              onMouseLeave={(e) => {
+                if (focusedIndex !== index) {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }
+              }}
             >
               <IconComponent size={18} />
               <span>{item.label}</span>

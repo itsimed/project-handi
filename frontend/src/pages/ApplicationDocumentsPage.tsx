@@ -5,11 +5,14 @@ import { Breadcrumb } from '../components/Breadcrumb';
 import { FileUpload } from '../components/FileUpload';
 import apiClient from '../api/apiClient';
 import { toastService } from '../services/toastService';
+import { useTheme } from '../contexts/ThemeContext';
+import { ScrollToTopButton } from '../components/ScrollToTopButton';
 import type { ApplicationDocument } from '../types';
 
 export const ApplicationDocumentsPage = () => {
   const { applicationId } = useParams<{ applicationId: string }>();
   const navigate = useNavigate();
+  const { colors } = useTheme();
   const [documents, setDocuments] = useState<ApplicationDocument[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -47,19 +50,28 @@ export const ApplicationDocumentsPage = () => {
   const coverLetterDocument = documents.find(d => d.documentType === 'COVER_LETTER');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div 
+      className="min-h-screen"
+      style={{ 
+        backgroundColor: colors.bg,
+        color: colors.text,
+        backgroundImage: `radial-gradient(circle at 2px 2px, ${colors.text} 1px, transparent 0)`,
+        backgroundSize: '48px 48px'
+      }}
+    >
+      <div className="min-h-screen" style={{ backgroundColor: colors.bg, opacity: 0.95 }}>
       <Navbar />
       
       <div className="container mx-auto px-6 py-8">
         <Breadcrumb />
         
         <div className="max-w-2xl mx-auto mt-8">
-          <h1 className="text-3xl font-bold text-white mb-8">
+          <h1 className="text-3xl font-bold mb-8" style={{ color: colors.text }}>
             Documents de candidature
           </h1>
 
           {loading ? (
-            <p className="text-slate-400">Chargement...</p>
+            <p style={{ color: colors.text, opacity: 0.6 }}>Chargement...</p>
           ) : (
             <div className="space-y-6">
               <FileUpload
@@ -82,13 +94,17 @@ export const ApplicationDocumentsPage = () => {
 
               <button
                 onClick={() => navigate('/mes-candidatures')}
-                className="w-full py-3 px-4 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
+                className="w-full py-3 px-4 rounded-xl transition-all duration-200 hover:scale-105 font-semibold"
+                style={{ backgroundColor: colors.text, color: colors.bg }}
               >
                 Retour aux candidatures
               </button>
             </div>
           )}
         </div>
+      </div>
+      
+      <ScrollToTopButton />
       </div>
     </div>
   );

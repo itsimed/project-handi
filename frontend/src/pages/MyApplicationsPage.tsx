@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useApplications } from '../hooks/useApplications';
 import { Navbar } from '../components/Navbar';
 import { Breadcrumb } from '../components/Breadcrumb';
+import { useTheme } from '../contexts/ThemeContext';
+import { ScrollToTopButton } from '../components/ScrollToTopButton';
 
 /**
  * Page conforme RGAA pour afficher les candidatures de l'utilisateur
@@ -11,6 +13,7 @@ import { Breadcrumb } from '../components/Breadcrumb';
  */
 export const MyApplicationsPage = () => {
     const navigate = useNavigate();
+    const { colors } = useTheme();
     const { 
         applications, 
         isLoading, 
@@ -51,7 +54,16 @@ export const MyApplicationsPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 text-white">
+        <div 
+            className="min-h-screen"
+            style={{ 
+                backgroundColor: colors.bg,
+                color: colors.text,
+                backgroundImage: `radial-gradient(circle at 2px 2px, ${colors.text} 1px, transparent 0)`,
+                backgroundSize: '48px 48px'
+            }}
+        >
+            <div className="min-h-screen" style={{ backgroundColor: colors.bg, opacity: 0.95 }}>
             {/* Navigation */}
             <Navbar variant="dashboard" />
             
@@ -59,18 +71,25 @@ export const MyApplicationsPage = () => {
             <Breadcrumb />
 
             {/* Header sémantique accessible */}
-            <header className="border-b border-slate-800/50 bg-slate-900/50 p-8">
+            <header 
+                className="border-b-2 p-8"
+                style={{ borderColor: colors.border }}
+            >
                 <div className="flex justify-between items-center">
                     <div>
-                        <h1 className="text-3xl font-bold text-sky-400">Mes Candidatures</h1>
-                        <p className="text-slate-300 mt-1">Suivez l'état de vos postulations en temps réel</p>
+                        <h1 className="text-3xl font-bold" style={{ color: colors.text }}>Mes Candidatures</h1>
+                        <p className="mt-1" style={{ color: colors.text, opacity: 0.7 }}>Suivez l'état de vos postulations en temps réel</p>
                     </div>
                     
                     <nav aria-label="Navigation">
                         <button
                             type="button"
                             onClick={() => navigate('/dashboard')}
-                            className="px-6 py-2 bg-sky-500 text-white rounded-full font-semibold hover:bg-sky-600 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+                            className="px-6 py-2 rounded-full font-semibold transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2"
+                            style={{ 
+                                backgroundColor: colors.text,
+                                color: colors.bg
+                            }}
                             aria-label="Retour au tableau de bord"
                         >
                             ← Retour aux offres
@@ -86,7 +105,12 @@ export const MyApplicationsPage = () => {
                     <div 
                         role="alert" 
                         aria-live="assertive"
-                        className="mb-6 p-4 bg-red-500/10 border border-red-500/50 text-red-300 rounded-lg"
+                        className="mb-6 p-4 border rounded-xl"
+                        style={{ 
+                            backgroundColor: `${colors.text}15`,
+                            borderColor: `${colors.text}50`,
+                            color: colors.text
+                        }}
                     >
                         <strong className="font-bold">Erreur : </strong>
                         <span>{error}</span>
@@ -96,19 +120,24 @@ export const MyApplicationsPage = () => {
                 <section aria-label="Liste de vos candidatures">
                     {isLoading ? (
                         <div 
-                            className="text-center py-20 text-slate-400" 
+                            className="text-center py-20" 
+                            style={{ color: colors.text, opacity: 0.6 }}
                             role="status" 
                             aria-live="polite"
                         >
                             <span>Chargement de vos candidatures...</span>
                         </div>
                     ) : applications.length === 0 ? (
-                        <div className="bg-slate-800 border border-dashed border-slate-700 rounded-2xl p-20 text-center">
-                            <p className="text-slate-300 mb-4">Vous n'avez pas encore postulé à des offres.</p>
+                        <div 
+                            className="border-2 border-dashed rounded-2xl p-20 text-center"
+                            style={{ borderColor: colors.border, backgroundColor: colors.bg }}
+                        >
+                            <p className="mb-4" style={{ color: colors.text, opacity: 0.7 }}>Vous n'avez pas encore postulé à des offres.</p>
                             <button
                                 type="button"
                                 onClick={() => navigate('/dashboard')}
-                                className="text-sky-400 hover:text-sky-300 underline focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800 px-2 py-1 rounded"
+                                className="underline px-2 py-1 rounded hover:scale-105 transition-transform duration-200"
+                                style={{ color: colors.text }}
                             >
                                 Voir les annonces disponibles
                             </button>
@@ -126,7 +155,7 @@ export const MyApplicationsPage = () => {
                                     aria-label="Tableau de vos candidatures"
                                 >
                                     <thead>
-                                        <tr className="text-slate-400 uppercase text-xs">
+                                        <tr className="uppercase text-xs" style={{ color: colors.text, opacity: 0.6 }}>
                                             <th scope="col" className="px-6 py-3">
                                                 Poste / Entreprise
                                             </th>
@@ -149,27 +178,30 @@ export const MyApplicationsPage = () => {
                                                         navigate(`/mes-candidatures/${app.id}`);
                                                     }
                                                 }}
-                                                className="bg-slate-800 hover:bg-slate-750 transition-colors focus-within:ring-2 focus-within:ring-sky-500 cursor-pointer"
+                                                className="transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+                                                style={{ backgroundColor: colors.bg }}
                                                 role="button"
                                                 tabIndex={0}
                                                 aria-label={`Voir les détails de votre candidature pour ${app.offer?.title || 'cette offre'}`}
                                             >
                                                 {/* Cellule Poste/Entreprise */}
                                                 <td 
-                                                    className="px-6 py-4 rounded-l-xl border-l border-t border-b border-slate-700"
+                                                    className="px-6 py-4 rounded-l-xl border-2 border-r-0"
+                                                    style={{ borderColor: colors.border }}
                                                     headers="poste-entreprise"
                                                 >
-                                                    <div className="font-bold text-slate-100">
+                                                    <div className="font-bold" style={{ color: colors.text }}>
                                                         {app.offer?.title || 'Titre non disponible'}
                                                     </div>
-                                                    <div className="text-sm text-slate-300">
+                                                    <div className="text-sm" style={{ color: colors.text, opacity: 0.7 }}>
                                                         {app.company?.name || 'Entreprise non disponible'}
                                                     </div>
                                                 </td>
 
                                                 {/* Cellule Date */}
                                                 <td 
-                                                    className="px-6 py-4 border-t border-b border-slate-700 text-sm text-slate-300"
+                                                    className="px-6 py-4 border-t-2 border-b-2 text-sm"
+                                                    style={{ borderColor: colors.border, color: colors.text, opacity: 0.7 }}
                                                     headers="date"
                                                 >
                                                     <time dateTime={app.createdAt}>
@@ -183,7 +215,8 @@ export const MyApplicationsPage = () => {
 
                                                 {/* Cellule Statut */}
                                                 <td 
-                                                    className="px-6 py-4 rounded-r-xl border-r border-t border-b border-slate-700"
+                                                    className="px-6 py-4 rounded-r-xl border-2 border-l-0"
+                                                    style={{ borderColor: colors.border }}
                                                     headers="statut"
                                                 >
                                                     <span 
@@ -209,6 +242,9 @@ export const MyApplicationsPage = () => {
                     )}
                 </section>
             </main>
+            
+            <ScrollToTopButton />
+            </div>
         </div>
     );
 };

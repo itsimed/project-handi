@@ -11,9 +11,12 @@ import { FiltersPanel } from '../components/FiltersPanel';
 import { OfferCard } from '../components/OfferCard';
 import { CompaniesSection } from '../components/CompaniesSection';
 import { ApplicationModal } from '../components/ApplicationModal';
+import { useTheme } from '../contexts/ThemeContext';
+import { ScrollToTopButton } from '../components/ScrollToTopButton';
 
 export const DashboardPage = () => {
     const navigate = useNavigate();
+    const { colors } = useTheme();
     const [searchParams, setSearchParams] = useSearchParams();
     
     // Extraire les paramètres de recherche de l'URL
@@ -140,7 +143,7 @@ export const DashboardPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 text-white">
+        <div className="min-h-screen" style={{ backgroundColor: colors.bg, color: colors.text }}>
             {/* Navigation principale */}
             <Navbar variant="dashboard" />
             
@@ -148,7 +151,7 @@ export const DashboardPage = () => {
             <Breadcrumb />
 
             {/* Header avec recherche compacte */}
-            <header className="bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 p-4 shadow-lg">
+            <header className="backdrop-blur-sm border-b p-4 shadow-lg" style={{ backgroundColor: `${colors.bg}F2`, borderColor: `${colors.border}33` }}>
                 <div className="container mx-auto">
                     {/* SearchBar compacte */}
                     <SearchBarCompact 
@@ -169,14 +172,22 @@ export const DashboardPage = () => {
                         <div 
                             role="alert" 
                             aria-live="assertive"
-                            className="mb-6 p-4 bg-red-500/10 border border-red-500/50 text-red-300 rounded-lg"
+                            className="mb-6 p-4 border-2 rounded-xl"
+                            style={{ 
+                                backgroundColor: colors.text === '#23022E' ? '#fca5a510' : '#ef444410',
+                                borderColor: colors.text === '#23022E' ? '#fca5a550' : '#ef444450',
+                                color: colors.text === '#23022E' ? '#dc2626' : '#fca5a5'
+                            }}
                         >
                             <strong className="font-bold">Erreur : </strong>
                             <span>{applicationError}</span>
                             <button
                                 type="button"
                                 onClick={clearMessages}
-                                className="ml-4 text-red-400 hover:text-red-200 underline focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+                                className="ml-4 underline focus:outline-none focus:ring-2 focus:ring-red-500"
+                                style={{ color: colors.text === '#23022E' ? '#dc2626' : '#ef4444', opacity: 0.7 }}
+                                onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+                                onMouseLeave={(e) => e.currentTarget.style.opacity = '0.7'}
                                 aria-label="Fermer le message d'erreur"
                             >
                                 Fermer
@@ -188,7 +199,12 @@ export const DashboardPage = () => {
                         <div 
                             role="alert" 
                             aria-live="polite"
-                            className="mb-6 p-4 bg-green-500/10 border border-green-500/50 text-green-300 rounded-lg"
+                            className="mb-6 p-4 border-2 rounded-xl"
+                            style={{ 
+                                backgroundColor: colors.text === '#23022E' ? '#86efac10' : '#22c55e10',
+                                borderColor: colors.text === '#23022E' ? '#86efac50' : '#22c55e50',
+                                color: colors.text === '#23022E' ? '#059669' : '#86efac'
+                            }}
                         >
                             <strong className="font-bold">Succès : </strong>
                             <span>{successMessage}</span>
@@ -199,7 +215,12 @@ export const DashboardPage = () => {
                         <div 
                             role="alert" 
                             aria-live="assertive"
-                            className="mb-6 p-4 bg-red-500/10 border border-red-500/50 text-red-300 rounded-lg"
+                            className="mb-6 p-4 border-2 rounded-xl"
+                            style={{ 
+                                backgroundColor: colors.text === '#23022E' ? '#fca5a510' : '#ef444410',
+                                borderColor: colors.text === '#23022E' ? '#fca5a550' : '#ef444450',
+                                color: colors.text === '#23022E' ? '#dc2626' : '#fca5a5'
+                            }}
                         >
                             <strong className="font-bold">Erreur : </strong>
                             <span>{offersError}</span>
@@ -224,14 +245,23 @@ export const DashboardPage = () => {
                             {/* Section offres */}
                             <section aria-label="Liste des offres">
                                 <div className="flex justify-between items-center mb-6">
-                                    <h2 className="text-2xl font-bold text-slate-200">
+                                    <h2 
+                                        className="text-2xl font-bold"
+                                        style={{ color: colors.text }}
+                                    >
                                         Offres disponibles
                                     </h2>
                                     {activeFiltersCount > 0 && (
                                         <button
                                             type="button"
                                             onClick={clearFilters}
-                                            className="text-sm text-sky-400 hover:text-sky-300 underline focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-900 px-2 py-1 rounded"
+                                            className="text-sm underline focus:outline-none focus:ring-2 px-2 py-1 rounded-xl transition-opacity duration-200"
+                                            style={{ 
+                                                color: colors.text,
+                                                opacity: 0.7
+                                            }}
+                                            onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+                                            onMouseLeave={(e) => e.currentTarget.style.opacity = '0.7'}
                                         >
                                             Effacer les filtres
                                         </button>
@@ -239,17 +269,35 @@ export const DashboardPage = () => {
                                 </div>
 
                                 {isLoadingOffers ? (
-                                    <div className="text-center py-20 text-slate-400" aria-live="polite">
+                                    <div 
+                                        className="text-center py-20" 
+                                        aria-live="polite"
+                                        style={{ color: colors.text, opacity: 0.6 }}
+                                    >
                                         Chargement des offres...
                                     </div>
                                 ) : offers.length === 0 ? (
-                                    <div className="bg-slate-800 border border-dashed border-slate-700 rounded-2xl p-20 text-center">
-                                        <p className="text-slate-300 mb-4">Aucune offre ne correspond à vos critères.</p>
+                                    <div 
+                                        className="border-2 border-dashed rounded-2xl p-20 text-center"
+                                        style={{ 
+                                            backgroundColor: colors.bg,
+                                            borderColor: colors.border + '50'
+                                        }}
+                                    >
+                                        <p className="mb-4" style={{ color: colors.text, opacity: 0.7 }}>
+                                            Aucune offre ne correspond à vos critères.
+                                        </p>
                                         {activeFiltersCount > 0 && (
                                             <button
                                                 type="button"
                                                 onClick={clearFilters}
-                                                className="text-sky-400 hover:text-sky-300 underline focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800 px-2 py-1 rounded"
+                                                className="underline focus:outline-none focus:ring-2 px-2 py-1 rounded-xl transition-opacity duration-200"
+                                                style={{ 
+                                                    color: colors.text,
+                                                    opacity: 0.7
+                                                }}
+                                                onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+                                                onMouseLeave={(e) => e.currentTarget.style.opacity = '0.7'}
                                             >
                                                 Réinitialiser les filtres
                                             </button>
@@ -288,6 +336,8 @@ export const DashboardPage = () => {
                     onSuccess={handleModalSuccess}
                 />
             )}
+            
+            <ScrollToTopButton />
         </div>
     );
 };

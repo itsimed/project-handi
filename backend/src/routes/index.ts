@@ -7,6 +7,7 @@ import userRoutes from './userRoutes';
 import companyRoutes from './companyRoutes';
 import applicationRoutes from './applicationRoutes';
 import documentRoutes from './documentRoutes';
+import statsRoutes from './statsRoutes';
 
 const router = Router();
 
@@ -32,6 +33,9 @@ router.use('/applications', applicationRoutes);
 
 // --- Documents ---
 router.use('/documents', documentRoutes);
+
+// --- Statistiques ---
+router.use('/stats', statsRoutes);
 
 // Route de test (Health Check)
 router.get('/', (req, res) =>

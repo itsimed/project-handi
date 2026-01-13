@@ -17,6 +17,8 @@ import {
   STORAGE_KEYS,
 } from '../constants';
 import { CloseIcon, LightbulbIcon } from '../components/icons';
+import { useTheme } from '../contexts/ThemeContext';
+import { ScrollToTopButton } from '../components/ScrollToTopButton';
 
 interface FormData {
   email: string;
@@ -32,6 +34,7 @@ interface FormErrors {
 export const LoginPage = () => {
   // ==================== STATE ====================
   const navigate = useNavigate();
+  const { colors } = useTheme();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
@@ -107,22 +110,30 @@ export const LoginPage = () => {
 
   // ==================== RENDER ====================
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-4 py-12">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 relative" style={{ backgroundColor: colors.bg }}>
+      {/* Pattern de fond subtil */}
+      <div 
+        className="absolute inset-0 opacity-5"
+        style={{
+          backgroundImage: `radial-gradient(circle at 2px 2px, ${colors.text} 1px, transparent 0)`,
+          backgroundSize: '48px 48px',
+        }}
+      />
+      <div className="w-full max-w-md relative z-10">
         {/* Logo / Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">
+          <h1 className="text-3xl font-bold mb-2" style={{ color: colors.text }}>
             Project Handi
           </h1>
-          <p className="text-slate-400">
+          <p style={{ color: colors.text, opacity: 0.7 }}>
             Plateforme inclusive de recrutement
           </p>
         </div>
 
         {/* Formulaire */}
-        <div className="bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 p-8">
+        <div className="rounded-2xl shadow-2xl border-2 p-8" style={{ backgroundColor: colors.bg, borderColor: colors.border }}>
           {/* Titre */}
-          <h2 className="text-2xl font-bold text-sky-400 mb-6 text-center">
+          <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: colors.text }}>
             Connexion
           </h2>
 
@@ -144,7 +155,8 @@ export const LoginPage = () => {
             <div>
               <label 
                 htmlFor="email" 
-                className="block text-sm font-medium text-slate-300 mb-2"
+                className="block text-sm font-medium mb-2"
+                style={{ color: colors.text }}
               >
                 Adresse email <span className="text-red-400">*</span>
               </label>
@@ -154,9 +166,14 @@ export const LoginPage = () => {
                 autoComplete="email"
                 value={formData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
-                className={`w-full px-4 py-3 rounded-lg bg-slate-700 text-white border ${
-                  errors.email ? 'border-red-500' : 'border-slate-600'
-                } focus:border-sky-500 focus:ring-2 focus:ring-sky-500/50 outline-none transition-all`}
+                className={`w-full px-4 py-3 rounded-lg border-2 outline-none transition-all ${
+                  errors.email ? 'border-red-500' : ''
+                }`}
+                style={{
+                  backgroundColor: colors.bg,
+                  color: colors.text,
+                  borderColor: errors.email ? '' : colors.border
+                }}
                 placeholder="marie.dupont@example.com"
                 aria-invalid={!!errors.email}
                 aria-describedby={errors.email ? 'email-error' : undefined}
@@ -173,7 +190,8 @@ export const LoginPage = () => {
             <div>
               <label 
                 htmlFor="password" 
-                className="block text-sm font-medium text-slate-300 mb-2"
+                className="block text-sm font-medium mb-2"
+                style={{ color: colors.text }}
               >
                 Mot de passe <span className="text-red-400">*</span>
               </label>
@@ -184,9 +202,14 @@ export const LoginPage = () => {
                   autoComplete="current-password"
                   value={formData.password}
                   onChange={(e) => handleInputChange('password', e.target.value)}
-                  className={`w-full px-4 py-3 pr-12 rounded-lg bg-slate-700 text-white border ${
-                    errors.password ? 'border-red-500' : 'border-slate-600'
-                  } focus:border-sky-500 focus:ring-2 focus:ring-sky-500/50 outline-none transition-all`}
+                  className={`w-full px-4 py-3 pr-12 rounded-lg border-2 outline-none transition-all ${
+                    errors.password ? 'border-red-500' : ''
+                  }`}
+                  style={{
+                    backgroundColor: colors.bg,
+                    color: colors.text,
+                    borderColor: errors.password ? '' : colors.border
+                  }}
                   placeholder="••••••••"
                   aria-invalid={!!errors.password}
                   aria-describedby={errors.password ? 'password-error' : 'password-hint'}
@@ -195,7 +218,8 @@ export const LoginPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded p-1"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 focus:outline-none focus:ring-2 rounded p-1 transition-opacity hover:opacity-70"
+                  style={{ color: colors.text, opacity: 0.6 }}
                   aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
                   disabled={isLoading}
                 >
@@ -217,7 +241,7 @@ export const LoginPage = () => {
                 </p>
               )}
               {!errors.password && (
-                <p id="password-hint" className="mt-1 text-xs text-slate-400">
+                <p id="password-hint" className="mt-1 text-xs" style={{ color: colors.text, opacity: 0.6 }}>
                   Minimum {VALIDATION_RULES.PASSWORD_MIN_LENGTH} caractères
                 </p>
               )}
@@ -227,7 +251,11 @@ export const LoginPage = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-sky-500 hover:bg-sky-600 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800"
+              className="w-full font-semibold py-3 px-6 rounded-xl transition-all transform hover:scale-105 active:scale-[0.98] focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ 
+                backgroundColor: colors.text,
+                color: colors.bg
+              }}
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -247,9 +275,10 @@ export const LoginPage = () => {
           <div className="mt-6 text-center">
             <Link
               to="/register"
-              className="text-sm text-slate-400 hover:text-sky-400 transition-colors focus:outline-none focus:underline"
+              className="text-sm transition-colors focus:outline-none focus:underline"
+              style={{ color: colors.text, opacity: 0.7 }}
             >
-              Pas encore de compte ? <span className="font-semibold text-sky-400">S'inscrire</span>
+              Pas encore de compte ? <span className="font-semibold" style={{ opacity: 1 }}>S'inscrire</span>
             </Link>
           </div>
 
@@ -257,7 +286,8 @@ export const LoginPage = () => {
           <div className="mt-6 text-center">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-slate-300 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-2 py-1"
+              className="inline-flex items-center gap-2 text-sm transition-colors focus:outline-none focus:ring-2 rounded px-2 py-1 hover:opacity-70"
+              style={{ color: colors.text, opacity: 0.7 }}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -268,17 +298,19 @@ export const LoginPage = () => {
         </div>
 
         {/* Comptes de test (dev uniquement) */}
-        <div className="mt-6 p-4 bg-slate-800/50 rounded-lg border border-slate-700">
-          <p className="text-xs text-slate-400 mb-2 font-semibold flex items-center gap-2">
+        <div className="mt-6 p-4 rounded-lg border-2" style={{ backgroundColor: colors.bg, borderColor: colors.border, opacity: 0.8 }}>
+          <p className="text-xs mb-2 font-semibold flex items-center gap-2" style={{ color: colors.text, opacity: 0.8 }}>
             <LightbulbIcon size={14} aria-hidden="true" />
             Comptes de test :
           </p>
-          <div className="text-xs text-slate-500 space-y-1">
+          <div className="text-xs space-y-1" style={{ color: colors.text, opacity: 0.6 }}>
             <p>• Candidat : marie.dupont@example.com / password123</p>
             <p>• Recruteur : recruiter@techinclusion.com / password123</p>
           </div>
         </div>
       </div>
+      
+      <ScrollToTopButton />
     </div>
   );
 };

@@ -21,7 +21,7 @@ export type DisabilityCategory =
   | 'COGNITIF' 
   | 'INVISIBLE';
 
-export type ApplicationStatus = 'PENDING' | 'ACCEPTED' | 'REJECTED';
+export type ApplicationStatus = 'VIEWED' | 'NOT_VIEWED';
 
 // ==================== ENTITIES ====================
 

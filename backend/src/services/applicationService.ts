@@ -9,6 +9,20 @@ import prisma from '../config/prisma';
  */
 export async function applyToOffer( userId: number, offerId: number ) 
 {
+    // Vérifier que l'offre existe
+    const offer = await prisma.offer.findUnique({ where: { id: offerId } });
+
+    if (!offer)
+    {
+        throw new Error("Offre introuvable ou supprimée.");
+    }
+
+    // Empêcher un recruteur de postuler à sa propre offre
+    if (offer.recruiterId === userId)
+    {
+        throw new Error("Vous ne pouvez pas postuler à votre propre offre.");
+    }
+
     const existingApplication = await prisma.application.findFirst
     (
         {

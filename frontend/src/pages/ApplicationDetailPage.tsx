@@ -9,6 +9,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import apiClient from '../api/apiClient';
 import { Breadcrumb } from '../components/Breadcrumb';
+import { useTheme } from '../contexts/ThemeContext';
+import { ScrollToTopButton } from '../components/ScrollToTopButton';
 
 interface ApplicationDetail {
   id: number;
@@ -41,6 +43,7 @@ interface ApplicationDetail {
 export const ApplicationDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { colors } = useTheme();
   const [application, setApplication] = useState<ApplicationDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -62,8 +65,8 @@ export const ApplicationDetailPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <p className="text-slate-400" role="status" aria-live="polite">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: colors.bg }}>
+        <p style={{ color: colors.text, opacity: 0.6 }} role="status" aria-live="polite">
           Chargement...
         </p>
       </div>
@@ -72,14 +75,15 @@ export const ApplicationDetailPage = () => {
 
   if (error || !application) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: colors.bg }}>
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-red-400 mb-4">Candidature introuvable</h1>
-          <p className="text-slate-400 mb-6">{error || 'Cette candidature n\'existe pas'}</p>
+          <h1 className="text-4xl font-bold mb-4" style={{ color: '#dc2626' }}>Candidature introuvable</h1>
+          <p className="mb-6" style={{ color: colors.text, opacity: 0.6 }}>{error || 'Cette candidature n\'existe pas'}</p>
           <button
             type="button"
             onClick={() => navigate('/mes-candidatures')}
-            className="text-sky-400 hover:text-sky-300 underline focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-900 px-2 py-1 rounded"
+            className="underline hover:opacity-70 px-2 py-1 rounded"
+            style={{ color: colors.text }}
           >
             Retour à mes candidatures
           </button>
@@ -114,21 +118,31 @@ export const ApplicationDetailPage = () => {
   const statusConfig = getStatusConfig(application.status);
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div 
+      className="min-h-screen"
+      style={{ 
+        backgroundColor: colors.bg,
+        color: colors.text,
+        backgroundImage: `radial-gradient(circle at 2px 2px, ${colors.text} 1px, transparent 0)`,
+        backgroundSize: '48px 48px'
+      }}
+    >
+      <div className="min-h-screen" style={{ backgroundColor: colors.bg, opacity: 0.95 }}>
       {/* Header */}
-      <header className="border-b border-slate-800 p-6">
+      <header className="border-b-2 p-6" style={{ borderColor: colors.border }}>
         <div className="container mx-auto">
           <button
             type="button"
             onClick={() => navigate('/mes-candidatures')}
-            className="text-sky-400 hover:text-sky-300 mb-4 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-2 py-1 -ml-2 transition-colors"
+            className="mb-4 flex items-center gap-2 rounded px-2 py-1 -ml-2 transition-opacity hover:opacity-70"
+            style={{ color: colors.text }}
             aria-label="Retour à mes candidatures"
           >
             <Icon name="chevron-left" size={20} />
             Retour à mes candidatures
           </button>
           
-          <h1 className="text-3xl font-bold text-slate-100 mb-2">
+          <h1 className="text-3xl font-bold mb-2" style={{ color: colors.text }}>
             Ma candidature
           </h1>
         </div>
@@ -141,7 +155,7 @@ export const ApplicationDetailPage = () => {
       <main className="container mx-auto px-6 py-8 max-w-4xl">
         
         {/* En-tête de la candidature */}
-        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6 mb-6">
+        <section className="rounded-2xl border-2 p-6 mb-6" style={{ borderColor: colors.border }}>
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
             <div className="flex-1">
               <h2 className="text-2xl font-bold text-slate-100 mb-2">
@@ -345,6 +359,9 @@ export const ApplicationDetailPage = () => {
         </section>
 
       </main>
+      
+      <ScrollToTopButton />
+      </div>
     </div>
   );
 };

@@ -5,6 +5,7 @@
 
 import { useState, FormEvent } from 'react';
 import { Icon } from './Icon';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface SearchQuery {
   what: string;
@@ -28,6 +29,7 @@ export const SearchBarCompact: React.FC<SearchBarCompactProps> = ({
   initialWhat = '',
   initialWhere = '',
 }) => {
+  const { colors } = useTheme();
   const [what, setWhat] = useState(initialWhat);
   const [where, setWhere] = useState(initialWhere);
 
@@ -42,7 +44,13 @@ export const SearchBarCompact: React.FC<SearchBarCompactProps> = ({
       onSubmit={handleSubmit}
       className="flex-1 max-w-3xl"
     >
-      <div className="flex items-center gap-2 bg-slate-900 rounded-lg border border-slate-700 p-2">
+      <div 
+        className="flex items-center gap-2 rounded-xl border-2 p-2"
+        style={{ 
+          backgroundColor: colors.bg,
+          borderColor: colors.border
+        }}
+      >
         {/* Champ "Quoi ?" */}
         <div className="flex-1">
           <label htmlFor="search-what-compact" className="sr-only">
@@ -55,11 +63,19 @@ export const SearchBarCompact: React.FC<SearchBarCompactProps> = ({
             onChange={(e) => setWhat(e.target.value)}
             placeholder="Métier, entreprise..."
             aria-label="Rechercher par métier ou entreprise"
-            className="w-full px-3 py-2 bg-transparent text-slate-100 placeholder-slate-500 focus:outline-none"
+            className="w-full px-3 py-2 bg-transparent focus:outline-none"
+            style={{ 
+              color: colors.text,
+              opacity: what ? 1 : 0.5
+            }}
           />
         </div>
 
-        <div className="w-px h-6 bg-slate-700" aria-hidden="true" />
+        <div 
+          className="w-px h-6" 
+          aria-hidden="true"
+          style={{ backgroundColor: colors.border, opacity: 0.5 }}
+        />
 
         {/* Champ "Où ?" */}
         <div className="flex-1">
@@ -73,7 +89,11 @@ export const SearchBarCompact: React.FC<SearchBarCompactProps> = ({
             onChange={(e) => setWhere(e.target.value)}
             placeholder="Ville, région..."
             aria-label="Rechercher par ville ou région"
-            className="w-full px-3 py-2 bg-transparent text-slate-100 placeholder-slate-500 focus:outline-none"
+            className="w-full px-3 py-2 bg-transparent focus:outline-none"
+            style={{ 
+              color: colors.text,
+              opacity: where ? 1 : 0.5
+            }}
           />
         </div>
 
@@ -81,7 +101,12 @@ export const SearchBarCompact: React.FC<SearchBarCompactProps> = ({
         <button
           type="submit"
           disabled={isLoading}
-          className="px-4 py-2 bg-sky-500 hover:bg-sky-600 disabled:bg-slate-700 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+          className="px-4 py-2 disabled:cursor-not-allowed font-medium rounded-xl transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2"
+          style={{ 
+            backgroundColor: colors.text,
+            color: colors.bg,
+            opacity: isLoading ? 0.5 : 1
+          }}
           aria-label="Lancer la recherche"
         >
           <Icon name="search" size={20} />

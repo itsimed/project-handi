@@ -10,8 +10,11 @@ import { useApplications } from '../hooks/useApplications';
 import apiClient from '../api/apiClient';
 import { Icon } from '../components/Icon';
 import { Breadcrumb } from '../components/Breadcrumb';
+import { Navbar } from '../components/Navbar';
 import { ApplicationModal } from '../components/ApplicationModal';
 import { CheckIcon } from '../components/icons';
+import { useTheme } from '../contexts/ThemeContext';
+import { ScrollToTopButton } from '../components/ScrollToTopButton';
 
 interface OfferDetail {
   id: number;
@@ -37,6 +40,7 @@ interface OfferDetail {
 export const OfferDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { colors } = useTheme();
   const [offer, setOffer] = useState<OfferDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -136,8 +140,8 @@ export const OfferDetailPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <div className="text-slate-400" aria-live="polite" role="status">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: colors.bg }}>
+        <div style={{ color: colors.text, opacity: 0.6 }} aria-live="polite" role="status">
           Chargement de l'offre...
         </div>
       </div>
@@ -146,14 +150,15 @@ export const OfferDetailPage = () => {
 
   if (error || !offer) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: colors.bg }}>
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-red-400 mb-4">Offre introuvable</h1>
-          <p className="text-slate-400 mb-8">{error || 'Cette offre n\'existe pas'}</p>
+          <h1 className="text-4xl font-bold mb-4" style={{ color: '#dc2626' }}>Offre introuvable</h1>
+          <p className="mb-8" style={{ color: colors.text, opacity: 0.6 }}>{error || 'Cette offre n\'existe pas'}</p>
           <button
             type="button"
             onClick={() => navigate('/dashboard')}
-            className="px-6 py-3 bg-sky-500 hover:bg-sky-600 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+            className="px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105"
+            style={{ backgroundColor: colors.text, color: colors.bg }}
           >
             Retour aux offres
           </button>
@@ -165,37 +170,17 @@ export const OfferDetailPage = () => {
   const alreadyApplied = hasApplied(offer.id);
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
-      {/* Header simplifié */}
-      <header className="border-b border-slate-800 p-6">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 
-            onClick={() => navigate('/')}
-            className="text-2xl font-bold text-sky-400 cursor-pointer hover:text-sky-300 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-900 rounded px-2 py-1"
-            tabIndex={0}
-            role="button"
-            aria-label="Retour à l'accueil"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                navigate('/');
-              }
-            }}
-          >
-            Project Handi
-          </h1>
-          <button
-            type="button"
-            onClick={() => navigate('/dashboard')}
-            className="text-slate-300 hover:text-sky-400 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-900 px-4 py-2 rounded-lg"
-            aria-label="Retour à la liste des offres"
-          >
-            ← Retour aux offres
-          </button>
-        </div>
-      </header>
-      
-      {/* Fil d'Ariane */}
+    <div 
+      className="min-h-screen"
+      style={{ 
+        backgroundColor: colors.bg,
+        color: colors.text,
+        backgroundImage: `radial-gradient(circle at 2px 2px, ${colors.text} 1px, transparent 0)`,
+        backgroundSize: '48px 48px'
+      }}
+    >
+      <div className="min-h-screen" style={{ backgroundColor: colors.bg, opacity: 0.95 }}>
+      <Navbar />
       <Breadcrumb />
 
       {/* Messages d'alerte */}
@@ -204,14 +189,16 @@ export const OfferDetailPage = () => {
           <div 
             role="alert" 
             aria-live="assertive"
-            className="mb-6 p-4 bg-red-500/10 border border-red-500/50 text-red-300 rounded-lg"
+            className="mb-6 p-4 border rounded-xl"
+            style={{ borderColor: colors.border, color: colors.text }}
           >
             <strong className="font-bold">Erreur : </strong>
             <span>{applicationError}</span>
             <button
               type="button"
               onClick={clearMessages}
-              className="ml-4 text-red-400 hover:text-red-200 underline focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+              className="ml-4 underline hover:opacity-70"
+              style={{ color: colors.text }}
               aria-label="Fermer le message d'erreur"
             >
               Fermer
@@ -223,7 +210,8 @@ export const OfferDetailPage = () => {
           <div 
             role="alert" 
             aria-live="polite"
-            className="mb-6 p-4 bg-green-500/10 border border-green-500/50 text-green-300 rounded-lg"
+            className="mb-6 p-4 border rounded-xl"
+            style={{ borderColor: colors.border, color: colors.text }}
           >
             <strong className="font-bold">Succès : </strong>
             <span>{successMessage}</span>
@@ -239,42 +227,42 @@ export const OfferDetailPage = () => {
             <header className="mb-8">
               {/* Badges */}
               <div className="flex flex-wrap gap-3 mb-4">
-                <span className="bg-sky-500/10 text-sky-400 text-sm font-bold px-4 py-2 rounded-full border border-sky-500/30">
+                <span className="text-sm font-bold px-4 py-2 rounded-full border-2" style={{ borderColor: colors.border, color: colors.text }}>
                   {getContractLabels(offer.contract)}
                 </span>
-                <span className="bg-slate-800 text-slate-300 text-sm px-4 py-2 rounded-full border border-slate-700 flex items-center gap-2">
-                  <Icon name="location" size={16} className="text-sky-400" /> {offer.location}
+                <span className="text-sm px-4 py-2 rounded-full border-2 flex items-center gap-2" style={{ borderColor: colors.border, color: colors.text }}>
+                  <Icon name="location" size={16} style={{ color: colors.text }} /> {offer.location}
                 </span>
-                <span className="bg-slate-800 text-slate-300 text-sm px-4 py-2 rounded-full border border-slate-700 flex items-center gap-2">
-                  <Icon name="briefcase" size={16} className="text-sky-400" /> {offer.experience}
+                <span className="text-sm px-4 py-2 rounded-full border-2 flex items-center gap-2" style={{ borderColor: colors.border, color: colors.text }}>
+                  <Icon name="briefcase" size={16} style={{ color: colors.text }} /> {offer.experience}
                 </span>
-                <span className="bg-slate-800 text-slate-300 text-sm px-4 py-2 rounded-full border border-slate-700 flex items-center gap-2">
-                  <Icon name="home" size={16} className="text-sky-400" /> {getRemoteLabel(offer.remote)}
+                <span className="text-sm px-4 py-2 rounded-full border-2 flex items-center gap-2" style={{ borderColor: colors.border, color: colors.text }}>
+                  <Icon name="home" size={16} style={{ color: colors.text }} /> {getRemoteLabel(offer.remote)}
                 </span>
               </div>
 
               {/* Titre */}
-              <h2 className="text-4xl font-bold mb-4 text-slate-100">
+              <h2 className="text-4xl font-bold mb-4" style={{ color: colors.text }}>
                 {offer.title}
               </h2>
 
               {/* Entreprise */}
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 bg-sky-500/10 rounded-full flex items-center justify-center flex-shrink-0" aria-hidden="true">
-                  <Icon name="building" size={32} className="text-sky-400" />
+                <div className="w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0 border-2" style={{ borderColor: colors.border }} aria-hidden="true">
+                  <Icon name="building" size={32} style={{ color: colors.text }} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-slate-200">
+                  <h3 className="text-xl font-semibold" style={{ color: colors.text }}>
                     {offer.company.name}
                   </h3>
                   {offer.company.sector && (
-                    <p className="text-slate-400">{offer.company.sector}</p>
+                    <p style={{ color: colors.text, opacity: 0.7 }}>{offer.company.sector}</p>
                   )}
                 </div>
               </div>
 
               {/* Date de publication */}
-              <p className="text-slate-500 text-sm">
+              <p className="text-sm" style={{ color: colors.text, opacity: 0.5 }}>
                 Publiée le{' '}
                 <time dateTime={offer.createdAt}>
                   {new Date(offer.createdAt).toLocaleDateString('fr-FR', {
@@ -286,23 +274,28 @@ export const OfferDetailPage = () => {
               </p>
             </header>
 
-            {/* Bouton d'action principal sticky */}
-            <div className="sticky top-6 z-40 bg-slate-900/95 backdrop-blur-sm border-y border-slate-800 py-4 -mx-6 px-6 mb-8">
+            {/* Bouton d'action principal */}
+            <div className="border-y-2 py-4 -mx-6 px-6 mb-8" style={{ backgroundColor: `${colors.bg}F2`, borderColor: colors.border }}>
               <button
                 type="button"
                 onClick={handleApply}
                 disabled={isApplying || alreadyApplied}
-                className={`w-full py-4 rounded-xl font-bold text-lg transition-all focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-900 ${
-                  alreadyApplied
-                    ? 'bg-slate-700 text-slate-500 cursor-not-allowed'
-                    : isApplying
-                    ? 'bg-slate-700 text-slate-400 cursor-wait'
-                    : 'bg-sky-500 hover:bg-sky-600 text-white shadow-lg shadow-sky-500/20'
+                className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-200 hover:scale-105 ${
+                  isApplying ? 'opacity-70 cursor-not-allowed' : ''
                 }`}
+                style={{
+                  backgroundColor: alreadyApplied
+                    ? colors.bg
+                    : isApplying
+                    ? colors.text
+                    : colors.text,
+                  color: alreadyApplied ? colors.text : colors.bg,
+                  border: `2px solid ${colors.border}`,
+                }}
                 aria-label={alreadyApplied ? 'Vous avez déjà postulé à cette offre' : 'Envoyer votre candidature pour cette offre'}
               >
                 {alreadyApplied ? (
-                  <span className="flex items-center gap-2">
+                  <span className="flex items-center justify-center gap-2">
                     <CheckIcon size={18} aria-hidden="true" />
                     Candidature envoyée
                   </span>
@@ -316,12 +309,12 @@ export const OfferDetailPage = () => {
 
             {/* Section Description */}
             <section className="mb-10">
-              <h2 className="text-2xl font-bold mb-4 text-slate-100 border-l-4 border-sky-500 pl-4 flex items-center gap-3">
-                <Icon name="document" size={28} className="text-sky-400" />
+              <h2 className="text-2xl font-bold mb-4 border-l-4 pl-4 flex items-center gap-3" style={{ color: colors.text, borderColor: colors.border }}>
+                <Icon name="document" size={28} style={{ color: colors.text }} />
                 Description du poste
               </h2>
-              <div className="bg-slate-800/50 p-6 rounded-xl border border-slate-700">
-                <p className="text-slate-300 whitespace-pre-line leading-relaxed">
+              <div className="p-6 rounded-xl border-2" style={{ borderColor: colors.border }}>
+                <p className="whitespace-pre-line leading-relaxed" style={{ color: colors.text }}>
                   {offer.description}
                 </p>
               </div>
@@ -330,15 +323,15 @@ export const OfferDetailPage = () => {
             {/* Section Accessibilité */}
             {offer.disabilityCompatible && offer.disabilityCompatible.length > 0 && (
               <section className="mb-10">
-                <h2 className="text-2xl font-bold mb-4 text-slate-100 border-l-4 border-green-500 pl-4 flex items-center gap-3">
-                  <Icon name="accessibility" size={28} className="text-green-400" />
+                <h2 className="text-2xl font-bold mb-4 border-l-4 pl-4 flex items-center gap-3" style={{ color: colors.text, borderColor: '#10b981' }}>
+                  <Icon name="accessibility" size={28} style={{ color: '#10b981' }} />
                   Accessibilité
                 </h2>
-                <div className="bg-green-500/10 p-6 rounded-xl border border-green-500/30">
-                  <p className="text-green-300 mb-3 font-semibold">
+                <div className="p-6 rounded-xl border-2" style={{ borderColor: '#10b981', backgroundColor: `${colors.bg}` }}>
+                  <p className="mb-3 font-semibold" style={{ color: '#10b981' }}>
                     Ce poste est adapté aux personnes en situation de handicap :
                   </p>
-                  <ul className="list-disc list-inside text-slate-300 space-y-2">
+                  <ul className="list-disc list-inside space-y-2" style={{ color: colors.text }}>
                     {offer.disabilityCompatible.map((category, index) => (
                       <li key={index}>{getDisabilityLabel(category)}</li>
                     ))}
@@ -349,76 +342,31 @@ export const OfferDetailPage = () => {
 
             {/* Informations pratiques */}
             <section className="mb-10">
-              <h2 className="text-2xl font-bold mb-4 text-slate-100 border-l-4 border-purple-500 pl-4 flex items-center gap-3">
-                <Icon name="info" size={28} className="text-purple-400" />
+              <h2 className="text-2xl font-bold mb-4 border-l-4 pl-4 flex items-center gap-3" style={{ color: colors.text, borderColor: colors.border }}>
+                <Icon name="info" size={28} style={{ color: colors.text }} />
                 Informations pratiques
               </h2>
               <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-                  <dt className="text-slate-500 text-sm mb-1">Type de contrat</dt>
-                  <dd className="text-slate-100 font-semibold">{getContractLabels(offer.contract)}</dd>
+                <div className="p-4 rounded-xl border-2" style={{ borderColor: colors.border }}>
+                  <dt className="text-sm mb-1" style={{ color: colors.text, opacity: 0.6 }}>Type de contrat</dt>
+                  <dd className="font-semibold" style={{ color: colors.text }}>{getContractLabels(offer.contract)}</dd>
                 </div>
-                <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-                  <dt className="text-slate-500 text-sm mb-1">Localisation</dt>
-                  <dd className="text-slate-100 font-semibold">{offer.location}</dd>
+                <div className="p-4 rounded-xl border-2" style={{ borderColor: colors.border }}>
+                  <dt className="text-sm mb-1" style={{ color: colors.text, opacity: 0.6 }}>Localisation</dt>
+                  <dd className="font-semibold" style={{ color: colors.text }}>{offer.location}</dd>
                 </div>
-                <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-                  <dt className="text-slate-500 text-sm mb-1">Expérience requise</dt>
-                  <dd className="text-slate-100 font-semibold">{offer.experience}</dd>
+                <div className="p-4 rounded-xl border-2" style={{ borderColor: colors.border }}>
+                  <dt className="text-sm mb-1" style={{ color: colors.text, opacity: 0.6 }}>Expérience requise</dt>
+                  <dd className="font-semibold" style={{ color: colors.text }}>{offer.experience}</dd>
                 </div>
-                <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-                  <dt className="text-slate-500 text-sm mb-1">Télétravail</dt>
-                  <dd className="text-slate-100 font-semibold">{getRemoteLabel(offer.remote)}</dd>
+                <div className="p-4 rounded-xl border-2" style={{ borderColor: colors.border }}>
+                  <dt className="text-sm mb-1" style={{ color: colors.text, opacity: 0.6 }}>Télétravail</dt>
+                  <dd className="font-semibold" style={{ color: colors.text }}>{getRemoteLabel(offer.remote)}</dd>
                 </div>
               </dl>
             </section>
           </article>
 
-          {/* Offres similaires */}
-          {similarOffers.length > 0 && (
-            <section className="mt-16">
-              <h2 className="text-2xl font-bold mb-6 text-slate-100">
-                Ces offres pourraient aussi vous intéresser
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {similarOffers.map((similarOffer) => (
-                  <article 
-                    key={similarOffer.id}
-                    className="bg-slate-800 p-5 rounded-xl border border-slate-700 hover:border-sky-500 transition-all cursor-pointer group"
-                    onClick={() => {
-                      navigate(`/offres/${similarOffer.id}`);
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    tabIndex={0}
-                    role="button"
-                    aria-label={`Voir l'offre ${similarOffer.title} chez ${similarOffer.company.name}`}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        navigate(`/offres/${similarOffer.id}`);
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                      }
-                    }}
-                  >
-                    <h3 className="font-bold text-slate-100 mb-2 group-hover:text-sky-400 transition-colors">
-                      {similarOffer.title}
-                    </h3>
-                    <p className="text-slate-400 text-sm mb-3">
-                      {similarOffer.company.name}
-                    </p>
-                    <div className="flex gap-2 text-xs flex-wrap">
-                      <span className="bg-sky-500/10 text-sky-400 px-2 py-1 rounded">
-                        {getContractLabel(similarOffer.contract)}
-                      </span>
-                      <span className="text-slate-500">
-                        {similarOffer.location}
-                      </span>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </section>
-          )}
         </div>
       </main>
 
@@ -433,7 +381,9 @@ export const OfferDetailPage = () => {
           onSuccess={handleModalSuccess}
         />
       )}
+
+      <ScrollToTopButton />
+      </div>
     </div>
   );
 };
-

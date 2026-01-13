@@ -12,6 +12,7 @@ import { OfferDetailPage } from './pages/OfferDetailPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { SettingsPage } from './pages/SettingsPage';
 import { RecruiterDashboard } from './pages/RecruiterDashboard';
+import { RecruiterOfferDetailPage } from './pages/RecruiterOfferDetailPage';
 import { PublishOfferPage } from './pages/PublishOfferPage';
 import { ApplicationDocumentsPage } from './pages/ApplicationDocumentsPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -28,15 +29,8 @@ function App()
                 {/* 1. Page d'accueil avec hero et recherche */}
                 <Route path="/" element={<HomePage />} />
                 
-                {/* 2. Page de résultats avec filtres (redirige selon le rôle) */}
-                <Route 
-                    path="/dashboard" 
-                    element={
-                        <RoleBasedRoute>
-                            <DashboardPage />
-                        </RoleBasedRoute>
-                    } 
-                />
+                {/* 2. Page de résultats avec filtres - PUBLIQUE (tous les utilisateurs) */}
+                <Route path="/dashboard" element={<DashboardPage />} />
                 
                 {/* 3. Page de détail d'une offre */}
                 <Route path="/offres/:id" element={<OfferDetailPage />} />
@@ -47,6 +41,9 @@ function App()
 
                 {/* 5. Dashboard recruteur (protégé) */}
                 <Route path="/recruteur/dashboard" element={<ProtectedRoute><RecruiterDashboard /></ProtectedRoute>} />
+
+                {/* 5.1. Détail d'une offre pour recruteur (protégé) */}
+                <Route path="/recruteur/offres/:id" element={<ProtectedRoute><RecruiterOfferDetailPage /></ProtectedRoute>} />
 
                 {/* 6. Publier une offre - Recruteur uniquement (protégé) */}
                 <Route path="/recruteur/publier-offre" element={<ProtectedRoute><PublishOfferPage /></ProtectedRoute>} />

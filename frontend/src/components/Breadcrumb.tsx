@@ -7,6 +7,7 @@
 import { useLocation, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { STORAGE_KEYS } from '../constants';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface BreadcrumbItem {
   label: string;
@@ -109,6 +110,7 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
  */
 export const Breadcrumb = () => {
   const breadcrumbs = useBreadcrumbs();
+  const { colors } = useTheme();
 
   // Ne pas afficher si moins de 2 éléments (juste Accueil)
   if (breadcrumbs.length < 2) {
@@ -118,7 +120,11 @@ export const Breadcrumb = () => {
   return (
     <nav 
       aria-label="Fil d'Ariane" 
-      className="bg-slate-900/50 border-b border-slate-800/50 px-6 py-3"
+      style={{ 
+        backgroundColor: `${colors.bg}99`,
+        borderBottomColor: `${colors.border}33`
+      }}
+      className="border-b px-6 py-3"
     >
       <ol className="container mx-auto flex items-center gap-2 text-sm">
         {breadcrumbs.map((item, index) => (
@@ -128,19 +134,26 @@ export const Breadcrumb = () => {
                 {/* Lien cliquable */}
                 <Link
                   to={item.path}
-                  className="text-slate-400 hover:text-white underline hover:no-underline transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-900 rounded px-1"
+                  className="underline hover:no-underline transition-colors duration-200 focus:outline-none focus:ring-2 rounded px-1"
+                  style={{ 
+                    color: colors.text,
+                    opacity: 0.7
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+                  onMouseLeave={(e) => e.currentTarget.style.opacity = '0.7'}
                   aria-label={`Naviguer vers ${item.label}`}
                 >
                   {item.label}
                 </Link>
                 
                 {/* Séparateur flèche simple */}
-                <span className="text-slate-600" aria-hidden="true">›</span>
+                <span style={{ color: colors.text, opacity: 0.5 }} aria-hidden="true">›</span>
               </>
             ) : (
               /* Élément actif (non cliquable) */
               <span
-                className="text-slate-200 font-normal"
+                style={{ color: colors.text }}
+                className="font-normal"
                 aria-current="page"
               >
                 {item.label}

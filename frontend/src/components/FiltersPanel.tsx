@@ -5,6 +5,7 @@
 
 import { useState } from 'react';
 import { Icon } from './Icon';
+import { useTheme } from '../contexts/ThemeContext';
 import type { ContractType, ExperienceLevel, RemotePolicy, DisabilityCategory } from '../../../src/types/index';
 
 interface FiltersPanelProps {
@@ -27,6 +28,7 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
   onFilterChange,
   activeCount,
 }) => {
+  const { colors } = useTheme();
   // États pour gérer l'ouverture/fermeture des sections
   const [openSections, setOpenSections] = useState({
     contract: true,
@@ -126,19 +128,30 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
     <aside
       role="complementary"
       aria-label="Filtres de recherche"
-      className="w-full md:w-80 bg-slate-800 rounded-2xl border border-slate-700 sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto"
+      className="w-full md:w-80 rounded-2xl border-2 sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto"
+      style={{ 
+        backgroundColor: colors.bg,
+        borderColor: colors.border
+      }}
     >
       <div className="p-6">
         {/* Header avec compteur */}
         <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2">
-          <Icon name="filter" size={24} className="text-sky-400" />
+        <h2 
+          className="text-xl font-bold flex items-center gap-2"
+          style={{ color: colors.text }}
+        >
+          <Icon name="filter" size={24} style={{ color: colors.text }} />
           Filtres
         </h2>
         {activeCount > 0 && (
           <div
             aria-live="polite"
-            className="bg-sky-500 text-white text-xs font-bold px-3 py-1 rounded-full"
+            className="text-xs font-bold px-3 py-1 rounded-full"
+            style={{ 
+              backgroundColor: colors.text,
+              color: colors.bg
+            }}
           >
             {activeCount}
           </div>
@@ -150,7 +163,12 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
         <button
           type="button"
           onClick={handleClearAll}
-          className="w-full mb-6 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800"
+          className="w-full mb-6 px-4 py-2 rounded-xl font-medium transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 border-2"
+          style={{ 
+            backgroundColor: colors.bg,
+            color: colors.text,
+            borderColor: colors.border
+          }}
           aria-label={`Réinitialiser tous les filtres (${activeCount} actifs)`}
         >
           Réinitialiser
@@ -159,19 +177,28 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
 
       <div className="space-y-4">
         {/* Type de contrat */}
-        <div className="border-t border-slate-700 pt-4">
+        <div className="border-t pt-4" style={{ borderColor: colors.border }}>
           <button
             type="button"
             onClick={() => toggleSection('contract')}
-            className="w-full flex items-center justify-between text-sm font-semibold text-slate-300 hover:text-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800 rounded px-2 py-1 -ml-2"
+            className="w-full flex items-center justify-between text-sm font-semibold transition-opacity duration-200 focus:outline-none focus:ring-2 rounded-xl px-2 py-1 -ml-2"
+            style={{ color: colors.text }}
+            onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'}
+            onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
             aria-expanded={openSections.contract}
             aria-controls="contract-filters"
           >
             <span className="flex items-center gap-2">
-              <Icon name="briefcase" size={16} className="text-sky-400" />
+              <Icon name="briefcase" size={16} style={{ color: colors.text }} />
               Type de contrat
               {filters.contractTypes && filters.contractTypes.length > 0 && (
-                <span className="text-xs bg-sky-500 text-white px-2 py-0.5 rounded-full">
+                <span 
+                  className="text-xs px-2 py-0.5 rounded-full"
+                  style={{ 
+                    backgroundColor: colors.text,
+                    color: colors.bg
+                  }}
+                >
                   {filters.contractTypes.length}
                 </span>
               )}
@@ -179,7 +206,7 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
             <Icon
               name={openSections.contract ? 'chevron-up' : 'chevron-down'}
               size={20}
-              className="text-slate-400"
+              style={{ color: colors.text, opacity: 0.6 }}
             />
           </button>
           
@@ -188,13 +215,25 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
               {contractTypes.map((contract) => (
                 <label
                   key={contract}
-                  className="flex items-center gap-3 text-slate-300 hover:text-slate-100 cursor-pointer transition-colors px-2 py-1 rounded hover:bg-slate-900/50"
+                  className="flex items-center gap-3 cursor-pointer transition-opacity duration-200 px-2 py-1 rounded-xl"
+                  style={{ color: colors.text }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.opacity = '0.7';
+                    e.currentTarget.style.backgroundColor = colors.border + '20';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.opacity = '1';
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }}
                 >
                   <input
                     type="checkbox"
                     checked={filters.contractTypes?.includes(contract) || false}
                     onChange={() => handleContractChange(contract)}
-                    className="w-4 h-4 rounded border-slate-600 bg-slate-900 text-sky-500 focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800 cursor-pointer"
+                    className="w-4 h-4 rounded cursor-pointer focus:ring-2"
+                    style={{ 
+                      accentColor: colors.text
+                    }}
                   />
                   <span className="text-sm">{getLabel(contract)}</span>
                 </label>
@@ -204,19 +243,28 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
         </div>
 
         {/* Niveau d'expérience */}
-        <div className="border-t border-slate-700 pt-4">
+        <div className="border-t pt-4" style={{ borderColor: colors.border }}>
           <button
             type="button"
             onClick={() => toggleSection('experience')}
-            className="w-full flex items-center justify-between text-sm font-semibold text-slate-300 hover:text-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800 rounded px-2 py-1 -ml-2"
+            className="w-full flex items-center justify-between text-sm font-semibold transition-opacity duration-200 focus:outline-none focus:ring-2 rounded-xl px-2 py-1 -ml-2"
+            style={{ color: colors.text }}
+            onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'}
+            onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
             aria-expanded={openSections.experience}
             aria-controls="experience-filters"
           >
             <span className="flex items-center gap-2">
-              <Icon name="star" size={16} className="text-sky-400" />
+              <Icon name="star" size={16} style={{ color: colors.text }} />
               Niveau d'expérience
               {filters.experienceLevels && filters.experienceLevels.length > 0 && (
-                <span className="text-xs bg-sky-500 text-white px-2 py-0.5 rounded-full">
+                <span 
+                  className="text-xs px-2 py-0.5 rounded-full"
+                  style={{ 
+                    backgroundColor: colors.text,
+                    color: colors.bg
+                  }}
+                >
                   {filters.experienceLevels.length}
                 </span>
               )}
@@ -224,7 +272,7 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
             <Icon
               name={openSections.experience ? 'chevron-up' : 'chevron-down'}
               size={20}
-              className="text-slate-400"
+              style={{ color: colors.text, opacity: 0.6 }}
             />
           </button>
           
@@ -233,13 +281,25 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
               {experienceLevels.map((exp) => (
                 <label
                   key={exp}
-                  className="flex items-center gap-3 text-slate-300 hover:text-slate-100 cursor-pointer transition-colors px-2 py-1 rounded hover:bg-slate-900/50"
+                  className="flex items-center gap-3 cursor-pointer transition-opacity duration-200 px-2 py-1 rounded-xl"
+                  style={{ color: colors.text }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.opacity = '0.7';
+                    e.currentTarget.style.backgroundColor = colors.border + '20';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.opacity = '1';
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }}
                 >
                   <input
                     type="checkbox"
                     checked={filters.experienceLevels?.includes(exp) || false}
                     onChange={() => handleExperienceChange(exp)}
-                    className="w-4 h-4 rounded border-slate-600 bg-slate-900 text-sky-500 focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800 cursor-pointer"
+                    className="w-4 h-4 rounded cursor-pointer focus:ring-2"
+                    style={{ 
+                      accentColor: colors.text
+                    }}
                   />
                   <span className="text-sm">{getLabel(exp)}</span>
                 </label>
@@ -249,19 +309,28 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
         </div>
 
         {/* Télétravail */}
-        <div className="border-t border-slate-700 pt-4">
+        <div className="border-t pt-4" style={{ borderColor: colors.border }}>
           <button
             type="button"
             onClick={() => toggleSection('remote')}
-            className="w-full flex items-center justify-between text-sm font-semibold text-slate-300 hover:text-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800 rounded px-2 py-1 -ml-2"
+            className="w-full flex items-center justify-between text-sm font-semibold transition-opacity duration-200 focus:outline-none focus:ring-2 rounded-xl px-2 py-1 -ml-2"
+            style={{ color: colors.text }}
+            onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'}
+            onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
             aria-expanded={openSections.remote}
             aria-controls="remote-filters"
           >
             <span className="flex items-center gap-2">
-              <Icon name="home" size={16} className="text-sky-400" />
+              <Icon name="home" size={16} style={{ color: colors.text }} />
               Télétravail
               {filters.remote && filters.remote.length > 0 && (
-                <span className="text-xs bg-sky-500 text-white px-2 py-0.5 rounded-full">
+                <span 
+                  className="text-xs px-2 py-0.5 rounded-full"
+                  style={{ 
+                    backgroundColor: colors.text,
+                    color: colors.bg
+                  }}
+                >
                   {filters.remote.length}
                 </span>
               )}
@@ -269,7 +338,7 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
             <Icon
               name={openSections.remote ? 'chevron-up' : 'chevron-down'}
               size={20}
-              className="text-slate-400"
+              style={{ color: colors.text, opacity: 0.6 }}
             />
           </button>
           
@@ -278,13 +347,25 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
               {remotePolicies.map((policy) => (
                 <label
                   key={policy}
-                  className="flex items-center gap-3 text-slate-300 hover:text-slate-100 cursor-pointer transition-colors px-2 py-1 rounded hover:bg-slate-900/50"
+                  className="flex items-center gap-3 cursor-pointer transition-opacity duration-200 px-2 py-1 rounded-xl"
+                  style={{ color: colors.text }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.opacity = '0.7';
+                    e.currentTarget.style.backgroundColor = colors.border + '20';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.opacity = '1';
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }}
                 >
                   <input
                     type="checkbox"
                     checked={filters.remote?.includes(policy) || false}
                     onChange={() => handleRemoteChange(policy)}
-                    className="w-4 h-4 rounded border-slate-600 bg-slate-900 text-sky-500 focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800 cursor-pointer"
+                    className="w-4 h-4 rounded cursor-pointer focus:ring-2"
+                    style={{ 
+                      accentColor: colors.text
+                    }}
                   />
                   <span className="text-sm">{getLabel(policy)}</span>
                 </label>
@@ -294,19 +375,28 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
         </div>
 
         {/* Compatibilité handicap */}
-        <div className="border-t border-slate-700 pt-4">
+        <div className="border-t pt-4" style={{ borderColor: colors.border }}>
           <button
             type="button"
             onClick={() => toggleSection('disability')}
-            className="w-full flex items-center justify-between text-sm font-semibold text-slate-300 hover:text-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800 rounded px-2 py-1 -ml-2"
+            className="w-full flex items-center justify-between text-sm font-semibold transition-opacity duration-200 focus:outline-none focus:ring-2 rounded-xl px-2 py-1 -ml-2"
+            style={{ color: colors.text }}
+            onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'}
+            onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
             aria-expanded={openSections.disability}
             aria-controls="disability-filters"
           >
             <span className="flex items-center gap-2">
-              <Icon name="accessibility" size={16} className="text-green-400" />
+              <Icon name="accessibility" size={16} style={{ color: '#22c55e' }} />
               Compatibilité handicap
               {filters.disabilityCompatible && filters.disabilityCompatible.length > 0 && (
-                <span className="text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">
+                <span 
+                  className="text-xs px-2 py-0.5 rounded-full"
+                  style={{ 
+                    backgroundColor: '#22c55e',
+                    color: '#FFFFFF'
+                  }}
+                >
                   {filters.disabilityCompatible.length}
                 </span>
               )}
@@ -314,7 +404,7 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
             <Icon
               name={openSections.disability ? 'chevron-up' : 'chevron-down'}
               size={20}
-              className="text-slate-400"
+              style={{ color: colors.text, opacity: 0.6 }}
             />
           </button>
           
@@ -323,13 +413,25 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
               {disabilityCategories.map((disability) => (
                 <label
                   key={disability}
-                  className="flex items-center gap-3 text-slate-300 hover:text-slate-100 cursor-pointer transition-colors px-2 py-1 rounded hover:bg-slate-900/50"
+                  className="flex items-center gap-3 cursor-pointer transition-opacity duration-200 px-2 py-1 rounded-xl"
+                  style={{ color: colors.text }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.opacity = '0.7';
+                    e.currentTarget.style.backgroundColor = colors.border + '20';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.opacity = '1';
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }}
                 >
                   <input
                     type="checkbox"
                     checked={filters.disabilityCompatible?.includes(disability) || false}
                     onChange={() => handleDisabilityChange(disability)}
-                    className="w-4 h-4 rounded border-slate-600 bg-slate-900 text-sky-500 focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800 cursor-pointer"
+                    className="w-4 h-4 rounded cursor-pointer focus:ring-2"
+                    style={{ 
+                      accentColor: '#22c55e'
+                    }}
                   />
                   <span className="text-sm">{getLabel(disability)}</span>
                 </label>

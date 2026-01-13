@@ -19,6 +19,8 @@ import {
   VALIDATION_RULES,
   ROUTES,
 } from '../constants';
+import { useTheme } from '../contexts/ThemeContext';
+import { ScrollToTopButton } from '../components/ScrollToTopButton';
 
 interface FormData {
   email: string;
@@ -43,6 +45,7 @@ interface FormErrors {
 export const RegisterPage = () => {
   // ==================== STATE ====================
   const navigate = useNavigate();
+  const { colors } = useTheme();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -168,26 +171,40 @@ export const RegisterPage = () => {
 
   // ==================== RENDER ====================
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-4 py-12">
-      <div className="w-full max-w-2xl">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 relative" style={{ backgroundColor: colors.bg, color: colors.text }}>
+      {/* Pattern de fond subtil */}
+      <div 
+        className="absolute inset-0 opacity-5"
+        style={{
+          backgroundImage: `radial-gradient(circle at 2px 2px, ${colors.text} 1px, transparent 0)`,
+          backgroundSize: '48px 48px',
+        }}
+      />
+      
+      <div className="w-full max-w-2xl relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">
+          <h1 className="text-3xl font-bold mb-2" style={{ color: colors.text }}>
             Créer un compte
           </h1>
-          <p className="text-slate-400">
+          <p style={{ color: colors.text, opacity: 0.7 }}>
             Rejoignez Project Handi pour une insertion professionnelle inclusive
           </p>
         </div>
 
         {/* Formulaire */}
-        <div className="bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 p-8">
+        <div className="rounded-2xl shadow-2xl border-2 p-8" style={{ backgroundColor: colors.bg, borderColor: colors.border }}>
           {/* Message de succès */}
           {successMessage && (
             <div 
               role="alert" 
               aria-live="polite"
-              className="mb-6 p-4 bg-green-900/50 border border-green-500 rounded-lg text-green-300 flex items-start gap-3"
+              className="mb-6 p-4 border-2 rounded-lg flex items-start gap-3"
+              style={{ 
+                backgroundColor: `${colors.text}10`,
+                borderColor: `${colors.text}50`,
+                color: colors.text
+              }}
             >
               <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -204,7 +221,12 @@ export const RegisterPage = () => {
             <div 
               role="alert" 
               aria-live="assertive"
-              className="mb-6 p-4 bg-red-900/50 border border-red-500 rounded-lg text-red-300 flex items-start gap-3"
+              className="mb-6 p-4 border-2 rounded-lg flex items-start gap-3"
+              style={{ 
+                backgroundColor: `${colors.text}10`,
+                borderColor: `${colors.text}50`,
+                color: colors.text
+              }}
             >
               <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
@@ -220,26 +242,50 @@ export const RegisterPage = () => {
           <form onSubmit={handleSubmit} className="space-y-5" noValidate>
             {/* Type de compte */}
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-3">
-                Je souhaite créer un compte <span className="text-red-400">*</span>
+              <label className="block text-sm font-medium mb-3" style={{ color: colors.text }}>
+                Je souhaite créer un compte <span style={{ color: '#ef4444' }}>*</span>
               </label>
               <div className="grid grid-cols-2 gap-4">
                 <button
                   type="button"
                   onClick={() => handleInputChange('role', 'APPLICANT')}
                   disabled={isLoading}
-                  className={`p-4 rounded-lg border-2 transition-all ${
-                    formData.role === 'APPLICANT'
-                      ? 'border-sky-500 bg-sky-500/10'
-                      : 'border-slate-600 bg-slate-700/50 hover:border-slate-500'
-                  } focus:outline-none focus:ring-2 focus:ring-sky-500`}
+                  className="p-4 rounded-lg transition-all focus:outline-none focus:ring-2"
+                  style={{
+                    borderWidth: formData.role === 'APPLICANT' ? '2px' : '0px',
+                    borderColor: formData.role === 'APPLICANT' ? colors.text : 'transparent',
+                    backgroundColor: formData.role === 'APPLICANT' ? `${colors.text}10` : colors.bg,
+                    color: colors.text
+                  }}
                 >
                   <div className="flex flex-col items-center gap-2">
-                    <span className="text-2xl">👤</span>
-                    <span className={`font-semibold ${formData.role === 'APPLICANT' ? 'text-sky-400' : 'text-slate-300'}`}>
+                    <svg
+                      width="28"
+                      height="28"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      style={{ color: colors.text }}
+                    >
+                      <path
+                        d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5Z"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M4 20.5c0-3.314 3.134-6 8-6s8 2.686 8 6"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span className="font-semibold" style={{ color: colors.text }}>
                       Candidat·e
                     </span>
-                    <span className="text-xs text-slate-400">Je cherche un emploi</span>
+                    <span className="text-xs" style={{ color: colors.text, opacity: 0.7 }}>Je cherche un emploi</span>
                   </div>
                 </button>
 
@@ -247,18 +293,56 @@ export const RegisterPage = () => {
                   type="button"
                   onClick={() => handleInputChange('role', 'RECRUITER')}
                   disabled={isLoading}
-                  className={`p-4 rounded-lg border-2 transition-all ${
-                    formData.role === 'RECRUITER'
-                      ? 'border-sky-500 bg-sky-500/10'
-                      : 'border-slate-600 bg-slate-700/50 hover:border-slate-500'
-                  } focus:outline-none focus:ring-2 focus:ring-sky-500`}
+                  className="p-4 rounded-lg transition-all focus:outline-none focus:ring-2"
+                  style={{
+                    borderWidth: formData.role === 'RECRUITER' ? '2px' : '0px',
+                    borderColor: formData.role === 'RECRUITER' ? colors.text : 'transparent',
+                    backgroundColor: formData.role === 'RECRUITER' ? `${colors.text}10` : colors.bg,
+                    color: colors.text
+                  }}
                 >
                   <div className="flex flex-col items-center gap-2">
-                    <span className="text-2xl">💼</span>
-                    <span className={`font-semibold ${formData.role === 'RECRUITER' ? 'text-sky-400' : 'text-slate-300'}`}>
+                    <svg
+                      width="28"
+                      height="28"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      style={{ color: colors.text }}
+                    >
+                      <path
+                        d="M9 6V5a3 3 0 0 1 6 0v1"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M4 9.5c0-1.105.895-2 2-2h12c1.105 0 2 .895 2 2v7c0 1.105-.895 2-2 2H6c-1.105 0-2-.895-2-2v-7Z"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M12 13.5v1"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M4 12h16"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span className="font-semibold" style={{ color: colors.text }}>
                       Recruteur·euse
                     </span>
-                    <span className="text-xs text-slate-400">Je recrute</span>
+                    <span className="text-xs" style={{ color: colors.text, opacity: 0.7 }}>Je recrute</span>
                   </div>
                 </button>
               </div>
@@ -268,8 +352,8 @@ export const RegisterPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Prénom */}
               <div>
-                <label htmlFor="firstName" className="block text-sm font-medium text-slate-300 mb-2">
-                  Prénom <span className="text-red-400">*</span>
+                <label htmlFor="firstName" className="block text-sm font-medium mb-2" style={{ color: colors.text }}>
+                  Prénom <span style={{ color: '#ef4444' }}>*</span>
                 </label>
                 <input
                   id="firstName"
@@ -277,16 +361,19 @@ export const RegisterPage = () => {
                   autoComplete="given-name"
                   value={formData.firstName}
                   onChange={(e) => handleInputChange('firstName', e.target.value)}
-                  className={`w-full px-4 py-3 rounded-lg bg-slate-700 text-white border ${
-                    errors.firstName ? 'border-red-500' : 'border-slate-600'
-                  } focus:border-sky-500 focus:ring-2 focus:ring-sky-500/50 outline-none transition-all`}
+                  className="w-full px-4 py-3 rounded-lg border transition-all focus:outline-none focus:ring-2"
+                  style={{ 
+                    backgroundColor: colors.bg,
+                    color: colors.text,
+                    borderColor: errors.firstName ? '#ef4444' : colors.border
+                  }}
                   placeholder="Marie"
                   aria-invalid={!!errors.firstName}
                   aria-describedby={errors.firstName ? 'firstName-error' : undefined}
                   disabled={isLoading}
                 />
                 {errors.firstName && (
-                  <p id="firstName-error" className="mt-1 text-sm text-red-400">
+                  <p id="firstName-error" className="mt-1 text-sm" style={{ color: '#ef4444' }}>
                     {errors.firstName}
                   </p>
                 )}
@@ -294,8 +381,8 @@ export const RegisterPage = () => {
 
               {/* Nom */}
               <div>
-                <label htmlFor="lastName" className="block text-sm font-medium text-slate-300 mb-2">
-                  Nom <span className="text-red-400">*</span>
+                <label htmlFor="lastName" className="block text-sm font-medium mb-2" style={{ color: colors.text }}>
+                  Nom <span style={{ color: '#ef4444' }}>*</span>
                 </label>
                 <input
                   id="lastName"
@@ -303,16 +390,19 @@ export const RegisterPage = () => {
                   autoComplete="family-name"
                   value={formData.lastName}
                   onChange={(e) => handleInputChange('lastName', e.target.value)}
-                  className={`w-full px-4 py-3 rounded-lg bg-slate-700 text-white border ${
-                    errors.lastName ? 'border-red-500' : 'border-slate-600'
-                  } focus:border-sky-500 focus:ring-2 focus:ring-sky-500/50 outline-none transition-all`}
+                  className="w-full px-4 py-3 rounded-lg border transition-all focus:outline-none focus:ring-2"
+                  style={{ 
+                    backgroundColor: colors.bg,
+                    color: colors.text,
+                    borderColor: errors.lastName ? '#ef4444' : colors.border
+                  }}
                   placeholder="Dupont"
                   aria-invalid={!!errors.lastName}
                   aria-describedby={errors.lastName ? 'lastName-error' : undefined}
                   disabled={isLoading}
                 />
                 {errors.lastName && (
-                  <p id="lastName-error" className="mt-1 text-sm text-red-400">
+                  <p id="lastName-error" className="mt-1 text-sm" style={{ color: '#ef4444' }}>
                     {errors.lastName}
                   </p>
                 )}
@@ -322,8 +412,8 @@ export const RegisterPage = () => {
             {/* Nom de l'entreprise (uniquement pour les recruteurs) */}
             {formData.role === 'RECRUITER' && (
               <div>
-                <label htmlFor="companyName" className="block text-sm font-medium text-slate-300 mb-2">
-                  Nom de l'entreprise <span className="text-red-400">*</span>
+                <label htmlFor="companyName" className="block text-sm font-medium mb-2" style={{ color: colors.text }}>
+                  Nom de l'entreprise <span style={{ color: '#ef4444' }}>*</span>
                 </label>
                 <input
                   id="companyName"
@@ -331,16 +421,19 @@ export const RegisterPage = () => {
                   autoComplete="organization"
                   value={formData.companyName}
                   onChange={(e) => handleInputChange('companyName', e.target.value)}
-                  className={`w-full px-4 py-3 rounded-lg bg-slate-700 text-white border ${
-                    errors.companyName ? 'border-red-500' : 'border-slate-600'
-                  } focus:border-sky-500 focus:ring-2 focus:ring-sky-500/50 outline-none transition-all`}
+                  className="w-full px-4 py-3 rounded-lg border transition-all focus:outline-none focus:ring-2"
+                  style={{ 
+                    backgroundColor: colors.bg,
+                    color: colors.text,
+                    borderColor: errors.companyName ? '#ef4444' : colors.border
+                  }}
                   placeholder="Tech Inclusion"
                   aria-invalid={!!errors.companyName}
                   aria-describedby={errors.companyName ? 'companyName-error' : undefined}
                   disabled={isLoading}
                 />
                 {errors.companyName && (
-                  <p id="companyName-error" className="mt-1 text-sm text-red-400">
+                  <p id="companyName-error" className="mt-1 text-sm" style={{ color: '#ef4444' }}>
                     {errors.companyName}
                   </p>
                 )}
@@ -349,8 +442,8 @@ export const RegisterPage = () => {
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-2">
-                Adresse email <span className="text-red-400">*</span>
+              <label htmlFor="email" className="block text-sm font-medium mb-2" style={{ color: colors.text }}>
+                Adresse email <span style={{ color: '#ef4444' }}>*</span>
               </label>
               <input
                 id="email"
@@ -358,16 +451,19 @@ export const RegisterPage = () => {
                 autoComplete="email"
                 value={formData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
-                className={`w-full px-4 py-3 rounded-lg bg-slate-700 text-white border ${
-                  errors.email ? 'border-red-500' : 'border-slate-600'
-                } focus:border-sky-500 focus:ring-2 focus:ring-sky-500/50 outline-none transition-all`}
+                className="w-full px-4 py-3 rounded-lg border transition-all focus:outline-none focus:ring-2"
+                style={{ 
+                  backgroundColor: colors.bg,
+                  color: colors.text,
+                  borderColor: errors.email ? '#ef4444' : colors.border
+                }}
                 placeholder="marie.dupont@example.com"
                 aria-invalid={!!errors.email}
                 aria-describedby={errors.email ? 'email-error' : undefined}
                 disabled={isLoading}
               />
               {errors.email && (
-                <p id="email-error" className="mt-1 text-sm text-red-400">
+                <p id="email-error" className="mt-1 text-sm" style={{ color: '#ef4444' }}>
                   {errors.email}
                 </p>
               )}
@@ -377,8 +473,8 @@ export const RegisterPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Mot de passe */}
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-2">
-                  Mot de passe <span className="text-red-400">*</span>
+                <label htmlFor="password" className="block text-sm font-medium mb-2" style={{ color: colors.text }}>
+                  Mot de passe <span style={{ color: '#ef4444' }}>*</span>
                 </label>
                 <div className="relative">
                   <input
@@ -387,9 +483,12 @@ export const RegisterPage = () => {
                     autoComplete="new-password"
                     value={formData.password}
                     onChange={(e) => handleInputChange('password', e.target.value)}
-                    className={`w-full px-4 py-3 pr-12 rounded-lg bg-slate-700 text-white border ${
-                      errors.password ? 'border-red-500' : 'border-slate-600'
-                    } focus:border-sky-500 focus:ring-2 focus:ring-sky-500/50 outline-none transition-all`}
+                    className="w-full px-4 py-3 pr-12 rounded-lg border transition-all focus:outline-none focus:ring-2"
+                    style={{ 
+                      backgroundColor: colors.bg,
+                      color: colors.text,
+                      borderColor: errors.password ? '#ef4444' : colors.border
+                    }}
                     placeholder="••••••••"
                     aria-invalid={!!errors.password}
                     aria-describedby={errors.password ? 'password-error' : 'password-hint'}
@@ -398,7 +497,8 @@ export const RegisterPage = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded p-1"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 focus:outline-none focus:ring-2 rounded p-1"
+                    style={{ color: colors.text, opacity: 0.7 }}
                     aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
                     disabled={isLoading}
                   >
@@ -415,12 +515,12 @@ export const RegisterPage = () => {
                   </button>
                 </div>
                 {errors.password && (
-                  <p id="password-error" className="mt-1 text-sm text-red-400">
+                  <p id="password-error" className="mt-1 text-sm" style={{ color: '#ef4444' }}>
                     {errors.password}
                   </p>
                 )}
                 {!errors.password && (
-                  <p id="password-hint" className="mt-1 text-xs text-slate-400">
+                  <p id="password-hint" className="mt-1 text-xs" style={{ color: colors.text, opacity: 0.6 }}>
                     Min. {VALIDATION_RULES.PASSWORD_MIN_LENGTH} caractères
                   </p>
                 )}
@@ -428,8 +528,8 @@ export const RegisterPage = () => {
 
               {/* Confirmation */}
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-300 mb-2">
-                  Confirmer <span className="text-red-400">*</span>
+                <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2" style={{ color: colors.text }}>
+                  Confirmer <span style={{ color: '#ef4444' }}>*</span>
                 </label>
                 <div className="relative">
                   <input
@@ -438,9 +538,12 @@ export const RegisterPage = () => {
                     autoComplete="new-password"
                     value={formData.confirmPassword}
                     onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                    className={`w-full px-4 py-3 pr-12 rounded-lg bg-slate-700 text-white border ${
-                      errors.confirmPassword ? 'border-red-500' : 'border-slate-600'
-                    } focus:border-sky-500 focus:ring-2 focus:ring-sky-500/50 outline-none transition-all`}
+                    className="w-full px-4 py-3 pr-12 rounded-lg border transition-all focus:outline-none focus:ring-2"
+                    style={{ 
+                      backgroundColor: colors.bg,
+                      color: colors.text,
+                      borderColor: errors.confirmPassword ? '#ef4444' : colors.border
+                    }}
                     placeholder="••••••••"
                     aria-invalid={!!errors.confirmPassword}
                     aria-describedby={errors.confirmPassword ? 'confirmPassword-error' : undefined}
@@ -449,7 +552,8 @@ export const RegisterPage = () => {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded p-1"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 focus:outline-none focus:ring-2 rounded p-1"
+                    style={{ color: colors.text, opacity: 0.7 }}
                     aria-label={showConfirmPassword ? 'Masquer' : 'Afficher'}
                     disabled={isLoading}
                   >
@@ -466,7 +570,7 @@ export const RegisterPage = () => {
                   </button>
                 </div>
                 {errors.confirmPassword && (
-                  <p id="confirmPassword-error" className="mt-1 text-sm text-red-400">
+                  <p id="confirmPassword-error" className="mt-1 text-sm" style={{ color: '#ef4444' }}>
                     {errors.confirmPassword}
                   </p>
                 )}
@@ -474,17 +578,17 @@ export const RegisterPage = () => {
             </div>
 
             {/* CGU (optionnel) */}
-            <div className="flex items-start gap-3 p-4 bg-slate-700/50 rounded-lg">
-              <svg className="w-5 h-5 text-sky-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <div className="flex items-start gap-3 p-4 rounded-lg border" style={{ backgroundColor: `${colors.text}08`, borderColor: `${colors.border}` }}>
+              <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" style={{ color: colors.text }}>
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
               </svg>
-              <p className="text-sm text-slate-300">
+              <p className="text-sm" style={{ color: colors.text }}>
                 En vous inscrivant, vous acceptez nos{' '}
-                <Link to="/cgu" className="text-sky-400 hover:text-sky-300 underline">
+                <Link to="/cgu" className="underline" style={{ color: colors.text }}>
                   conditions d'utilisation
                 </Link>{' '}
                 et notre{' '}
-                <Link to="/confidentialite" className="text-sky-400 hover:text-sky-300 underline">
+                <Link to="/confidentialite" className="underline" style={{ color: colors.text }}>
                   politique de confidentialité
                 </Link>.
               </p>
@@ -494,7 +598,11 @@ export const RegisterPage = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-sky-500 hover:bg-sky-600 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-lg transition-all transform hover:scale-[1.01] active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800"
+              className="w-full font-semibold py-4 px-6 rounded-xl transition-all transform hover:scale-105 active:scale-[0.99] focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ 
+                backgroundColor: colors.text,
+                color: colors.bg
+              }}
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -512,11 +620,12 @@ export const RegisterPage = () => {
 
           {/* Lien vers connexion */}
           <div className="mt-6 text-center">
-            <p className="text-sm text-slate-400">
+            <p className="text-sm" style={{ color: colors.text, opacity: 0.7 }}>
               Vous avez déjà un compte ?{' '}
               <Link
                 to={ROUTES.LOGIN}
-                className="font-semibold text-sky-400 hover:text-sky-300 transition-colors focus:outline-none focus:underline"
+                className="font-semibold transition-colors focus:outline-none focus:underline"
+                style={{ color: colors.text, opacity: 1 }}
               >
                 Se connecter
               </Link>
@@ -528,7 +637,8 @@ export const RegisterPage = () => {
         <div className="mt-6 text-center">
           <Link
             to={ROUTES.HOME}
-            className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-slate-300 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-3 py-2"
+            className="inline-flex items-center gap-2 text-sm transition-colors focus:outline-none focus:ring-2 rounded px-3 py-2 hover:opacity-70"
+            style={{ color: colors.text, opacity: 0.7 }}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -537,6 +647,8 @@ export const RegisterPage = () => {
           </Link>
         </div>
       </div>
+      
+      <ScrollToTopButton />
     </div>
   );
 };

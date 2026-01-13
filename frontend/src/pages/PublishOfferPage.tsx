@@ -10,6 +10,8 @@ import { Breadcrumb } from '../components/Breadcrumb';
 import apiClient from '../api/apiClient';
 import { STORAGE_KEYS } from '../constants';
 import { CheckIcon } from '../components/icons';
+import { useTheme } from '../contexts/ThemeContext';
+import { ScrollToTopButton } from '../components/ScrollToTopButton';
 
 interface FormData {
   title: string;
@@ -24,6 +26,7 @@ interface FormData {
 
 export const PublishOfferPage = () => {
   const navigate = useNavigate();
+  const { colors } = useTheme();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -113,7 +116,16 @@ export const PublishOfferPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
+    <div 
+      className="min-h-screen"
+      style={{ 
+        backgroundColor: colors.bg,
+        color: colors.text,
+        backgroundImage: `radial-gradient(circle at 2px 2px, ${colors.text} 1px, transparent 0)`,
+        backgroundSize: '48px 48px'
+      }}
+    >
+      <div className="min-h-screen" style={{ backgroundColor: colors.bg, opacity: 0.95 }}>
       <Navbar variant="recruiter" />
       
       {/* Fil d'Ariane */}
@@ -122,31 +134,31 @@ export const PublishOfferPage = () => {
       <main className="container mx-auto px-6 py-12 max-w-4xl">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-slate-100 mb-3">
+          <h1 className="text-4xl font-bold mb-3" style={{ color: colors.text }}>
             Publier une offre d'emploi
           </h1>
-          <p className="text-slate-400 text-lg">
+          <p className="text-lg" style={{ color: colors.text, opacity: 0.7 }}>
             Créez une nouvelle offre d'emploi accessible et inclusive
           </p>
         </div>
 
         {/* Messages */}
         {error && (
-          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/50 text-red-300 rounded-lg">
+          <div className="mb-6 p-4 border rounded-xl" style={{ borderColor: colors.border, color: colors.text }}>
             <strong className="font-bold">Erreur : </strong>
             <span>{error}</span>
           </div>
         )}
 
         {success && (
-          <div className="mb-6 p-4 bg-green-500/10 border border-green-500/50 text-green-300 rounded-lg">
+          <div className="mb-6 p-4 border rounded-xl" style={{ borderColor: colors.border, color: colors.text }}>
             <strong className="font-bold">Succès ! </strong>
             <span>Votre offre a été publiée avec succès. Redirection...</span>
           </div>
         )}
 
         {/* Formulaire */}
-        <form onSubmit={handleSubmit} className="bg-slate-900/50 border border-slate-800/50 rounded-2xl p-8 space-y-6">
+        <form onSubmit={handleSubmit} className="border-2 rounded-2xl p-8 space-y-6" style={{ borderColor: colors.border }}>
           {/* Titre de l'offre */}
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-slate-300 mb-2">
@@ -332,13 +344,17 @@ export const PublishOfferPage = () => {
               type="button"
               onClick={() => navigate('/recruteur/dashboard')}
               disabled={isSubmitting}
-              className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold rounded-lg border border-slate-700 hover:border-slate-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-slate-500"
+              className="px-6 py-3 font-semibold rounded-xl border-2 transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ borderColor: colors.border, color: colors.text }}
             >
               Annuler
             </button>
           </div>
         </form>
       </main>
+      
+      <ScrollToTopButton />
+      </div>
     </div>
   );
 };

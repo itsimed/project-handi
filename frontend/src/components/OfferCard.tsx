@@ -6,6 +6,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Icon } from './Icon';
 import { CheckIcon } from './icons';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface OfferCardProps {
   offer: {
@@ -27,6 +28,10 @@ interface OfferCardProps {
  * Carte d'offre sémantique avec structure article accessible
  * Conforme RGAA/WCAG AA
  */
+const STORAGE_KEYS = {
+  AUTH_TOKEN: 'token',
+};
+
 export const OfferCard: React.FC<OfferCardProps> = ({
   offer,
   onApply,
@@ -34,6 +39,8 @@ export const OfferCard: React.FC<OfferCardProps> = ({
   hasApplied,
 }) => {
   const navigate = useNavigate();
+  const { colors } = useTheme();
+  const isLoggedIn = !!localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
 
   const getContractLabel = (contract: string): string => {
     const labels: Record<string, string> = {
@@ -66,18 +73,38 @@ export const OfferCard: React.FC<OfferCardProps> = ({
   };
 
   return (
-    <article className="bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-sky-500 hover:shadow-xl hover:shadow-sky-500/10 transition-all group">
+    <article 
+      className="p-6 rounded-2xl border-2 hover:shadow-xl transition-all duration-200 group"
+      style={{ 
+        backgroundColor: colors.bg,
+        borderColor: colors.border
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'scale(1.02)';
+        e.currentTarget.style.borderColor = colors.text;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'scale(1)';
+        e.currentTarget.style.borderColor = colors.border;
+      }}
+    >
       {/* Header avec badge et date */}
       <div className="flex justify-between items-start mb-4">
         <span
-          className="bg-sky-500/10 text-sky-400 text-xs font-bold px-3 py-1 rounded-full border border-sky-500/30"
+          className="text-xs font-bold px-3 py-1 rounded-full border-2"
+          style={{ 
+            backgroundColor: colors.bg,
+            borderColor: colors.border,
+            color: colors.text
+          }}
           aria-label={`Types de contrat: ${getContractLabels(offer.contract)}`}
         >
           {getContractLabels(offer.contract)}
         </span>
         <time
           dateTime={offer.createdAt}
-          className="text-slate-500 text-sm"
+          className="text-sm"
+          style={{ color: colors.text, opacity: 0.5 }}
         >
           {formatDate(offer.createdAt)}
         </time>
@@ -88,7 +115,10 @@ export const OfferCard: React.FC<OfferCardProps> = ({
         <button
           type="button"
           onClick={() => navigate(`/offres/${offer.id}`)}
-          className="text-slate-100 hover:text-sky-400 transition-colors text-left w-full focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800 rounded px-1 -ml-1"
+          className="text-left w-full focus:outline-none focus:ring-2 rounded-xl px-1 -ml-1 transition-opacity duration-200"
+          style={{ color: colors.text }}
+          onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'}
+          onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
           aria-label={`Voir les détails de l'offre ${offer.title}`}
         >
           {offer.title}
@@ -96,12 +126,16 @@ export const OfferCard: React.FC<OfferCardProps> = ({
       </h3>
 
       {/* Nom de l'entreprise */}
-      <p className="text-slate-300 mb-6">{offer.company.name}</p>
+      <p className="mb-6" style={{ color: colors.text, opacity: 0.7 }}>
+        {offer.company.name}
+      </p>
 
       {/* Localisation */}
       <div className="flex items-center gap-2 mb-6">
-        <Icon name="location" size={20} className="text-slate-500" />
-        <span className="text-sm text-slate-300">{offer.location}</span>
+        <Icon name="location" size={20} style={{ color: colors.text, opacity: 0.5 }} />
+        <span className="text-sm" style={{ color: colors.text, opacity: 0.7 }}>
+          {offer.location}
+        </span>
       </div>
 
       {/* Boutons d'action */}
@@ -109,23 +143,41 @@ export const OfferCard: React.FC<OfferCardProps> = ({
         <button
           type="button"
           onClick={() => navigate(`/offres/${offer.id}`)}
-          className="flex-1 py-3 rounded-xl font-bold bg-slate-700 hover:bg-slate-600 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800"
+          className="flex-1 py-3 rounded-xl font-bold transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2"
+          style={{ 
+            backgroundColor: colors.bg,
+            color: colors.text,
+            border: `2px solid ${colors.border}`
+          }}
           aria-label={`Voir les détails de l'offre ${offer.title}`}
         >
           Voir l'offre
         </button>
         
+        {isLoggedIn ? (
         <button
           type="button"
           onClick={() => onApply(offer.id)}
           disabled={isApplying || hasApplied}
-          className={`flex-1 py-3 rounded-xl font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800 flex items-center justify-center ${
-            hasApplied
-              ? 'bg-slate-700 text-slate-500 cursor-not-allowed'
-              : isApplying
-              ? 'bg-slate-700 text-slate-400 cursor-wait'
-              : 'bg-sky-600 hover:bg-sky-500 text-white'
-          }`}
+          className="flex-1 py-3 rounded-xl font-bold transition-all duration-200 focus:outline-none focus:ring-2 flex items-center justify-center"
+          style={{ 
+            backgroundColor: hasApplied || isApplying ? colors.bg : colors.text,
+            color: hasApplied || isApplying ? colors.text : colors.bg,
+            border: `2px solid ${hasApplied || isApplying ? colors.border : colors.text}`,
+            opacity: hasApplied || isApplying ? 0.5 : 1,
+            cursor: hasApplied || isApplying ? 'not-allowed' : 'pointer',
+            transform: hasApplied || isApplying ? 'none' : undefined
+          }}
+          onMouseEnter={(e) => {
+            if (!hasApplied && !isApplying) {
+              e.currentTarget.style.transform = 'scale(1.05)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!hasApplied && !isApplying) {
+              e.currentTarget.style.transform = 'scale(1)';
+            }
+          }}
           aria-label={
             hasApplied
               ? `Vous avez déjà postulé à ${offer.title}`
@@ -143,6 +195,21 @@ export const OfferCard: React.FC<OfferCardProps> = ({
             'Postuler'
           )}
         </button>
+        ) : (
+        <button
+          type="button"
+          onClick={() => navigate('/login')}
+          className="flex-1 py-3 rounded-xl font-bold transition-all duration-200 focus:outline-none focus:ring-2 hover:scale-105"
+          style={{ 
+            backgroundColor: colors.text,
+            color: colors.bg,
+            border: `2px solid ${colors.text}`
+          }}
+          aria-label={`Se connecter pour postuler à ${offer.title}`}
+        >
+          Se connecter
+        </button>
+        )}
       </div>
     </article>
   );

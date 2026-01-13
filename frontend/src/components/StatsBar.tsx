@@ -4,10 +4,13 @@
  */
 
 import { Icon } from './Icon';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface StatsBarProps {
   totalOffers: number;
   totalCompanies: number;
+  totalApplications: number;
+  totalApplicants?: number;
   isLoading: boolean;
 }
 
@@ -18,10 +21,14 @@ interface StatsBarProps {
 export const StatsBar: React.FC<StatsBarProps> = ({
   totalOffers,
   totalCompanies,
+  totalApplications = 0,
+  totalApplicants = 0,
   isLoading,
 }) => {
+  const { colors, theme } = useTheme();
+  
   const formatNumber = (num: number): string => {
-    return num.toLocaleString('fr-FR');
+    return num?.toLocaleString('fr-FR') || '0';
   };
 
   if (isLoading) {
@@ -37,49 +44,82 @@ export const StatsBar: React.FC<StatsBarProps> = ({
 
   return (
     <div
-      className="flex flex-col md:flex-row justify-center items-center gap-8 py-6"
+      className="py-6"
       aria-live="polite"
     >
-      <ul className="flex flex-col md:flex-row gap-8 list-none">
+      <ul className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 list-none max-w-4xl mx-auto">
         {/* Statistique Offres */}
         <li className="flex items-center gap-3 text-center md:text-left">
           <div
-            className="w-12 h-12 bg-sky-500/10 rounded-full flex items-center justify-center flex-shrink-0"
+            className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
+            style={{ backgroundColor: theme === 'dark' ? '#FFFFFF' : '#23022E', color: theme === 'dark' ? '#23022E' : '#FFFFFF' }}
             aria-hidden="true"
           >
-            <Icon name="briefcase" size={24} className="text-sky-400" />
+            <Icon name="briefcase" size={24} />
           </div>
           <div>
-            <p className="text-3xl font-bold text-slate-100">
+            <p className="text-3xl font-bold" style={{ color: colors.text }}>
               {formatNumber(totalOffers)}
             </p>
-            <p className="text-sm text-slate-400">
-              offre{totalOffers > 1 ? 's' : ''} disponible
-              {totalOffers > 1 ? 's' : ''}
+            <p className="text-sm" style={{ color: colors.text, opacity: 0.7 }}>
+              offre{totalOffers > 1 ? 's' : ''} active{totalOffers > 1 ? 's' : ''}
             </p>
           </div>
         </li>
 
-        {/* Séparateur visuel */}
-        <li
-          className="hidden md:block w-px h-16 bg-slate-700"
-          aria-hidden="true"
-        />
+        {/* Statistique Candidatures */}
+        <li className="flex items-center gap-3 text-center md:text-left">
+          <div
+            className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
+            style={{ backgroundColor: theme === 'dark' ? '#FFFFFF' : '#23022E', color: theme === 'dark' ? '#23022E' : '#FFFFFF' }}
+            aria-hidden="true"
+          >
+            <Icon name="document" size={24} />
+          </div>
+          <div>
+            <p className="text-3xl font-bold" style={{ color: colors.text }}>
+              {formatNumber(totalApplications)}
+            </p>
+            <p className="text-sm" style={{ color: colors.text, opacity: 0.7 }}>
+              candidature{totalApplications > 1 ? 's' : ''}
+            </p>
+          </div>
+        </li>
 
         {/* Statistique Entreprises */}
         <li className="flex items-center gap-3 text-center md:text-left">
           <div
-            className="w-12 h-12 bg-cyan-500/10 rounded-full flex items-center justify-center flex-shrink-0"
+            className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
+            style={{ backgroundColor: theme === 'dark' ? '#FFFFFF' : '#23022E', color: theme === 'dark' ? '#23022E' : '#FFFFFF' }}
             aria-hidden="true"
           >
-            <Icon name="building" size={24} className="text-cyan-400" />
+            <Icon name="building" size={24} />
           </div>
           <div>
-            <p className="text-3xl font-bold text-slate-100">
+            <p className="text-3xl font-bold" style={{ color: colors.text }}>
               {formatNumber(totalCompanies)}
             </p>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm" style={{ color: colors.text, opacity: 0.7 }}>
               entreprise{totalCompanies > 1 ? 's' : ''}
+            </p>
+          </div>
+        </li>
+
+        {/* Statistique Candidats */}
+        <li className="flex items-center gap-3 text-center md:text-left">
+          <div
+            className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
+            style={{ backgroundColor: theme === 'dark' ? '#FFFFFF' : '#23022E', color: theme === 'dark' ? '#23022E' : '#FFFFFF' }}
+            aria-hidden="true"
+          >
+            <Icon name="users" size={24} />
+          </div>
+          <div>
+            <p className="text-3xl font-bold" style={{ color: colors.text }}>
+              {formatNumber(totalApplicants)}
+            </p>
+            <p className="text-sm" style={{ color: colors.text, opacity: 0.7 }}>
+              candidat{totalApplicants > 1 ? 's' : ''} inscrit{totalApplicants > 1 ? 's' : ''}
             </p>
           </div>
         </li>
@@ -87,11 +127,8 @@ export const StatsBar: React.FC<StatsBarProps> = ({
 
       {/* Message accessible pour les lecteurs d'écran */}
       <div className="sr-only" aria-live="polite">
-        {totalOffers} offre{totalOffers > 1 ? 's' : ''} disponible
-        {totalOffers > 1 ? 's' : ''} dans {totalCompanies} entreprise
-        {totalCompanies > 1 ? 's' : ''}
+        {totalOffers} offre{totalOffers > 1 ? 's' : ''} active{totalOffers > 1 ? 's' : ''}, {totalApplications} candidature{totalApplications > 1 ? 's' : ''}, {totalCompanies} entreprise{totalCompanies > 1 ? 's' : ''}, {totalApplicants} candidat{totalApplicants > 1 ? 's' : ''} inscrit{totalApplicants > 1 ? 's' : ''}
       </div>
     </div>
   );
 };
-
