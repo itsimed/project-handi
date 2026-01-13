@@ -41,7 +41,7 @@ interface AccessibilityContextType {
 }
 
 const defaultSettings: AccessibilitySettings = {
-  theme: 'dark',
+  theme: 'light',
   monochrome: false,
   fontSize: '100%',
   lineHeight: 'normal',
