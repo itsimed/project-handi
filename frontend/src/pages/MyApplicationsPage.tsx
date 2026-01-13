@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useApplications } from '../hooks/useApplications';
 import { Navbar } from '../components/Navbar';
 import { Breadcrumb } from '../components/Breadcrumb';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/AccessibilityContext';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
 
 /**

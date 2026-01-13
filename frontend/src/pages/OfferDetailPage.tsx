@@ -13,7 +13,7 @@ import { Breadcrumb } from '../components/Breadcrumb';
 import { Navbar } from '../components/Navbar';
 import { ApplicationModal } from '../components/ApplicationModal';
 import { CheckIcon } from '../components/icons';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/AccessibilityContext';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
 
 interface OfferDetail {

@@ -4,7 +4,7 @@
  */
 
 import { Icon } from './Icon';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/AccessibilityContext';
 
 interface StatsBarProps {
   totalOffers: number;

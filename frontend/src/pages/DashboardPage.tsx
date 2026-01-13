@@ -11,7 +11,7 @@ import { FiltersPanel } from '../components/FiltersPanel';
 import { OfferCard } from '../components/OfferCard';
 import { CompaniesSection } from '../components/CompaniesSection';
 import { ApplicationModal } from '../components/ApplicationModal';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/AccessibilityContext';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
 import { MenuIcon } from '../components/icons';
 

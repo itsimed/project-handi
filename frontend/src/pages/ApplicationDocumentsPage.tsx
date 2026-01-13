@@ -5,7 +5,7 @@ import { Breadcrumb } from '../components/Breadcrumb';
 import { FileUpload } from '../components/FileUpload';
 import apiClient from '../api/apiClient';
 import { toastService } from '../services/toastService';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/AccessibilityContext';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
 import type { ApplicationDocument } from '../types';
 

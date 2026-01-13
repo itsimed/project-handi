@@ -17,7 +17,7 @@ import {
   STORAGE_KEYS,
 } from '../constants';
 import { CloseIcon, LightbulbIcon } from '../components/icons';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/AccessibilityContext';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
 
 interface FormData {

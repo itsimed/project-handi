@@ -9,7 +9,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import apiClient from '../api/apiClient';
 import { Breadcrumb } from '../components/Breadcrumb';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/AccessibilityContext';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
 
 interface ApplicationDetail {

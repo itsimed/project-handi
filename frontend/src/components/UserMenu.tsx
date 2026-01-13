@@ -7,7 +7,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserIcon, BriefcaseIcon, DocumentIcon, SettingsIcon, LogoutIcon } from './icons';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/AccessibilityContext';
 
 interface UserMenuProps {
   user: {

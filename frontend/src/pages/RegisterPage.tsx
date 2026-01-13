@@ -19,7 +19,7 @@ import {
   VALIDATION_RULES,
   ROUTES,
 } from '../constants';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/AccessibilityContext';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
 
 interface FormData {

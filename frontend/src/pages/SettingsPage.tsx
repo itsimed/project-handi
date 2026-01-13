@@ -13,7 +13,7 @@ import { STORAGE_KEYS } from '../constants';
 import type { User } from '../types';
 import { AlertIcon, LockIcon } from '../components/icons';
 import { toastService } from '../services/toastService';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/AccessibilityContext';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
 
 export const SettingsPage = () => {

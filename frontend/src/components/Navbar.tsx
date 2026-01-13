@@ -9,8 +9,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { STORAGE_KEYS } from '../constants';
 import { UserAvatar } from './UserAvatar';
 import { UserMenu } from './UserMenu';
-import { useTheme } from '../contexts/ThemeContext';
-import { SunIcon, MoonIcon } from './icons/ThemeToggleIcons';
+import { useTheme } from '../contexts/AccessibilityContext';
 
 interface NavbarProps {
   variant?: 'home' | 'dashboard' | 'profile' | 'recruiter';
@@ -38,7 +37,7 @@ export const Navbar = ({ variant = 'home' }: NavbarProps) => {
     }
   };
 
-  const { theme, toggleTheme, colors } = useTheme();
+  const { colors, theme } = useTheme();
 
   // Vérifier si un chemin est actif
   const isActive = (path: string) => location.pathname === path;
@@ -87,19 +86,6 @@ export const Navbar = ({ variant = 'home' }: NavbarProps) => {
                 aria-label="Se connecter"
               >
                 Connexion
-              </button>
-              
-              {/* Bouton changement de thème */}
-              <button
-                type="button"
-                onClick={toggleTheme}
-                className="transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 rounded-lg p-1 ml-2"
-                style={{ 
-                  color: colors.text
-                }}
-                aria-label={theme === 'dark' ? 'Activer le mode clair' : 'Activer le mode sombre'}
-              >
-                {theme === 'dark' ? <SunIcon size={20} /> : <MoonIcon size={20} />}
               </button>
             </div>
           </div>
@@ -193,19 +179,6 @@ export const Navbar = ({ variant = 'home' }: NavbarProps) => {
                 onLogout={handleLogout}
               />
             </div>
-
-            {/* Bouton changement de thème - Tout à droite */}
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 rounded-lg p-1"
-              style={{ 
-                color: colors.text
-              }}
-              aria-label={theme === 'dark' ? 'Activer le mode clair' : 'Activer le mode sombre'}
-            >
-              {theme === 'dark' ? <SunIcon size={20} /> : <MoonIcon size={20} />}
-            </button>
           </div>
         </div>
       </div>

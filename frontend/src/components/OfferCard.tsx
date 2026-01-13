@@ -6,7 +6,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Icon } from './Icon';
 import { CheckIcon } from './icons';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/AccessibilityContext';
 
 interface OfferCardProps {
   offer: {

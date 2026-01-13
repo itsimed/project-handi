@@ -16,7 +16,7 @@ import { ScrollToTopButton } from '../components/ScrollToTopButton';
 import { useCompanies } from '../hooks/useCompanies';
 import apiClient from '../api/apiClient';
 import { toastService } from '../services/toastService';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/AccessibilityContext';
 import { 
   AccessibilityIcon, 
   GraduationIcon, 

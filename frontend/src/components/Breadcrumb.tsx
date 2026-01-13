@@ -7,7 +7,7 @@
 import { useLocation, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { STORAGE_KEYS } from '../constants';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/AccessibilityContext';
 
 interface BreadcrumbItem {
   label: string;

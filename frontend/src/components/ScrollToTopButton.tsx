@@ -3,7 +3,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/AccessibilityContext';
 
 export const ScrollToTopButton = () => {
   const [isVisible, setIsVisible] = useState(false);

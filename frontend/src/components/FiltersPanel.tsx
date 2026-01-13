@@ -6,7 +6,7 @@
 import { useState } from 'react';
 import { Icon } from './Icon';
 import { CloseIcon } from './icons';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/AccessibilityContext';
 import type { ContractType, ExperienceLevel, RemotePolicy, DisabilityCategory } from '../types/index';
 
 interface FiltersPanelProps {

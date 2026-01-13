@@ -10,7 +10,7 @@ import { Breadcrumb } from '../components/Breadcrumb';
 import apiClient from '../api/apiClient';
 import { STORAGE_KEYS } from '../constants';
 import { CheckIcon } from '../components/icons';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/AccessibilityContext';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
 
 interface FormData {

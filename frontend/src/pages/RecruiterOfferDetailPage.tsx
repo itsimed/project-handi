@@ -8,7 +8,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import apiClient from '../api/apiClient';
 import { Navbar } from '../components/Navbar';
 import { Breadcrumb } from '../components/Breadcrumb';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/AccessibilityContext';
 import { toastService } from '../services/toastService';
 import type { Offer, Application } from '../types';
 import { CheckIcon, CloseIcon, DocumentIcon } from '../components/icons';

@@ -287,3 +287,44 @@ textarea:disabled {
     content: " (" attr(href) ")";
   }
 }
+
+/* ============================================ */
+/* STYLES D'ACCESSIBILITÉ DYNAMIQUES           */
+/* ============================================ */
+
+/* Curseur agrandi */
+body.large-cursor,
+body.large-cursor * {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="%23000" opacity="0.5"/><circle cx="16" cy="16" r="2" fill="%23000"/></svg>') 16 16, auto !important;
+}
+
+/* Mise en évidence des liens et éléments cliquables */
+.highlight-links a,
+.highlight-links button,
+.highlight-links [role="button"],
+.highlight-links [tabindex="0"] {
+  outline: 3px solid #0ea5e9 !important;
+  outline-offset: 2px !important;
+  border-radius: 4px;
+}
+
+.highlight-links a:hover,
+.highlight-links button:hover,
+.highlight-links [role="button"]:hover {
+  outline-color: #0284c7 !important;
+  outline-width: 4px !important;
+}
+
+/* S'assurer que le bouton et panneau d'accessibilité ne sont jamais masqués */
+.accessibility-panel,
+button[aria-label*="accessibilité" i],
+button[aria-label*="accessibility" i] {
+  display: block !important;
+}
+
+/* Variables CSS pour la typographie (définies dynamiquement par AccessibilityContext) */
+:root {
+  --font-size-multiplier: 1;
+  --line-height: normal;
+  --letter-spacing: normal;
+}

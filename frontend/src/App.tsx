@@ -18,6 +18,7 @@ import { ApplicationDocumentsPage } from './pages/ApplicationDocumentsPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { RoleBasedRoute } from './components/RoleBasedRoute';
 import { ScrollToTop } from './components/ScrollToTop';
+import { AccessibilityButton } from './components/AccessibilityButton';
 
 function App() 
 {
@@ -25,6 +26,7 @@ function App()
         <Router>
             <ScrollToTop />
             <Toaster />
+            <AccessibilityButton />
             <Routes>
                 {/* 1. Page d'accueil avec hero et recherche */}
                 <Route path="/" element={<HomePage />} />

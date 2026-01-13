@@ -5,7 +5,7 @@
 
 import { useState, FormEvent } from 'react';
 import { Icon } from './Icon';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/AccessibilityContext';
 
 interface SearchQuery {
   what: string;

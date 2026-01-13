@@ -13,7 +13,7 @@ import { STORAGE_KEYS } from '../constants';
 import type { User, Offer, Application } from '../types';
 import { CheckIcon, CloseIcon, WaveIcon, DocumentIcon, LocationIcon, UsersIcon, ClockIcon } from '../components/icons';
 import { toastService } from '../services/toastService';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/AccessibilityContext';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
 
 interface OfferWithApplications extends Offer {

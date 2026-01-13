@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { CloseIcon } from './icons';
 import apiClient from '../api/apiClient';
 import { toastService } from '../services/toastService';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/AccessibilityContext';
 
 interface ApplicationModalProps {
   isOpen: boolean;
