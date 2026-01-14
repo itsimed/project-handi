@@ -34,10 +34,11 @@ export const ScrollToTopButton = () => {
   return (
     <button
       onClick={scrollToTop}
-      className="fixed bottom-8 right-8 p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 z-50"
+      className="fixed bottom-8 right-8 p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 z-50 border-4"
       style={{
         backgroundColor: theme === 'dark' ? '#FFFFFF' : '#23022E',
-        color: theme === 'dark' ? '#23022E' : '#FFFFFF'
+        color: theme === 'dark' ? '#23022E' : '#FFFFFF',
+        borderColor: '#FFFFFF'
       }}
       aria-label="Remonter en haut de la page"
     >
@@ -48,26 +49,13 @@ export const ScrollToTopButton = () => {
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <style>
-          {`
-            @keyframes bounce {
-              0%, 100% { transform: translateY(0); }
-              50% { transform: translateY(-4px); }
-            }
-            .arrow-up {
-              animation: bounce 1.5s ease-in-out infinite;
-            }
-          `}
-        </style>
-        <g className="arrow-up">
-          <path
-            d="M12 19V5M5 12l7-7 7 7"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </g>
+        <path
+          d="M12 19V5M5 12l7-7 7 7"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </svg>
     </button>
   );

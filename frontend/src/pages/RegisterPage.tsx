@@ -187,12 +187,10 @@ export const RegisterPage = () => {
           <h1 className="text-3xl font-bold mb-2" style={{ color: colors.text }}>
             Créer un compte
           </h1>
-          <p style={{ color: colors.text, opacity: 0.7 }}>
-            Rejoignez Project Handi pour une insertion professionnelle inclusive
-          </p>
         </div>
 
         {/* Formulaire */}
+        
         <div className="rounded-2xl shadow-2xl border-2 p-8" style={{ backgroundColor: colors.bg, borderColor: colors.border }}>
           {/* Message de succès */}
           {successMessage && (

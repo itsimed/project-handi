@@ -34,7 +34,7 @@ interface FormErrors {
 export const LoginPage = () => {
   // ==================== STATE ====================
   const navigate = useNavigate();
-  const { colors } = useTheme();
+  const { colors, theme } = useTheme();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
@@ -122,12 +122,11 @@ export const LoginPage = () => {
       <div className="w-full max-w-md relative z-10">
         {/* Logo / Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2" style={{ color: colors.text }}>
-            Project Handi
-          </h1>
-          <p style={{ color: colors.text, opacity: 0.7 }}>
-            Plateforme inclusive de recrutement
-          </p>
+          <img 
+            src={theme === 'dark' ? '/logo sombre.webp' : '/logo clair.webp'}
+            alt="Project Handi"
+            className="h-28 mx-auto"
+          />
         </div>
 
         {/* Formulaire */}

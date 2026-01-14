@@ -366,7 +366,7 @@ export const HomePage = () => {
           <div className="container mx-auto px-6">
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold mb-4" style={{ color: colors.text }}>
-                Pourquoi choisir Project Handi ?
+                Pourquoi choisir YoJob ?
               </h2>
               <p className="text-lg max-w-2xl mx-auto" style={{ color: colors.text, opacity: 0.7 }}>
                 Une plateforme pensée pour faciliter votre recherche d'emploi
