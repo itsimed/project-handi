@@ -1,15 +1,14 @@
-// src/pages/DashboardPage.tsx - Page de résultats accessible RGAA
+// src/pages/DashboardPage.tsx - Page de résultats
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useApplications } from '../hooks/useApplications';
 import { useOfferFilters } from '../hooks/useOfferFilters';
-import { useCompanies } from '../hooks/useCompanies';
+import type { ContractType, ExperienceLevel, RemotePolicy, DisabilityCategory } from '../types';
 import { Navbar } from '../components/Navbar';
 import { Breadcrumb } from '../components/Breadcrumb';
 import { SearchBarCompact } from '../components/SearchBarCompact';
 import { FiltersPanel } from '../components/FiltersPanel';
 import { OfferCard } from '../components/OfferCard';
-import { CompaniesSection } from '../components/CompaniesSection';
 import { ApplicationModal } from '../components/ApplicationModal';
 import { useTheme } from '../contexts/AccessibilityContext';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
@@ -49,12 +48,6 @@ export const DashboardPage = () => {
         activeFiltersCount,
         currentFilters,
     } = useOfferFilters();
-    
-    // Hook pour les entreprises
-    const {
-        companies,
-        isLoading: isLoadingCompanies,
-    } = useCompanies(offers);
 
     // État pour la modale de candidature
     const [selectedOffer, setSelectedOffer] = useState<{ id: number; title: string; company: { name: string } } | null>(null);
@@ -263,7 +256,12 @@ export const DashboardPage = () => {
 
                     {/* Drawer de filtres - En position fixed, hors du flux normal */}
                     <FiltersPanel
-                        filters={currentFilters}
+                        filters={{
+                            contractTypes: currentFilters.contractTypes as ContractType[] | undefined,
+                            experienceLevels: currentFilters.experienceLevels as ExperienceLevel[] | undefined,
+                            remote: currentFilters.remote as RemotePolicy[] | undefined,
+                            disabilityCompatible: currentFilters.disabilityCompatible as DisabilityCategory[] | undefined,
+                        }}
                         onFilterChange={handleFilterChange}
                         activeCount={activeFiltersCount}
                         isOpen={isFiltersOpen}
@@ -338,7 +336,12 @@ export const DashboardPage = () => {
                                         {offers.map((offer) => (
                                             <OfferCard
                                                 key={offer.id}
-                                                offer={offer}
+                                                offer={{
+                                                    ...offer,
+                                                    contract: Array.isArray(offer.contract) 
+                                                        ? offer.contract 
+                                                        : [offer.contract]
+                                                }}
                                                 onApply={handleApply}
                                                 isApplying={isApplying}
                                                 hasApplied={hasApplied(offer.id)}

@@ -1,19 +1,16 @@
 /**
  * HomePage - Plateforme Project Handi
- * Architecture professionnelle avec micro-interactions et animations optimisées
- * Stack: React 18 + TypeScript + Tailwind CSS
- * Standards: RGAA/WCAG 2.1 AA, Performance-first
+ * React 18 + TypeScript + Tailwind CSS
+ * Standards: RGAA/WCAG 2.1 AA
  */
 
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SearchBar } from '../components/SearchBar';
 import { StatsBar } from '../components/StatsBar';
-import { CompaniesSection } from '../components/CompaniesSection';
 import { Navbar } from '../components/Navbar';
 import { Icon } from '../components/Icon';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
-import { useCompanies } from '../hooks/useCompanies';
 import apiClient from '../api/apiClient';
 import { toastService } from '../services/toastService';
 import { useTheme } from '../contexts/AccessibilityContext';
@@ -27,14 +24,16 @@ import {
 } from '../components/icons';
 
 // ==================== TYPES ====================
-interface Stats {
+interface Stats
+{
   totalOffers: number;
   totalCompanies: number;
   totalApplications: number;
   activeRecruiters?: number;
 }
 
-interface QuickAccessButton {
+interface QuickAccessButton
+{
   id: string;
   label: string;
   icon: 'graduation' | 'target' | 'briefcase' | 'lightning';
@@ -42,7 +41,8 @@ interface QuickAccessButton {
   gradient: string;
 }
 
-interface ContractCounts {
+interface ContractCounts
+{
   STAGE: number;
   ALTERNANCE: number;
   CDI: number;
@@ -81,7 +81,6 @@ export const HomePage = () => {
     CDI: 0,
     INTERIM: 0
   });
-  const { companies, isLoading: isLoadingCompanies } = useCompanies();
   const isLoggedIn = !!localStorage.getItem('token');
   const { colors, theme } = useTheme();
 
@@ -281,13 +280,13 @@ export const HomePage = () => {
             <div className="text-left mb-12 space-y-6 max-w-3xl">
               
 
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-white md:text-[#23022E]">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-white md:text-[#23022E]">
                 Trouvez le job qui vous
                 <br />
                 correspond vraiment parmi
-              </h2>
+              </h1>
 
-              <div className="flex items-center justify-start gap-3 flex-wrap">
+              <div className="flex items-center justify-center gap-3 flex-wrap">
                 <div className="flex items-center gap-2 px-4 py-2 rounded-lg border border-white md:border-[#23022E]">
                   <span className="text-3xl font-bold text-white md:text-[#23022E]">
                     {isLoadingStats ? '...' : stats.totalOffers.toLocaleString('fr-FR')}
@@ -325,9 +324,9 @@ export const HomePage = () => {
         <section className="relative py-16" style={{ backgroundColor: colors.bg }}>
           <div className="container mx-auto px-6">
             <div className="text-center mb-12">
-              <h3 className="text-2xl font-bold mb-3" style={{ color: colors.text }}>
+              <h2 className="text-2xl font-bold mb-3" style={{ color: colors.text }}>
                 Recherches populaires
-              </h3>
+              </h2>
               <p style={{ color: colors.text, opacity: 0.7 }}>Explorez les offres par type de contrat</p>
             </div>
 
@@ -348,9 +347,9 @@ export const HomePage = () => {
                       <div className="transform group-hover:scale-110 transition-transform duration-200">
                         {renderIcon(filter.icon, 40)}
                       </div>
-                      <h4 className="text-lg font-semibold" style={{ color: colors.text }}>
+                      <span className="text-lg font-semibold" style={{ color: colors.text }}>
                         {filter.label}
-                      </h4>
+                      </span>
                     </div>
                     <p className="text-2xl font-bold mt-4" style={{ color: colors.text }}>
                       {contractCounts[filter.contract as keyof ContractCounts]} offres
@@ -366,9 +365,9 @@ export const HomePage = () => {
         <section className="py-20" style={{ backgroundColor: colors.bg }}>
           <div className="container mx-auto px-6">
             <div className="text-center mb-16">
-              <h3 className="text-3xl font-bold mb-4" style={{ color: colors.text }}>
+              <h2 className="text-3xl font-bold mb-4" style={{ color: colors.text }}>
                 Pourquoi choisir Project Handi ?
-              </h3>
+              </h2>
               <p className="text-lg max-w-2xl mx-auto" style={{ color: colors.text, opacity: 0.7 }}>
                 Une plateforme pensée pour faciliter votre recherche d'emploi
                 et garantir une expérience optimale pour tous.
@@ -377,7 +376,7 @@ export const HomePage = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
               {BENEFITS.map((benefit, index) => (
-                <div
+                <article
                   key={index}
                   className="group p-6 rounded-2xl transition-all duration-200 border-2"
                   style={{ backgroundColor: colors.bg, borderColor: colors.border }}
@@ -385,13 +384,13 @@ export const HomePage = () => {
                   <div className="mb-4 transform group-hover:scale-110 transition-transform duration-200">
                     {renderIcon(benefit.icon, 48)}
                   </div>
-                  <h4 className="text-lg font-semibold mb-2" style={{ color: colors.text }}>
+                  <h3 className="text-lg font-semibold mb-2" style={{ color: colors.text }}>
                     {benefit.title}
-                  </h4>
+                  </h3>
                   <p className="text-sm" style={{ color: colors.text, opacity: 0.7 }}>
                     {benefit.desc}
                   </p>
-                </div>
+                </article>
               ))}
             </div>
           </div>
@@ -411,9 +410,9 @@ export const HomePage = () => {
                 Démarquez-vous auprès des recruteurs
               </div>
 
-              <h3 className="text-4xl font-bold mb-6" style={{ color: colors.bg }}>
+              <h2 className="text-4xl font-bold mb-6" style={{ color: colors.bg }}>
                 Déposez votre CV et soyez visible par les entreprises
-              </h3>
+              </h2>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <button
@@ -501,7 +500,7 @@ export const HomePage = () => {
                 <Icon name="accessibility" size={18} className="mt-0.5 flex-shrink-0" />
                 <span>Conforme RGAA / WCAG 2.1 AA</span>
               </div>
-              <p className="text-xs leading-relaxed" style={{ color: colors.text, opacity: 0.5 }}>
+              <p className="text-xs leading-relaxed" style={{ color: colors.text, opacity: 0.8 }}>
                 Cette plateforme respecte les standards d'accessibilité
                 pour garantir une expérience inclusive pour tous.
               </p>
@@ -510,7 +509,7 @@ export const HomePage = () => {
 
           {/* Copyright */}
           <div className="pt-8 border-t text-center" style={{ borderColor: `${colors.border}1A` }}>
-            <p className="text-sm" style={{ color: colors.text, opacity: 0.5 }}>
+            <p className="text-sm" style={{ color: colors.text, opacity: 0.8 }}>
               © {new Date().getFullYear()} Project Handi. Tous droits réservés.
               Plateforme de recrutement inclusive.
             </p>

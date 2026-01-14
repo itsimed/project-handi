@@ -339,7 +339,7 @@ export const ProfilePage = () => {
               >
                 {badge.label}
               </div>
-              <p className="mt-2 text-xs" style={{ color: colors.text, opacity: 0.5 }}>
+              <p className="mt-2 text-xs" style={{ color: colors.text, opacity: 0.8 }}>
                 Le type de compte ne peut pas être modifié.
               </p>
             </div>

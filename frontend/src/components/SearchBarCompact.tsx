@@ -53,9 +53,6 @@ export const SearchBarCompact: React.FC<SearchBarCompactProps> = ({
       >
         {/* Champ "Quoi ?" */}
         <div className="flex-1">
-          <label htmlFor="search-what-compact" className="sr-only">
-            Quoi ?
-          </label>
           <input
             id="search-what-compact"
             type="text"
@@ -79,9 +76,6 @@ export const SearchBarCompact: React.FC<SearchBarCompactProps> = ({
 
         {/* Champ "Où ?" */}
         <div className="flex-1">
-          <label htmlFor="search-where-compact" className="sr-only">
-            Où ?
-          </label>
           <input
             id="search-where-compact"
             type="text"

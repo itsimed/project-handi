@@ -95,8 +95,7 @@ npx prisma generate
 - **bcrypt** - Hashage des mots de passe
 
 ### DevOps
-- **Docker** - Containerisation
-- **Docker Compose** - Orchestration multi-conteneurs
+- **Neon Cloud** - Base de données PostgreSQL hébergée dans le cloud
 
 ---
 
@@ -106,14 +105,13 @@ Avant de commencer, assurez-vous d'avoir installé :
 
 - **Node.js** (version 18 ou supérieure) - [Télécharger](https://nodejs.org/)
 - **npm** (version 9 ou supérieure) - Inclus avec Node.js
-- **Docker Desktop** - [Télécharger](https://www.docker.com/products/docker-desktop)
 - **Git** - [Télécharger](https://git-scm.com/)
+- **Connexion Internet** - La base de données est hébergée sur Neon Cloud
 
 Vérifiez vos versions :
 ```bash
 node --version  # doit afficher v18.x.x ou supérieur
 npm --version   # doit afficher 9.x.x ou supérieur
-docker --version
 ```
 
 ---
@@ -147,44 +145,27 @@ npm install
 
 ### Méthode 1 : Lancement complet (Recommandé)
 
-#### Étape 1 : Démarrer la base de données PostgreSQL avec Docker
-
-```bash
-# À la racine du projet
-docker-compose up -d
-```
-
-Cette commande démarre PostgreSQL en arrière-plan. Vérifiez que le conteneur fonctionne :
-```bash
-docker ps
-```
-
-Vous devriez voir un conteneur `postgres` en cours d'exécution.
-
-#### Étape 2 : Configurer le backend
+#### Étape 1 : Configurer le backend
 
 ```bash
 cd backend
 
-# Créer le fichier .env (si pas déjà fait)
-# Copier/créer avec le contenu suivant :
-cat > .env << 'EOF'
-DATABASE_URL="postgresql://user:password@localhost:5432/job_db"
-JWT_SECRET="votre_secret_jwt_super_securise_changez_moi_en_production"
-PORT=5000
-EOF
+# Créer le fichier .env depuis .env.example (si pas déjà fait)
+cp .env.example .env
+
+# Le fichier .env contient déjà la connexion à la base Neon Cloud partagée
+# ⚠️ Ne modifiez RIEN dans ce fichier (sauf si l'administrateur vous le demande)
 
 # Générer le client Prisma
 npx prisma generate
 
-# Appliquer les migrations
-npx prisma migrate dev
-
-# Peupler la base de données avec des données de test
-npx prisma db seed
+# Synchroniser avec la base de données Neon (migrations)
+npx prisma migrate deploy
 ```
 
-#### Étape 3 : Lancer le serveur backend
+⚠️ **Note** : La base de données Neon Cloud est déjà peuplée avec des données de test. Pas besoin de `npx prisma db seed`.
+
+#### Étape 2 : Lancer le serveur backend
 
 ```bash
 # Dans le dossier backend
@@ -193,7 +174,7 @@ npm run dev
 
 Le backend démarre sur **http://localhost:5000**
 
-#### Étape 4 : Lancer le serveur frontend
+#### Étape 3 : Lancer le serveur frontend
 
 **Dans un nouveau terminal :**
 
@@ -209,14 +190,11 @@ Le frontend démarre sur **http://localhost:5173**
 Si vous préférez lancer chaque service manuellement :
 
 ```bash
-# Terminal 1 - Base de données
-docker-compose up postgres
-
-# Terminal 2 - Backend
+# Terminal 1 - Backend
 cd backend
 npm run dev
 
-# Terminal 3 - Frontend
+# Terminal 2 - Frontend
 cd frontend
 npm run dev
 ```
@@ -308,7 +286,6 @@ project-handi/
 │   ├── DESIGN_SYSTEM.md      # Documentation du design system
 │   └── package.json
 │
-├── docker-compose.yml         # Configuration Docker
 ├── RAPPORT_PROJET.md         # Rapport technique détaillé
 └── README.md                 # Ce fichier
 ```
@@ -414,20 +391,18 @@ npm run build
 npm run preview
 ```
 
-### Docker
+### Base de données (Neon Cloud)
 
 ```bash
-# Démarrer les services
-docker-compose up -d
+# Visualiser la base de données
+cd backend
+npx prisma studio              # Interface graphique : http://localhost:5555
 
-# Arrêter les services
-docker-compose down
+# Synchroniser avec les migrations
+npx prisma migrate deploy
 
-# Voir les logs
-docker-compose logs -f
-
-# Supprimer les volumes (⚠️ supprime les données)
-docker-compose down -v
+# Générer le client Prisma après modification du schema
+npx prisma generate
 ```
 
 ---
@@ -437,9 +412,10 @@ docker-compose down -v
 ### Problème : Le backend ne se connecte pas à la base de données
 
 **Solution** :
-1. Vérifiez que Docker est lancé : `docker ps`
-2. Vérifiez le fichier `.env` dans `backend/`
-3. Vérifiez que PostgreSQL est bien démarré : `docker-compose ps`
+1. Vérifiez votre connexion Internet (la base est sur Neon Cloud)
+2. Vérifiez le fichier `.env` dans `backend/` (doit contenir l'URL Neon)
+3. Vérifiez que l'URL de la base de données dans `.env` est correcte
+4. Testez la connexion : `cd backend && npx prisma db pull`
 
 ### Problème : Port déjà utilisé
 

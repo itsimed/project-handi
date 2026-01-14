@@ -104,7 +104,7 @@ export const OfferCard: React.FC<OfferCardProps> = ({
         <time
           dateTime={offer.createdAt}
           className="text-sm"
-          style={{ color: colors.text, opacity: 0.5 }}
+          style={{ color: colors.text, opacity: 0.8 }}
         >
           {formatDate(offer.createdAt)}
         </time>

@@ -262,7 +262,7 @@ export const OfferDetailPage = () => {
               </div>
 
               {/* Date de publication */}
-              <p className="text-sm" style={{ color: colors.text, opacity: 0.5 }}>
+              <p className="text-sm" style={{ color: colors.text, opacity: 0.8 }}>
                 Publiée le{' '}
                 <time dateTime={offer.createdAt}>
                   {new Date(offer.createdAt).toLocaleDateString('fr-FR', {
@@ -328,7 +328,7 @@ export const OfferDetailPage = () => {
                   Accessibilité
                 </h2>
                 <div className="p-6 rounded-xl border-2" style={{ borderColor: '#10b981', backgroundColor: `${colors.bg}` }}>
-                  <p className="mb-3 font-semibold" style={{ color: '#10b981' }}>
+                  <p className="mb-3 font-semibold" style={{ color: colors.text }}>
                     Ce poste est adapté aux personnes en situation de handicap :
                   </p>
                   <ul className="list-disc list-inside space-y-2" style={{ color: colors.text }}>
