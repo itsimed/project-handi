@@ -52,11 +52,13 @@ export const Navbar = ({ variant = 'home' }: NavbarProps) => {
             <button
               onClick={() => navigate('/')}
               className="group focus:outline-none focus:ring-2 rounded-lg p-2 -ml-2"
-              style={{ color: colors.text }}
+              aria-label="Retour à l'accueil"
             >
-              <h1 className="text-xl font-bold">
-                Project Handi
-              </h1>
+              <img 
+                src={theme === 'dark' ? '/logo sombre.webp' : '/logo clair.webp'}
+                alt="Project Handi"
+                className="h-20"
+              />
             </button>
 
             {/* Boutons connexion/inscription à droite */}
@@ -99,20 +101,17 @@ export const Navbar = ({ variant = 'home' }: NavbarProps) => {
     <header className="transition-all duration-300 h-16 relative z-50" style={{ backgroundColor: colors.bg, borderBottom: `1px solid ${colors.border}33` }}>
       <div className="container mx-auto px-6 h-full">
         <div className="flex justify-between items-center h-full">
-          {/* Logo & Brand */}
+          {/* Logo */}
           <button
             onClick={() => navigate('/')}
-            className="group text-left focus:outline-none focus:ring-2 rounded-lg p-2 -ml-2 h-full"
-            style={{ color: colors.text }}
+            className="group focus:outline-none focus:ring-2 rounded-lg p-2 -ml-2"
+            aria-label="Retour à l'accueil"
           >
-            <h1 className="text-xl font-bold">
-              Project Handi
-            </h1>
-            <p className="text-xs font-medium" style={{ color: colors.text, opacity: 0.7 }}>
-              {variant === 'profile' ? 'Mon profil' : 
-               variant === 'recruiter' ? 'Espace recruteur' : 
-               'Recrutement inclusif'}
-            </p>
+            <img 
+              src={theme === 'dark' ? '/logo sombre.webp' : '/logo clair.webp'}
+              alt="Project Handi"
+              className="h-20"
+            />
           </button>
 
           {/* Navigation */}

@@ -449,14 +449,12 @@ export const HomePage = () => {
             {/* Brand */}
             <div>
               <div className="mb-4">
-                  <h3 className="text-lg font-bold" style={{ color: colors.text }}>
-                    Project Handi
-                  </h3>
+                <img 
+                  src={theme === 'dark' ? '/logo sombre.webp' : '/logo clair.webp'}
+                  alt="Project Handi"
+                  className="h-28"
+                />
               </div>
-              <p className="text-sm leading-relaxed" style={{ color: colors.text, opacity: 0.7 }}>
-                La plateforme de recrutement qui met l'accessibilité
-                et l'inclusion au cœur de son ADN.
-              </p>
             </div>
 
             {/* Links */}
@@ -505,14 +503,6 @@ export const HomePage = () => {
                 pour garantir une expérience inclusive pour tous.
               </p>
             </div>
-          </div>
-
-          {/* Copyright */}
-          <div className="pt-8 border-t text-center" style={{ borderColor: `${colors.border}1A` }}>
-            <p className="text-sm" style={{ color: colors.text, opacity: 0.8 }}>
-              © {new Date().getFullYear()} Project Handi. Tous droits réservés.
-              Plateforme de recrutement inclusive.
-            </p>
           </div>
         </div>
       </footer>

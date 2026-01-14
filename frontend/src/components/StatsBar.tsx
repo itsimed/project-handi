@@ -52,16 +52,16 @@ export const StatsBar: React.FC<StatsBarProps> = ({
         <li className="flex items-center gap-3 text-center md:text-left">
           <div
             className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
-            style={{ backgroundColor: theme === 'dark' ? '#FFFFFF' : '#23022E', color: theme === 'dark' ? '#23022E' : '#FFFFFF' }}
+            style={{ backgroundColor: theme === 'dark' ? '#23022E' : '#23022E', color: theme === 'dark' ? '#FFFFFF' : '#FFFFFF' }}
             aria-hidden="true"
           >
             <Icon name="briefcase" size={24} />
           </div>
           <div>
-            <p className="text-3xl font-bold" style={{ color: colors.text }}>
+            <p className="text-3xl font-bold" style={{ color: '#23022E' }}>
               {formatNumber(totalOffers)}
             </p>
-            <p className="text-sm" style={{ color: colors.text, opacity: 0.7 }}>
+            <p className="text-sm" style={{ color: '#23022E', opacity: 0.7 }}>
               offre{totalOffers > 1 ? 's' : ''} active{totalOffers > 1 ? 's' : ''}
             </p>
           </div>
@@ -71,16 +71,16 @@ export const StatsBar: React.FC<StatsBarProps> = ({
         <li className="flex items-center gap-3 text-center md:text-left">
           <div
             className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
-            style={{ backgroundColor: theme === 'dark' ? '#FFFFFF' : '#23022E', color: theme === 'dark' ? '#23022E' : '#FFFFFF' }}
+            style={{ backgroundColor: theme === 'dark' ? '#23022E' : '#23022E', color: theme === 'dark' ? '#FFFFFF' : '#FFFFFF' }}
             aria-hidden="true"
           >
             <Icon name="document" size={24} />
           </div>
           <div>
-            <p className="text-3xl font-bold" style={{ color: colors.text }}>
+            <p className="text-3xl font-bold" style={{ color: '#23022E' }}>
               {formatNumber(totalApplications)}
             </p>
-            <p className="text-sm" style={{ color: colors.text, opacity: 0.7 }}>
+            <p className="text-sm" style={{ color: '#23022E', opacity: 0.7 }}>
               candidature{totalApplications > 1 ? 's' : ''}
             </p>
           </div>
@@ -90,16 +90,16 @@ export const StatsBar: React.FC<StatsBarProps> = ({
         <li className="flex items-center gap-3 text-center md:text-left">
           <div
             className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
-            style={{ backgroundColor: theme === 'dark' ? '#FFFFFF' : '#23022E', color: theme === 'dark' ? '#23022E' : '#FFFFFF' }}
+            style={{ backgroundColor: theme === 'dark' ? '#23022E' : '#23022E', color: theme === 'dark' ? '#FFFFFF' : '#FFFFFF' }}
             aria-hidden="true"
           >
             <Icon name="building" size={24} />
           </div>
           <div>
-            <p className="text-3xl font-bold" style={{ color: colors.text }}>
+            <p className="text-3xl font-bold" style={{ color: '#23022E' }}>
               {formatNumber(totalCompanies)}
             </p>
-            <p className="text-sm" style={{ color: colors.text, opacity: 0.7 }}>
+            <p className="text-sm" style={{ color: '#23022E', opacity: 0.7 }}>
               entreprise{totalCompanies > 1 ? 's' : ''}
             </p>
           </div>
@@ -109,16 +109,16 @@ export const StatsBar: React.FC<StatsBarProps> = ({
         <li className="flex items-center gap-3 text-center md:text-left">
           <div
             className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
-            style={{ backgroundColor: theme === 'dark' ? '#FFFFFF' : '#23022E', color: theme === 'dark' ? '#23022E' : '#FFFFFF' }}
+            style={{ backgroundColor: theme === 'dark' ? '#23022E' : '#23022E', color: theme === 'dark' ? '#FFFFFF' : '#FFFFFF' }}
             aria-hidden="true"
           >
             <Icon name="users" size={24} />
           </div>
           <div>
-            <p className="text-3xl font-bold" style={{ color: colors.text }}>
+            <p className="text-3xl font-bold" style={{ color: '#23022E' }}>
               {formatNumber(totalApplicants)}
             </p>
-            <p className="text-sm" style={{ color: colors.text, opacity: 0.7 }}>
+            <p className="text-sm" style={{ color: '#23022E', opacity: 0.7 }}>
               candidat{totalApplicants > 1 ? 's' : ''} inscrit{totalApplicants > 1 ? 's' : ''}
             </p>
           </div>
