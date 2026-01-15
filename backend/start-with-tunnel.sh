@@ -4,9 +4,12 @@
 
 set -e
 
+# Aller au répertoire backend
+cd "$(dirname "$0")" || exit 1
+
 # Source le tunnel SSH en arrière-plan
 echo "🚀 Starting Project Handi Backend with SSH Tunnel..."
-./tunnel-ssh.sh &
+bash ./tunnel-ssh.sh &
 TUNNEL_PID=$!
 
 # Attendre que le tunnel soit établi
@@ -23,6 +26,7 @@ echo "✅ SSH tunnel is active"
 # Cleanup les processus enfants à la fermeture
 trap "kill $TUNNEL_PID" EXIT TERM INT
 
-# Lancer le serveur backend
+# Lancer le serveur backend depuis le répertoire parent
+cd ..
 echo "🎯 Starting Node.js server..."
 exec npm start

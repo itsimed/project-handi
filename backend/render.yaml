@@ -13,7 +13,7 @@ services:
       npm run build
     
     # Start with SSH tunnel to Paris 8 MySQL
-    startCommand: bash backend/start-with-tunnel.sh
+    startCommand: bash ./backend/start-with-tunnel.sh
     
     # Environment variables (must be added in Render dashboard)
     # DATABASE_URL=mysql://imed:kotukvodrovbew2@localhost:3306/p27_imed
