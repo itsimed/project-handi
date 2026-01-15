@@ -8,7 +8,7 @@
     "dev:nodemon": "nodemon",
     "build": "tsc",
     "start": "node dist/app.js",
-    "start:tunnel": "bash tunnel-ssh-pwd.sh & sleep 3 && node dist/app.js",
+    "start:tunnel": "node dist/app.js",
     "prisma:migrate": "dotenv -e ./.env npx prisma migrate dev",
     "prisma:generate": "dotenv -e ./.env npx prisma generate"
   },
@@ -26,9 +26,11 @@
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.3",
-    "multer": "^2.0.2"
+    "multer": "^2.0.2",
+    "ssh2": "^1.15.0"
   },
   "devDependencies": {
+    "@types/ssh2": "^1.15.5",
     "dotenv-cli": "^11.0.0",
     "nodemon": "^3.1.11",
     "prisma": "^6.17.0",
