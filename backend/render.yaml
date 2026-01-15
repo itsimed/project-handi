@@ -8,13 +8,12 @@ services:
     buildCommand: >
       apt-get update && 
       apt-get install -y openssh-client &&
-      cd backend &&
-      npm install && 
-      npx prisma generate && 
-      npm run build
+      npm --prefix backend install && 
+      npx --prefix backend prisma generate && 
+      npm --prefix backend run build
     
-    # Start with SSH tunnel to Paris 8 MySQL
-    startCommand: bash backend/start-with-tunnel.sh
+    # Start with SSH tunnel script at root
+    startCommand: bash ./start.sh
     
     # Environment variables (must be added in Render dashboard)
     # DATABASE_URL=mysql://imed:kotukvodrovbew2@localhost:3306/p27_imed
