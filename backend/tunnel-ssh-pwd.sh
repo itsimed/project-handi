@@ -1,7 +1,5 @@
 #!/bin/bash
-# tunnel-ssh-pwd.sh - Établir un tunnel SSH vers Paris 8
-
-set -e
+# tunnel-ssh-pwd.sh - Établir un tunnel SSH vers Paris 8 avec expect
 
 REMOTE_HOST="imed@10.10.2.220"
 REMOTE_PORT="60022"
@@ -14,29 +12,54 @@ fi
 
 echo "🔗 Establishing SSH tunnel to Paris 8..."
 
-# Installer sshpass si nécessaire
-if ! command -v sshpass &> /dev/null; then
-  echo "📦 Installing sshpass..."
-  apt-get update -qq 2>/dev/null || true
-  apt-get install -y sshpass 2>/dev/null || echo "⚠️ sshpass install failed"
+# Créer un script expect temporaire
+EXPECT_SCRIPT="/tmp/ssh_tunnel_$$.exp"
+cat > "$EXPECT_SCRIPT" << 'EXPECT_EOF'
+#!/usr/bin/expect
+set timeout 10
+set password [lindex $argv 0]
+set host [lindex $argv 1]
+set port [lindex $argv 2]
+
+spawn ssh -N -L 3306:localhost:3306 -p $port -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ServerAliveInterval=60 $host
+
+expect {
+    "password:" {
+        send "$password\r"
+        interact
+    }
+    timeout {
+        puts "SSH connection timeout"
+        exit 1
+    }
+}
+EXPECT_EOF
+
+chmod +x "$EXPECT_SCRIPT"
+
+# Essayer avec expect
+if command -v expect &> /dev/null; then
+  echo "✅ Using expect for SSH connection"
+  expect "$EXPECT_SCRIPT" "$SSH_PASSWORD" "$REMOTE_HOST" "$REMOTE_PORT" &
+  TUNNEL_PID=$!
+  sleep 2
+  
+  if kill -0 $TUNNEL_PID 2>/dev/null; then
+    echo "✅ SSH tunnel established (PID: $TUNNEL_PID)"
+    echo "📡 MySQL accessible at: localhost:3306"
+  else
+    echo "⚠️ SSH tunnel may have failed"
+  fi
+else
+  echo "❌ expect not found - cannot establish SSH tunnel"
+  exit 1
 fi
 
-# Lancer le tunnel
-sshpass -p "$SSH_PASSWORD" ssh \
-  -N \
-  -L 3306:localhost:3306 \
-  -p "$REMOTE_PORT" \
-  -o StrictHostKeyChecking=no \
-  -o UserKnownHostsFile=/dev/null \
-  -o ServerAliveInterval=60 \
-  "$REMOTE_HOST" &
+# Cleanup
+trap "rm -f $EXPECT_SCRIPT" EXIT
 
-TUNNEL_PID=$!
-sleep 2
-
-echo "✅ SSH tunnel established (PID: $TUNNEL_PID)"
-echo "📡 MySQL accessible at: localhost:3306"
-
+# Garder le tunnel actif
 wait $TUNNEL_PID
+
 
 
