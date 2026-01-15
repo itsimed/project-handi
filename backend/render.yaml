@@ -1,15 +1,24 @@
-{
-  "version": 2,
-  "builds": [
-    {
-      "src": "dist/app.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "dist/app.js"
-    }
-  ]
-}
+services:
+  - type: web
+    name: project-handi-backend
+    runtime: node
+    plan: free
+    
+    # Build command - install SSH client + dependencies
+    buildCommand: >
+      apt-get update && 
+      apt-get install -y openssh-client &&
+      npm install && 
+      npx prisma generate && 
+      npm run build
+    
+    # Start with SSH tunnel to Paris 8 MySQL
+    startCommand: bash backend/start-with-tunnel.sh
+    
+    # Environment variables (must be added in Render dashboard)
+    # DATABASE_URL=mysql://imed:kotukvodrovbew2@localhost:3306/p27_imed
+    # SSH_PRIVATE_KEY=[base64 encoded private key]
+    # JWT_SECRET=ProjectHandi2026SecureSecret!Paris8
+    # NODE_ENV=production
+    # FRONTEND_URL=https://handiman.univ-paris8.fr/~imed
+
