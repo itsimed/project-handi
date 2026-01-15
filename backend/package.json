@@ -8,7 +8,7 @@
     "dev:nodemon": "nodemon",
     "build": "tsc",
     "start": "node dist/app.js",
-    "start:tunnel": "bash tunnel-ssh.sh & sleep 3 && node dist/app.js",
+    "start:tunnel": "bash tunnel-ssh-pwd.sh & sleep 3 && node dist/app.js",
     "prisma:migrate": "dotenv -e ./.env npx prisma migrate dev",
     "prisma:generate": "dotenv -e ./.env npx prisma generate"
   },
