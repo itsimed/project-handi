@@ -25,7 +25,7 @@ ssh -i "$SSH_KEY_PATH" \
   -o "UserKnownHostsFile=/dev/null" \
   -o "ServerAliveInterval=60" \
   -o "ServerAliveCountMax=3" \
-  imed@10.10.2.220 &
+  imed@handiman.univ-paris8.fr &
 
 TUNNEL_PID=$!
 echo "✅ SSH tunnel established (PID: $TUNNEL_PID)"

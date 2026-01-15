@@ -3,7 +3,7 @@
 # Script pour établir un tunnel SSH vers Paris 8
 
 SSH_KEY_PATH="/tmp/render_key"
-REMOTE_HOST="imed@10.10.2.220"
+REMOTE_HOST="imed@handiman.univ-paris8.fr"
 REMOTE_PORT="60022"
 LOCAL_PORT="3306"
 REMOTE_MYSQL_HOST="localhost"
@@ -16,8 +16,13 @@ if [ -z "$SSH_PRIVATE_KEY" ]; then
   exit 1
 fi
 
-echo "$SSH_PRIVATE_KEY" > "$SSH_KEY_PATH"
+echo "🔑 Decoding SSH private key..."
+echo "$SSH_PRIVATE_KEY" | base64 -d > "$SSH_KEY_PATH" 2>/dev/null || {
+  echo "❌ Failed to decode SSH key from base64"
+  exit 1
+}
 chmod 600 "$SSH_KEY_PATH"
+echo "✅ SSH key decoded and set to 600"
 
 # Arrêter le tunnel existant s'il existe
 if [ -f "$TUNNEL_PID_FILE" ]; then
@@ -30,15 +35,17 @@ if [ -f "$TUNNEL_PID_FILE" ]; then
 fi
 
 # Lancer le tunnel
-echo "🔗 Establishing SSH tunnel to Paris 8..."
+echo "🔗 Establishing SSH tunnel to $REMOTE_HOST:$REMOTE_PORT..."
 ssh -i "$SSH_KEY_PATH" \
   -N \
   -L "$LOCAL_PORT:$REMOTE_MYSQL_HOST:$REMOTE_MYSQL_PORT" \
   -p "$REMOTE_PORT" \
+  -o "ConnectTimeout=10" \
   -o "StrictHostKeyChecking=no" \
   -o "UserKnownHostsFile=/dev/null" \
   -o "ServerAliveInterval=60" \
   -o "ServerAliveCountMax=3" \
+  -v \
   "$REMOTE_HOST" &
 
 TUNNEL_PID=$!
