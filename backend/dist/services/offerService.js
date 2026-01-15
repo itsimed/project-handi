@@ -20,13 +20,13 @@ async function getAllOffers(filters) {
         where: {
             // Note: Les filtres sur contract et disabilityCompatible (JSON) ne sont pas supportés directement par Prisma
             // Le filtrage sera fait côté application après récupération
-            // Filtre title : recherche partielle insensible à la casse
+            // Filtre title : recherche partielle (MySQL est case-insensitive par défaut)
             title: filters?.title
-                ? { contains: filters.title, mode: 'insensitive' }
+                ? { contains: filters.title }
                 : undefined,
-            // Filtre location : recherche partielle insensible à la casse
+            // Filtre location : recherche partielle
             location: filters?.location
-                ? { contains: filters.location, mode: 'insensitive' }
+                ? { contains: filters.location }
                 : undefined,
             // Filtre remote : accepte une valeur unique ou un tableau
             remote: filters?.remote
