@@ -10,7 +10,10 @@ import prisma from '../config/prisma';
 export async function applyToOffer( userId: number, offerId: number ) 
 {
     // Vérifier que l'offre existe
-    const offer = await prisma.offer.findUnique({ where: { id: offerId } });
+    const offer = await prisma.offer.findUnique({ 
+        where: { id: offerId },
+        include: { company: true }
+    });
 
     if (!offer)
     {
@@ -49,7 +52,8 @@ export async function applyToOffer( userId: number, offerId: number )
             {
                 userId,
                 offerId,
-                status: 'PENDING' 
+                companyId: offer.companyId,
+                status: 'NOT_VIEWED' 
             },
 
             include :
@@ -209,9 +213,9 @@ export async function getApplicationById( applicationId: number, userId: number 
 /**
  * Met à jour le statut d'une candidature existante.
  * @param applicationId - ID unique de la candidature.
- * @param status - Nouveau statut (ACCEPTED ou REJECTED).
+ * @param status - Nouveau statut (VIEWED ou NOT_VIEWED).
  */
-export async function updateApplicationStatus( applicationId: number, status: 'ACCEPTED' | 'REJECTED' )
+export async function updateApplicationStatus( applicationId: number, status: 'VIEWED' | 'NOT_VIEWED' )
 {
     return prisma.application.update
     (

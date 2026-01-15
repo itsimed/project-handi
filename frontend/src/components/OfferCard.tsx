@@ -132,7 +132,7 @@ export const OfferCard: React.FC<OfferCardProps> = ({
 
       {/* Localisation */}
       <div className="flex items-center gap-2 mb-6">
-        <Icon name="location" size={20} style={{ color: colors.text, opacity: 0.5 }} />
+        <Icon name="location" size={20} className="opacity-50" />
         <span className="text-sm" style={{ color: colors.text, opacity: 0.7 }}>
           {offer.location}
         </span>

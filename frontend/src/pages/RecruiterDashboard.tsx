@@ -11,7 +11,7 @@ import { Navbar } from '../components/Navbar';
 import { Breadcrumb } from '../components/Breadcrumb';
 import { STORAGE_KEYS } from '../constants';
 import type { User, Offer, Application } from '../types';
-import { CheckIcon, CloseIcon, WaveIcon, DocumentIcon, LocationIcon, UsersIcon, ClockIcon } from '../components/icons';
+import { WaveIcon, DocumentIcon, LocationIcon, UsersIcon, ClockIcon } from '../components/icons';
 import { toastService } from '../services/toastService';
 import { useTheme } from '../contexts/AccessibilityContext';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
@@ -29,6 +29,7 @@ export const RecruiterDashboard = () => {
   const { colors } = useTheme();
   const [user, setUser] = useState<User | null>(null);
   const [offers, setOffers] = useState<OfferWithApplications[]>([]);
+  const [allApplications, setAllApplications] = useState<Application[]>([]);
   const [isLoadingOffers, setIsLoadingOffers] = useState(true);
   const [stats, setStats] = useState({
     totalOffers: 0,
@@ -94,7 +95,7 @@ export const RecruiterDashboard = () => {
       const response = await apiClient.get('/applications/recruiter');
       const allApplications = response.data;
       
-      setApplications(allApplications);
+      setAllApplications(allApplications);
       
       const notViewed = allApplications.filter(
         (app: Application) => app.status === 'NOT_VIEWED'
@@ -102,6 +103,7 @@ export const RecruiterDashboard = () => {
       
       setStats(prev => ({ ...prev, pendingApplications: notViewed }));
     } catch (error) {
+      console.error('Erreur fetchRecruiterApplications:', error);
       toastService.error('Erreur lors du chargement des candidatures');
     }
   };
@@ -110,19 +112,13 @@ export const RecruiterDashboard = () => {
     navigate(`/recruteur/offres/${offer.id}`);
   };
 
-  const handleCreateOffer = () => {
-    navigate('/recruteur/publier-offre');
+  const getNotViewedCount = (offerId: number) => {
+    return allApplications.filter(
+      (app: Application) => app.offerId === offerId && app.status === 'NOT_VIEWED'
+    ).length;
   };
 
   // ==================== RENDER ====================
-  const getStatusBadge = (status: string) => {
-    const badges = {
-      VIEWED: { label: 'Consultée', color: 'bg-green-500/10 text-green-400 border-green-500/30' },
-      NOT_VIEWED: { label: 'Non consultée', color: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30' },
-    };
-    return badges[status as keyof typeof badges] || badges.NOT_VIEWED;
-  };
-
   const getContractLabel = (contract: string) => {
     const labels: Record<string, string> = {
       CDI: 'CDI',
@@ -159,7 +155,7 @@ export const RecruiterDashboard = () => {
         <div className="mb-8">
           <h2 className="text-3xl font-bold mb-2 flex items-center gap-3" style={{ color: colors.text }}>
             Bonjour {user.firstName}
-            <WaveIcon size={28} style={{ color: colors.text }} aria-label="Salutation" />
+            <WaveIcon size={28} aria-label="Salutation" />
           </h2>
           <p style={{ color: colors.text, opacity: 0.7 }}>
             Gérez vos offres d'emploi et consultez les candidatures reçues
@@ -170,7 +166,7 @@ export const RecruiterDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="border-2 rounded-2xl p-6" style={{ borderColor: colors.border }}>
             <div className="flex items-center justify-between mb-3">
-              <DocumentIcon size={40} style={{ color: colors.text }} aria-hidden="true" />
+              <DocumentIcon size={40} aria-hidden="true" />
               <div className="text-3xl font-bold" style={{ color: colors.text }}>
                 {stats.totalOffers}
               </div>
@@ -180,7 +176,7 @@ export const RecruiterDashboard = () => {
 
           <div className="border-2 rounded-2xl p-6" style={{ borderColor: colors.border }}>
             <div className="flex items-center justify-between mb-3">
-              <UsersIcon size={40} style={{ color: colors.text }} aria-hidden="true" />
+              <UsersIcon size={40} aria-hidden="true" />
               <div className="text-3xl font-bold" style={{ color: colors.text }}>
                 {stats.totalApplications}
               </div>
@@ -190,27 +186,13 @@ export const RecruiterDashboard = () => {
 
           <div className="border-2 rounded-2xl p-6" style={{ borderColor: colors.border }}>
             <div className="flex items-center justify-between mb-3">
-              <ClockIcon size={40} style={{ color: colors.text }} aria-hidden="true" />
+              <ClockIcon size={40} aria-hidden="true" />
               <div className="text-3xl font-bold" style={{ color: colors.text }}>
                 {stats.pendingApplications}
               </div>
             </div>
             <p className="font-semibold" style={{ color: colors.text }}>Non consultées</p>
           </div>
-        </div>
-
-        {/* Action Button */}
-        <div className="mb-8">
-          <button
-            onClick={handleCreateOffer}
-            className="px-6 py-3 font-semibold rounded-xl transition-all duration-200 hover:scale-105"
-            style={{ 
-              backgroundColor: colors.text,
-              color: colors.bg
-            }}
-          >
-            + Publier une nouvelle offre
-          </button>
         </div>
 
         {/* Content Grid */}
@@ -235,16 +217,33 @@ export const RecruiterDashboard = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {offers.map((offer) => (
+                {offers.map((offer) => {
+                  const notViewedCount = getNotViewedCount(offer.id);
+                  return (
                   <button
                     key={offer.id}
                     onClick={() => handleViewOffer(offer)}
-                    className={`text-left p-4 rounded-xl border-2 transition-all duration-200 hover:scale-[1.02]`}
+                    className={`relative text-left p-4 rounded-xl border-2 transition-all duration-200 hover:scale-[1.02]`}
                     style={{
                       backgroundColor: colors.bg,
                       borderColor: colors.border
                     }}
                   >
+                    {/* Badge de notification pour les candidatures non consultées */}
+                    {notViewedCount > 0 && (
+                      <div 
+                        className="absolute -top-2 -right-2 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold border-2"
+                        style={{ 
+                          backgroundColor: '#f59e0b',
+                          color: '#ffffff',
+                          borderColor: colors.bg
+                        }}
+                        aria-label={`${notViewedCount} candidature${notViewedCount > 1 ? 's' : ''} non consultée${notViewedCount > 1 ? 's' : ''}`}
+                      >
+                        {notViewedCount}
+                      </div>
+                    )}
+                    
                     <div className="mb-3">
                       <h4 className="font-semibold mb-1" style={{ color: colors.text }}>
                         {offer.title}
@@ -264,7 +263,8 @@ export const RecruiterDashboard = () => {
                       </span>
                     </div>
                   </button>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

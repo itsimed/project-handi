@@ -202,7 +202,7 @@ export const SettingsPage = () => {
             }}
           >
             <div className="flex items-center gap-3 mb-4">
-              <LockIcon size={24} style={{ color: colors.text }} />
+              <LockIcon size={24} className="opacity-100" />
               <h2 className="text-xl font-semibold" style={{ color: colors.text }}>Mot de passe</h2>
             </div>
 
@@ -278,7 +278,7 @@ export const SettingsPage = () => {
               {/* Messages d'erreur/succès */}
               {passwordError && (
                 <div className="flex items-start gap-2 p-3 border rounded-xl" role="alert" aria-live="polite" style={{ borderColor: colors.border }}>
-                  <AlertIcon size={20} className="flex-shrink-0 mt-0.5" style={{ color: colors.text }} />
+                  <AlertIcon size={20} className="flex-shrink-0 mt-0.5 opacity-100" />
                   <p className="text-sm" style={{ color: colors.text }}>{passwordError}</p>
                 </div>
               )}
@@ -386,7 +386,7 @@ export const SettingsPage = () => {
           {/* Section 3: Zone de danger - Suppression du compte */}
           <section className="rounded-2xl p-6 border-2 mb-6" style={{ backgroundColor: colors.bg, borderColor: '#dc2626' }}>
             <div className="flex items-center gap-3 mb-4">
-              <AlertIcon size={24} style={{ color: '#dc2626' }} />
+              <AlertIcon size={24} className="text-red-600" />
               <h2 className="text-xl font-semibold" style={{ color: '#dc2626' }}>Zone de danger</h2>
             </div>
 
@@ -411,7 +411,7 @@ export const SettingsPage = () => {
         <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center p-4 z-50" style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
           <div className="rounded-2xl p-6 max-w-md w-full border-2" style={{ backgroundColor: colors.bg, borderColor: colors.border }}>
             <div className="flex items-center gap-3 mb-4">
-              <AlertIcon size={28} style={{ color: '#dc2626' }} />
+              <AlertIcon size={28} className="text-red-600" />
               <h3 className="text-xl font-bold" style={{ color: '#dc2626' }}>Confirmer la suppression</h3>
             </div>
 

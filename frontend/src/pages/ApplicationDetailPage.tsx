@@ -14,7 +14,7 @@ import { ScrollToTopButton } from '../components/ScrollToTopButton';
 
 interface ApplicationDetail {
   id: number;
-  status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
+  status: 'NOT_VIEWED' | 'VIEWED';
   createdAt: string;
   cvUrl?: string | null;
   coverLetterUrl?: string | null;
@@ -94,22 +94,17 @@ export const ApplicationDetailPage = () => {
 
   const getStatusConfig = (status: string) => {
     switch (status) {
-      case 'ACCEPTED':
+      case 'VIEWED':
         return { 
           color: 'bg-green-500/10 text-green-400 border-green-500/30', 
-          label: 'Candidature acceptée',
+          label: 'Candidature consultée par le recruteur',
           icon: 'check' as const
         };
-      case 'REJECTED':
-        return { 
-          color: 'bg-red-500/10 text-red-400 border-red-500/30', 
-          label: 'Candidature refusée',
-          icon: 'x' as const
-        };
+      case 'NOT_VIEWED':
       default:
         return { 
           color: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30', 
-          label: 'En attente de réponse',
+          label: 'Non consultée par le recruteur',
           icon: 'clock' as const
         };
     }
@@ -158,15 +153,15 @@ export const ApplicationDetailPage = () => {
         <section className="rounded-2xl border-2 p-6 mb-6" style={{ borderColor: colors.border }}>
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
             <div className="flex-1">
-              <h2 className="text-2xl font-bold text-slate-100 mb-2">
+              <h2 className="text-2xl font-bold mb-2" style={{ color: colors.text }}>
                 {application.offer.title}
               </h2>
-              <p className="text-slate-300 flex items-center gap-2 mb-2">
+              <p className="flex items-center gap-2 mb-2" style={{ color: colors.text, opacity: 0.8 }}>
                 <Icon name="building" size={18} />
                 {application.offer.company.name}
               </p>
               {application.offer.company.sector && (
-                <p className="text-sm text-slate-400">
+                <p className="text-sm" style={{ color: colors.text, opacity: 0.6 }}>
                   {application.offer.company.sector}
                 </p>
               )}
@@ -182,7 +177,7 @@ export const ApplicationDetailPage = () => {
             </span>
           </div>
           
-          <div className="flex items-center gap-2 text-sm text-slate-400 border-t border-slate-700 pt-4">
+          <div className="flex items-center gap-2 text-sm border-t pt-4" style={{ color: colors.text, opacity: 0.6, borderColor: colors.border }}>
             <Icon name="calendar" size={16} />
             Postulée le {new Date(application.createdAt).toLocaleDateString('fr-FR', {
               year: 'numeric',
@@ -194,14 +189,14 @@ export const ApplicationDetailPage = () => {
 
         {/* Documents de candidature */}
         <section className="mb-6">
-          <h3 className="text-xl font-bold text-slate-100 mb-4 flex items-center gap-2">
-            <Icon name="document" size={24} className="text-sky-400" />
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ color: colors.text }}>
+            <Icon name="document" size={24} className="opacity-100" />
             Documents de candidature
           </h3>
           
           {!application.cvUrl && !application.coverLetterUrl && (!application.additionalDocs || application.additionalDocs.length === 0) ? (
-            <div className="bg-slate-800 rounded-xl border border-dashed border-slate-700 p-8 text-center">
-              <p className="text-slate-400">
+            <div className="rounded-xl border border-dashed p-8 text-center" style={{ borderColor: colors.border }}>
+              <p style={{ color: colors.text, opacity: 0.6 }}>
                 Aucun document n'a été joint à cette candidature
               </p>
             </div>
@@ -209,14 +204,14 @@ export const ApplicationDetailPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* CV */}
               {application.cvUrl && (
-                <article className="bg-slate-800 rounded-xl border border-slate-700 p-6 hover:border-sky-500 transition-all">
+                <article className="rounded-xl border-2 p-6 hover:opacity-90 transition-all" style={{ borderColor: colors.border }}>
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-sky-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Icon name="document" size={24} className="text-sky-400" />
+                    <div className="w-12 h-12 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: colors.text, opacity: 0.1 }}>
+                      <Icon name="document" size={24} />
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-bold text-slate-100 mb-1">CV</h4>
-                      <p className="text-sm text-slate-400 mb-3 break-all">
+                      <h4 className="font-bold mb-1" style={{ color: colors.text }}>CV</h4>
+                      <p className="text-sm mb-3 break-all" style={{ color: colors.text, opacity: 0.6 }}>
                         {application.cvUrl.split('/').pop()}
                       </p>
                       <div className="flex gap-2">
@@ -224,14 +219,16 @@ export const ApplicationDetailPage = () => {
                           href={application.cvUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs px-3 py-1.5 bg-sky-500 hover:bg-sky-600 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800"
+                          className="text-xs px-3 py-1.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
+                          style={{ backgroundColor: colors.text, color: colors.bg, opacity: 0.9 }}
                         >
                           Voir
                         </a>
                         <a
                           href={application.cvUrl}
                           download
-                          className="text-xs px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800"
+                          className="text-xs px-3 py-1.5 border-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
+                          style={{ borderColor: colors.border, color: colors.text }}
                         >
                           Télécharger
                         </a>
@@ -243,14 +240,14 @@ export const ApplicationDetailPage = () => {
 
               {/* Lettre de motivation */}
               {application.coverLetterUrl && (
-                <article className="bg-slate-800 rounded-xl border border-slate-700 p-6 hover:border-purple-500 transition-all">
+                <article className="rounded-xl border-2 p-6 hover:opacity-90 transition-all" style={{ borderColor: colors.border }}>
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Icon name="document" size={24} className="text-purple-400" />
+                    <div className="w-12 h-12 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: colors.text, opacity: 0.1 }}>
+                      <Icon name="document" size={24} />
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-bold text-slate-100 mb-1">Lettre de motivation</h4>
-                      <p className="text-sm text-slate-400 mb-3 break-all">
+                      <h4 className="font-bold mb-1" style={{ color: colors.text }}>Lettre de motivation</h4>
+                      <p className="text-sm mb-3 break-all" style={{ color: colors.text, opacity: 0.6 }}>
                         {application.coverLetterUrl.split('/').pop()}
                       </p>
                       <div className="flex gap-2">
@@ -258,14 +255,16 @@ export const ApplicationDetailPage = () => {
                           href={application.coverLetterUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs px-3 py-1.5 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-slate-800"
+                          className="text-xs px-3 py-1.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
+                          style={{ backgroundColor: colors.text, color: colors.bg, opacity: 0.9 }}
                         >
                           Voir
                         </a>
                         <a
                           href={application.coverLetterUrl}
                           download
-                          className="text-xs px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-slate-800"
+                          className="text-xs px-3 py-1.5 border-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
+                          style={{ borderColor: colors.border, color: colors.text }}
                         >
                           Télécharger
                         </a>
@@ -279,15 +278,16 @@ export const ApplicationDetailPage = () => {
               {application.additionalDocs?.map((docUrl, index) => (
                 <article 
                   key={index}
-                  className="bg-slate-800 rounded-xl border border-slate-700 p-6 hover:border-green-500 transition-all"
+                  className="rounded-xl border-2 p-6 hover:opacity-90 transition-all"
+                  style={{ borderColor: colors.border }}
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Icon name="document" size={24} className="text-green-400" />
+                    <div className="w-12 h-12 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: colors.text, opacity: 0.1 }}>
+                      <Icon name="document" size={24} />
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-bold text-slate-100 mb-1">Document {index + 1}</h4>
-                      <p className="text-sm text-slate-400 mb-3 break-all">
+                      <h4 className="font-bold mb-1" style={{ color: colors.text }}>Document {index + 1}</h4>
+                      <p className="text-sm mb-3 break-all" style={{ color: colors.text, opacity: 0.6 }}>
                         {docUrl.split('/').pop()}
                       </p>
                       <div className="flex gap-2">
@@ -295,14 +295,16 @@ export const ApplicationDetailPage = () => {
                           href={docUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-slate-800"
+                          className="text-xs px-3 py-1.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
+                          style={{ backgroundColor: colors.text, color: colors.bg, opacity: 0.9 }}
                         >
                           Voir
                         </a>
                         <a
                           href={docUrl}
                           download
-                          className="text-xs px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-slate-800"
+                          className="text-xs px-3 py-1.5 border-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
+                          style={{ borderColor: colors.border, color: colors.text }}
                         >
                           Télécharger
                         </a>
@@ -317,13 +319,14 @@ export const ApplicationDetailPage = () => {
 
         {/* Offre d'emploi associée */}
         <section className="mb-6">
-          <h3 className="text-xl font-bold text-slate-100 mb-4 flex items-center gap-2">
-            <Icon name="briefcase" size={24} className="text-sky-400" />
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ color: colors.text }}>
+            <Icon name="briefcase" size={24} className="opacity-100" />
             Offre d'emploi associée
           </h3>
           
           <article 
-            className="bg-slate-800 rounded-xl border border-slate-700 p-6 hover:border-sky-500 transition-all cursor-pointer"
+            className="rounded-xl border-2 p-6 hover:opacity-90 transition-all cursor-pointer"
+            style={{ borderColor: colors.border }}
             onClick={() => navigate(`/offres/${application.offer.id}`)}
             role="button"
             tabIndex={0}
@@ -335,10 +338,10 @@ export const ApplicationDetailPage = () => {
               }
             }}
           >
-            <h4 className="text-lg font-bold text-slate-100 mb-2">
+            <h4 className="text-lg font-bold mb-2" style={{ color: colors.text }}>
               {application.offer.title}
             </h4>
-            <div className="flex flex-wrap gap-2 mb-3 text-sm text-slate-400">
+            <div className="flex flex-wrap gap-2 mb-3 text-sm" style={{ color: colors.text, opacity: 0.6 }}>
               <span className="flex items-center gap-1">
                 <Icon name="location" size={14} />
                 {application.offer.location}
@@ -348,10 +351,10 @@ export const ApplicationDetailPage = () => {
               <span>•</span>
               <span>{application.offer.experience}</span>
             </div>
-            <p className="text-slate-300 mb-4 line-clamp-3">
+            <p className="mb-4 line-clamp-3" style={{ color: colors.text, opacity: 0.8 }}>
               {application.offer.description}
             </p>
-            <div className="inline-flex items-center gap-2 text-sky-400 hover:text-sky-300 font-medium transition-colors">
+            <div className="inline-flex items-center gap-2 font-medium transition-colors" style={{ color: colors.text }}>
               Voir l'offre complète
               <Icon name="arrow-right" size={16} />
             </div>

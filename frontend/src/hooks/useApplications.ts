@@ -8,7 +8,7 @@ import { useState, useCallback } from 'react';
 import apiClient from '../api/apiClient';
 
 // Types importés localement (à synchroniser avec le backend)
-export type ApplicationStatus = 'PENDING' | 'ACCEPTED' | 'REJECTED';
+export type ApplicationStatus = 'NOT_VIEWED' | 'VIEWED';
 
 export interface Application {
   id: number;

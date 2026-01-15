@@ -4,7 +4,8 @@
  * Validation des champs, gestion des erreurs, toggle mot de passe
  */
 
-import { useState, FormEvent } from 'react';
+import { useState } from 'react';
+import type { FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../services';
 import { 
@@ -16,7 +17,7 @@ import {
   VALIDATION_RULES,
   STORAGE_KEYS,
 } from '../constants';
-import { CloseIcon, LightbulbIcon } from '../components/icons';
+import { CloseIcon } from '../components/icons';
 import { useTheme } from '../contexts/AccessibilityContext';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
 
@@ -95,8 +96,12 @@ export const LoginPage = () => {
       localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, response.token);
       localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(response.user));
 
-      // Redirection
-      navigate('/dashboard');
+      // Redirection selon le rôle
+      if (response.user.role === 'RECRUITER') {
+        navigate('/recruteur/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (error: any) {
       const errorMessage = 
         error.response?.data?.error || 
@@ -123,7 +128,7 @@ export const LoginPage = () => {
         {/* Logo / Header */}
         <div className="text-center mb-8">
           <img 
-            src={theme === 'dark' ? '/logo sombre.webp' : '/logo clair.webp'}
+            src={theme === 'dark' ? `${import.meta.env.BASE_URL}logo sombre.webp` : `${import.meta.env.BASE_URL}logo clair.webp`}
             alt="Project Handi"
             className="h-28 mx-auto"
           />
@@ -293,18 +298,6 @@ export const LoginPage = () => {
               </svg>
               Retour à l'accueil
             </Link>
-          </div>
-        </div>
-
-        {/* Comptes de test (dev uniquement) */}
-        <div className="mt-6 p-4 rounded-lg border-2" style={{ backgroundColor: colors.bg, borderColor: colors.border, opacity: 0.8 }}>
-          <p className="text-xs mb-2 font-semibold flex items-center gap-2" style={{ color: colors.text, opacity: 0.8 }}>
-            <LightbulbIcon size={14} aria-hidden="true" />
-            Comptes de test :
-          </p>
-          <div className="text-xs space-y-1" style={{ color: colors.text, opacity: 0.6 }}>
-            <p>• Candidat : marie.dupont@example.com / password123</p>
-            <p>• Recruteur : recruiter@techinclusion.com / password123</p>
           </div>
         </div>
       </div>

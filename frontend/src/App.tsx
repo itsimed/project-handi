@@ -1,6 +1,6 @@
 // project-handi/frontend/src/App.tsx
 
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
@@ -14,16 +14,17 @@ import { SettingsPage } from './pages/SettingsPage';
 import { RecruiterDashboard } from './pages/RecruiterDashboard';
 import { RecruiterOfferDetailPage } from './pages/RecruiterOfferDetailPage';
 import { PublishOfferPage } from './pages/PublishOfferPage';
+import { OfferApplicationsPage } from './pages/OfferApplicationsPage';
+import { RecruiterApplicationDetailPage } from './pages/RecruiterApplicationDetailPage';
 import { ApplicationDocumentsPage } from './pages/ApplicationDocumentsPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
-import { RoleBasedRoute } from './components/RoleBasedRoute';
 import { ScrollToTop } from './components/ScrollToTop';
 import { AccessibilityButton } from './components/AccessibilityButton';
 
 function App() 
 {
     return (
-        <Router>
+        <Router basename="/~imed">
             <ScrollToTop />
             <Toaster />
             <AccessibilityButton />
@@ -44,8 +45,14 @@ function App()
                 {/* 5. Dashboard recruteur (protégé) */}
                 <Route path="/recruteur/dashboard" element={<ProtectedRoute><RecruiterDashboard /></ProtectedRoute>} />
 
-                {/* 5.1. Détail d'une offre pour recruteur (protégé) */}
-                <Route path="/recruteur/offres/:id" element={<ProtectedRoute><RecruiterOfferDetailPage /></ProtectedRoute>} />
+                {/* 5.1. Candidatures d'une offre pour recruteur (protégé) */}
+                <Route path="/recruteur/offres/:offerId" element={<ProtectedRoute><OfferApplicationsPage /></ProtectedRoute>} />
+
+                {/* 5.2. Détail d'une candidature pour recruteur (protégé) */}
+                <Route path="/recruteur/candidatures/:applicationId" element={<ProtectedRoute><RecruiterApplicationDetailPage /></ProtectedRoute>} />
+
+                {/* 5.3. Détail d'une offre pour recruteur (protégé) */}
+                <Route path="/recruteur/offres/:id/details" element={<ProtectedRoute><RecruiterOfferDetailPage /></ProtectedRoute>} />
 
                 {/* 6. Publier une offre - Recruteur uniquement (protégé) */}
                 <Route path="/recruteur/publier-offre" element={<ProtectedRoute><PublishOfferPage /></ProtectedRoute>} />

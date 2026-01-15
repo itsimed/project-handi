@@ -68,7 +68,6 @@ export const HomePage = () => {
   // ==================== HOOKS ====================
   const navigate = useNavigate();
   const heroRef = useRef<HTMLDivElement>(null);
-  const [scrollY, setScrollY] = useState(0);
   const [stats, setStats] = useState<Stats>({
     totalOffers: 0,
     totalCompanies: 0,
@@ -110,7 +109,7 @@ export const HomePage = () => {
   // Parallax effect on scroll
   useEffect(() => {
     const handleScroll = () => {
-      setScrollY(window.scrollY);
+      window.scrollY; // Utiliser scrollY pour effet parallaxe si besoin
     };
     
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -175,16 +174,6 @@ export const HomePage = () => {
   }, []);
 
   // ==================== HANDLERS ====================
-  const handleAuthAction = () => {
-    if (isLoggedIn) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('userData');
-      window.location.href = '/';
-    } else {
-      navigate('/login');
-    }
-  };
-
   const handleNavigateToDashboard = () => {
     const userData = localStorage.getItem('userData');
     if (userData) {
@@ -193,21 +182,6 @@ export const HomePage = () => {
       navigate(user.role === 'RECRUITER' ? '/recruteur/dashboard' : '/dashboard');
     } else {
       navigate('/dashboard');
-    }
-  };
-
-  const handleNavigateToApplications = () => {
-    const userData = localStorage.getItem('userData');
-    if (userData) {
-      const user = JSON.parse(userData);
-      // Les recruteurs ne doivent pas avoir accès aux candidatures candidat
-      if (user.role === 'RECRUITER') {
-        navigate('/recruteur/dashboard');
-      } else {
-        navigate('/mes-candidatures');
-      }
-    } else {
-      navigate('/login');
     }
   };
 
@@ -253,10 +227,10 @@ export const HomePage = () => {
           {/* Image Hero en arrière-plan - Bandeau pleine largeur */}
           <div className="absolute inset-0 z-0">
             <picture>
-              <source media="(max-width: 768px)" srcSet="/hero%20mobile.webp" />
-              <source media="(min-width: 769px)" srcSet="/hero.webp" />
+              <source media="(max-width: 768px)" srcSet={`${import.meta.env.BASE_URL}hero mobile.webp`} />
+              <source media="(min-width: 769px)" srcSet={`${import.meta.env.BASE_URL}hero.webp`} />
               <img
-                src="/hero.webp"
+                src={`${import.meta.env.BASE_URL}hero.webp`}
                 alt=""
                 aria-hidden="true"
                 className="w-full h-full object-cover opacity-80"
@@ -331,7 +305,7 @@ export const HomePage = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
-              {QUICK_ACCESS_FILTERS.map((filter, index) => (
+              {QUICK_ACCESS_FILTERS.map((filter, _index) => (
                 <button
                   key={filter.id}
                   type="button"
@@ -450,7 +424,7 @@ export const HomePage = () => {
             <div>
               <div className="mb-4">
                 <img 
-                  src={theme === 'dark' ? '/logo sombre.webp' : '/logo clair.webp'}
+                  src={theme === 'dark' ? `${import.meta.env.BASE_URL}logo sombre.webp` : `${import.meta.env.BASE_URL}logo clair.webp`}
                   alt="Project Handi"
                   className="h-28"
                 />

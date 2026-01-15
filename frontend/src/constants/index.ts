@@ -55,9 +55,8 @@ export const DISABILITY_LABELS: Record<string, string> = {
 };
 
 export const STATUS_LABELS: Record<string, string> = {
-  PENDING: 'En attente',
-  ACCEPTED: 'Acceptée',
-  REJECTED: 'Refusée',
+  NOT_VIEWED: 'Non consultée',
+  VIEWED: 'Consultée',
 };
 
 export const ROLE_LABELS: Record<string, string> = {
@@ -69,9 +68,8 @@ export const ROLE_LABELS: Record<string, string> = {
 // ==================== COLORS ====================
 
 export const STATUS_COLORS: Record<string, string> = {
-  PENDING: 'bg-yellow-100 text-yellow-800',
-  ACCEPTED: 'bg-green-100 text-green-800',
-  REJECTED: 'bg-red-100 text-red-800',
+  NOT_VIEWED: 'bg-yellow-100 text-yellow-800',
+  VIEWED: 'bg-green-100 text-green-800',
 };
 
 export const CONTRACT_COLORS: Record<string, string> = {

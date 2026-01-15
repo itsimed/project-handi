@@ -51,7 +51,7 @@ export const useOfferFilters = (
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentFilters, setCurrentFilters] = useState<OfferFilters>(initialFilters);
-  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /**
    * Construit les query params pour l'API à partir des filtres

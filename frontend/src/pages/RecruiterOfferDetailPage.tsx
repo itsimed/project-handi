@@ -11,7 +11,6 @@ import { Breadcrumb } from '../components/Breadcrumb';
 import { useTheme } from '../contexts/AccessibilityContext';
 import { toastService } from '../services/toastService';
 import type { Offer, Application } from '../types';
-import { CheckIcon, CloseIcon, DocumentIcon } from '../components/icons';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
 
 interface OfferWithApplications extends Offer {
@@ -22,7 +21,7 @@ interface OfferWithApplications extends Offer {
 export const RecruiterOfferDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { colors, theme } = useTheme();
+  const { colors } = useTheme();
   const [offer, setOffer] = useState<OfferWithApplications | null>(null);
   const [applications, setApplications] = useState<Application[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -112,7 +111,7 @@ export const RecruiterOfferDetailPage = () => {
 
       // Pour chaque CV, télécharger individuellement (ou implémenter un vrai ZIP si besoin)
       for (const link of cvLinks) {
-        window.open(link, '_blank');
+        if (link) window.open(link, '_blank');
       }
       
       toastService.success(`${cvLinks.length} CV(s) en cours de téléchargement`);
@@ -292,7 +291,7 @@ export const RecruiterOfferDetailPage = () => {
           </h2>
 
           {applications.length === 0 ? (
-            <p style={{ color: colors.text, opacity: 0.6, textAlign: 'center', paddingY: '3rem' }}>
+            <p style={{ color: colors.text, opacity: 0.6, textAlign: 'center', padding: '3rem' }}>
               Aucune candidature pour cette offre
             </p>
           ) : (

@@ -25,7 +25,7 @@ export const StatsBar: React.FC<StatsBarProps> = ({
   totalApplicants = 0,
   isLoading,
 }) => {
-  const { colors, theme } = useTheme();
+  const { theme } = useTheme();
   
   const formatNumber = (num: number): string => {
     return num?.toLocaleString('fr-FR') || '0';
