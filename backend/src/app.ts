@@ -16,18 +16,9 @@ import express from 'express';
 import cors from 'cors';
 import allRoutes from './routes';
 import { logger } from './utils/logger';
-import { setupSSHTunnel } from './tunnel';
 
-// Initialiser le tunnel SSH si nécessaire
-(async () => {
-  if (process.env.SSH_PASSWORD) {
-    console.log('🔗 Setting up SSH tunnel to Paris 8...');
-    await setupSSHTunnel();
-    console.log('✅ SSH tunnel ready');
-  }
-
-  // 1. Configuration
-  const app = express();
+// 1. Configuration
+const app = express();
 
   // 2. Middlewares Globaux
   app.use( cors({ origin: '*' }) );
@@ -92,4 +83,3 @@ import { setupSSHTunnel } from './tunnel';
       process.exit(0);
     });
   });
-})();

@@ -46,18 +46,25 @@ async function setupSSHTunnel() {
         });
         conn.on('error', (err) => {
             console.error('❌ SSH connection error:', err.message);
+            console.error('   Details:', err);
             resolve(false);
         });
         conn.on('close', () => {
             console.log('⚠️  SSH connection closed');
         });
         console.log(`🔗 Connecting to SSH ${SSH_HOST}:${SSH_PORT}...`);
+        console.log(`   Username: ${SSH_USER}`);
+        console.log(`   Timeout: 30 seconds`);
         conn.connect({
             host: SSH_HOST,
             port: SSH_PORT,
             username: SSH_USER,
             password: SSH_PASSWORD,
-            readyTimeout: 10000,
+            readyTimeout: 30000,
+            tryKeyboard: false,
+            algorithms: {
+                cipher: ['aes128-ctr', 'aes256-ctr', 'aes128-gcm@openssh.com', 'aes256-gcm@openssh.com'],
+            },
         });
     });
 }
