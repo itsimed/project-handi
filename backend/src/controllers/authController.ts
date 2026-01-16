@@ -45,11 +45,25 @@ export const register = async (req: Request, res: Response) =>
             }
         );
 
+        // Générer le JWT token automatiquement après inscription
+        const token = jwt.sign(
+            { userId: newUser.id, email: newUser.email, role: newUser.role },
+            JWT_SECRET,
+            { expiresIn: '7d' }
+        );
+
         res.status(201).json
         (
             {
                 message: "Utilisateur créé avec succès",
-                user: { id: newUser.id, email: newUser.email }
+                token,
+                user: { 
+                    id: newUser.id, 
+                    email: newUser.email, 
+                    role: newUser.role,
+                    firstName: newUser.firstName,
+                    lastName: newUser.lastName
+                }
             }
         );
     }
