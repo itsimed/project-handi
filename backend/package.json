@@ -9,6 +9,7 @@
     "build": "tsc",
     "start": "node dist/app.js",
     "start:tunnel": "node dist/app.js",
+    "postinstall": "prisma generate",
     "prisma:migrate": "dotenv -e ./.env npx prisma migrate dev",
     "prisma:generate": "dotenv -e ./.env npx prisma generate"
   },

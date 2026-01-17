@@ -1,4 +1,6 @@
 node_modules
+dist/
+
 # Keep environment variables out of version control
 .env
 .env.mysql
@@ -13,3 +15,12 @@ uploads/
 
 # Logs directory
 logs/
+
+# Build outputs
+*.tsbuildinfo
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

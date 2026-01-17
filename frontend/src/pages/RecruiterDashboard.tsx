@@ -32,6 +32,7 @@ export const RecruiterDashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [offers, setOffers] = useState<OfferWithApplications[]>([]);
   const [isLoadingOffers, setIsLoadingOffers] = useState(true);
+  const [showPausedOffers, setShowPausedOffers] = useState(true); // Afficher les offres en pause par défaut
   const [stats, setStats] = useState({
     totalOffers: 0,
     totalApplications: 0,
@@ -141,6 +142,11 @@ export const RecruiterDashboard = () => {
     setSearchParams(params);
   };
 
+  // Filtrer les offres selon le statut (ACTIVE/PAUSED)
+  const filteredOffers = showPausedOffers 
+    ? offers 
+    : offers.filter(offer => offer.status === 'ACTIVE');
+
   // ==================== RENDER ====================
   const getStatusBadge = (status: string) => {
     const badges = {
@@ -225,74 +231,87 @@ export const RecruiterDashboard = () => {
           </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="mb-6">
-          <SearchBarCompact
-            onSearch={handleSearch}
-            initialWhat={searchWhat}
-            initialWhere={searchWhere}
-          />
-        </div>
-
-        {/* Action Button */}
-        <div className="mb-8">
-          <button
-            onClick={handleCreateOffer}
-            className="px-6 py-3 font-semibold rounded-xl transition-all duration-200 hover:scale-105"
-            style={{ 
-              backgroundColor: colors.text,
-              color: colors.bg
-            }}
-          >
-            + Publier une nouvelle offre
-          </button>
-        </div>
-
         {/* Content Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Offers List */}
           <div className="md:col-span-3 border-2 rounded-2xl p-6" style={{ borderColor: colors.border }}>
-            <h3 className="text-xl font-bold mb-6 flex items-center gap-3" style={{ color: colors.text }}>
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-              Mes offres ({offers.length})
-            </h3>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold flex items-center gap-3" style={{ color: colors.text }}>
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Mes offres ({filteredOffers.length})
+              </h3>
+              
+              {/* Bouton toggle pour afficher/masquer les offres en pause */}
+              <button
+                onClick={() => setShowPausedOffers(!showPausedOffers)}
+                className="px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 border-2"
+                style={{
+                  backgroundColor: showPausedOffers ? colors.text : colors.bg,
+                  color: showPausedOffers ? colors.bg : colors.text,
+                  borderColor: colors.border
+                }}
+              >
+                {showPausedOffers ? '✓ Afficher les offres en pause' : 'Masquer les offres en pause'}
+              </button>
+            </div>
 
             {isLoadingOffers ? (
               <div className="text-center py-12" style={{ color: colors.text, opacity: 0.6 }}>
                 Chargement...
               </div>
-            ) : offers.length === 0 ? (
+            ) : filteredOffers.length === 0 ? (
               <div className="text-center py-12" style={{ color: colors.text, opacity: 0.6 }}>
                 {searchWhat || searchWhere ? (
                   <>
                     <p className="mb-2">Aucune offre ne correspond à votre recherche</p>
                     <p className="text-sm">Essayez avec d'autres mots-clés</p>
                   </>
+                ) : !showPausedOffers && offers.length > 0 ? (
+                  <>
+                    <p className="mb-2">Toutes vos offres sont en pause</p>
+                    <p className="text-sm">Cliquez sur le bouton ci-dessus pour afficher les offres en pause</p>
+                  </>
                 ) : (
                   <>
                     <p className="mb-2">Aucune offre publiée</p>
-                    <p className="text-sm">Cliquez sur le bouton ci-dessus pour créer votre première offre</p>
+                    <p className="text-sm">Cliquez sur le bouton "Publier une nouvelle offre" pour créer votre première offre</p>
                   </>
                 )}
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {offers.map((offer) => (
+                {filteredOffers.map((offer) => (
                   <button
                     key={offer.id}
                     onClick={() => handleViewOffer(offer)}
-                    className={`text-left p-4 rounded-xl border-2 transition-all duration-200 hover:scale-[1.02]`}
+                    className={`text-left p-4 rounded-xl border-2 transition-all duration-200 hover:scale-[1.02] ${
+                      offer.status === 'PAUSED' ? 'opacity-75' : ''
+                    }`}
                     style={{
                       backgroundColor: colors.bg,
-                      borderColor: colors.border
+                      borderColor: offer.status === 'PAUSED' ? '#f59e0b' : colors.border
                     }}
                   >
                     <div className="mb-3">
-                      <h4 className="font-semibold mb-1" style={{ color: colors.text }}>
-                        {offer.title}
-                      </h4>
+                      <div className="flex items-start justify-between gap-2 mb-1">
+                        <h4 className="font-semibold" style={{ color: colors.text }}>
+                          {offer.title}
+                        </h4>
+                        {offer.status === 'PAUSED' && (
+                          <span 
+                            className="px-2 py-0.5 text-xs font-semibold rounded whitespace-nowrap"
+                            style={{ 
+                              backgroundColor: '#fef3c7',
+                              color: '#92400e',
+                              border: '1px solid #f59e0b'
+                            }}
+                          >
+                            En pause
+                          </span>
+                        )}
+                      </div>
                       <p className="text-sm flex items-center gap-2" style={{ color: colors.text, opacity: 0.7 }}>
                         <LocationIcon size={14} aria-hidden="true" />
                         {offer.location}
