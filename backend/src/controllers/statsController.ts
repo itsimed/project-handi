@@ -1,6 +1,7 @@
 // project-handi/backend/src/controllers/statsController.ts
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
+import { AuthRequest } from '../middlewares/authMiddleware';
 
 /**
  * GET /api/v1/stats/applications
@@ -69,6 +70,68 @@ export const getAllStats = async (req: Request, res: Response) => {
         console.error("Error in getAllStats:", error);
         res.status(500).json({ 
             error: "Erreur lors de la récupération des statistiques",
+            message: error.message
+        });
+    }
+};
+
+/**
+ * GET /api/v1/stats/recruiter
+ * Récupère les statistiques du recruteur connecté (ses offres et candidatures reçues)
+ * @access  Privé (Rôle: RECRUITER, ADMIN)
+ */
+export const getRecruiterStats = async (req: AuthRequest, res: Response) => {
+    try {
+        const recruiterId = req.user?.userId;
+
+        if (!recruiterId) {
+            return res.status(401).json({ error: "Utilisateur non identifié." });
+        }
+
+        // Compter les offres du recruteur
+        const totalOffers = await prisma.offer.count({
+            where: { recruiterId }
+        });
+
+        // Compter les candidatures reçues pour les offres du recruteur
+        const totalApplications = await prisma.application.count({
+            where: {
+                offer: {
+                    recruiterId
+                }
+            }
+        });
+
+        // Compter les candidatures non consultées
+        const pendingApplications = await prisma.application.count({
+            where: {
+                offer: {
+                    recruiterId
+                },
+                status: 'NOT_VIEWED'
+            }
+        });
+
+        // Compter les candidatures consultées
+        const viewedApplications = await prisma.application.count({
+            where: {
+                offer: {
+                    recruiterId
+                },
+                status: 'VIEWED'
+            }
+        });
+
+        res.status(200).json({ 
+            totalOffers,
+            totalApplications,
+            pendingApplications,
+            viewedApplications
+        });
+    } catch (error: any) {
+        console.error("Error in getRecruiterStats:", error);
+        res.status(500).json({ 
+            error: "Erreur lors de la récupération des statistiques recruteur",
             message: error.message
         });
     }

@@ -72,9 +72,19 @@ export const DashboardPage = () => {
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
-        // Charger les candidatures si connecté
+        // Charger les candidatures si connecté et que l'utilisateur est un candidat
         if (isLoggedIn) {
-            fetchMyApplications();
+            const userData = localStorage.getItem('userData');
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    if (user.role === 'APPLICANT') {
+                        fetchMyApplications();
+                    }
+                } catch (error) {
+                    // Ignorer les erreurs de parsing
+                }
+            }
         }
     }, [isLoggedIn, fetchMyApplications]);
 

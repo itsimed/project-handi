@@ -119,7 +119,7 @@ export const applicationService = {
     id: number,
     statusData: UpdateApplicationStatusDTO
   ): Promise<Application> => {
-    const response = await apiClient.patch(`/applications/${id}/status`, statusData);
+    const response = await apiClient.put(`/applications/${id}/status`, statusData);
     return response.data;
   },
 

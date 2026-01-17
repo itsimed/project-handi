@@ -3,8 +3,10 @@ import { Router } from 'express';
 import { 
     getTotalApplications, 
     getTotalApplicants,
-    getAllStats 
+    getAllStats,
+    getRecruiterStats
 } from '../controllers/statsController';
+import { authenticateToken, authorizeRole } from '../middlewares/authMiddleware';
 
 const router = Router();
 
@@ -28,5 +30,12 @@ router.get('/applications', getTotalApplications);
  * @access  Public
  */
 router.get('/applicants', getTotalApplicants);
+
+/**
+ * @route   GET /api/v1/stats/recruiter
+ * @desc    Récupère les statistiques du recruteur connecté (ses offres et candidatures reçues)
+ * @access  Privé (Rôle: RECRUITER, ADMIN)
+ */
+router.get('/recruiter', authenticateToken, authorizeRole(['RECRUITER', 'ADMIN']), getRecruiterStats);
 
 export default router;

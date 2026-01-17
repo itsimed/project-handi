@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "DisabilityCategory" ADD VALUE IF NOT EXISTS 'NO_COMPENSATION';

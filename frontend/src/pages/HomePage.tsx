@@ -26,10 +26,15 @@ import {
 // ==================== TYPES ====================
 interface Stats
 {
-  totalOffers: number;
-  totalCompanies: number;
-  totalApplications: number;
-  activeRecruiters?: number;
+  // Stats globales (APPLICANT)
+  totalOffers?: number;
+  totalCompanies?: number;
+  totalApplications?: number;
+  totalApplicants?: number;
+  
+  // Stats recruteur (RECRUITER)
+  pendingApplications?: number;
+  viewedApplications?: number;
 }
 
 interface QuickAccessButton
@@ -69,12 +74,9 @@ export const HomePage = () => {
   const navigate = useNavigate();
   const heroRef = useRef<HTMLDivElement>(null);
   const [scrollY, setScrollY] = useState(0);
-  const [stats, setStats] = useState<Stats>({
-    totalOffers: 0,
-    totalCompanies: 0,
-    totalApplications: 0,
-  });
+  const [stats, setStats] = useState<Stats>({});
   const [isLoadingStats, setIsLoadingStats] = useState(true);
+  const [userRole, setUserRole] = useState<'APPLICANT' | 'RECRUITER' | 'ADMIN' | null>(null);
   const [contractCounts, setContractCounts] = useState<ContractCounts>({
     STAGE: 0,
     ALTERNANCE: 0,
@@ -117,28 +119,56 @@ export const HomePage = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Détecter le rôle de l'utilisateur
+  useEffect(() => {
+    const userData = localStorage.getItem('userData');
+    if (userData) {
+      try {
+        const user = JSON.parse(userData);
+        setUserRole(user.role);
+      } catch (error) {
+        setUserRole(null);
+      }
+    } else {
+      setUserRole(null);
+    }
+  }, []);
+
   // Fetch statistics with error handling
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await apiClient.get('/stats');
+        setIsLoadingStats(true);
         
-        setStats({
-          totalOffers: response.data.totalOffers,
-          totalCompanies: response.data.totalCompanies,
-          totalApplications: response.data.totalApplications,
-          activeRecruiters: response.data.totalApplicants,
-        });
+        if (userRole === 'RECRUITER' || userRole === 'ADMIN') {
+          // Charger les stats recruteur
+          const response = await apiClient.get('/stats/recruiter');
+          setStats({
+            totalOffers: response.data.totalOffers,
+            totalApplications: response.data.totalApplications,
+            pendingApplications: response.data.pendingApplications,
+            viewedApplications: response.data.viewedApplications,
+          });
+        } else {
+          // Charger les stats globales (APPLICANT ou non connecté)
+          const response = await apiClient.get('/stats');
+          setStats({
+            totalOffers: response.data.totalOffers,
+            totalCompanies: response.data.totalCompanies,
+            totalApplications: response.data.totalApplications,
+            totalApplicants: response.data.totalApplicants,
+          });
+        }
       } catch (error) {
         toastService.error('Impossible de charger les statistiques');
-        setStats({ totalOffers: 0, totalCompanies: 0, totalApplications: 0 });
+        setStats({});
       } finally {
         setIsLoadingStats(false);
       }
     };
     
     fetchStats();
-  }, []);
+  }, [userRole]);
 
   // Fetch contract counts
   useEffect(() => {
@@ -281,24 +311,57 @@ export const HomePage = () => {
               
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-white md:text-[#23022E]">
-                Trouvez le job qui vous
-                <br />
-                correspond vraiment parmi
+                {userRole === 'RECRUITER' || userRole === 'ADMIN' ? (
+                  <>
+                    Gérez vos offres et
+                    <br />
+                    suivez vos candidatures
+                  </>
+                ) : (
+                  <>
+                    Trouvez le job qui vous
+                    <br />
+                    correspond vraiment parmi
+                  </>
+                )}
               </h1>
 
               <div className="flex items-center justify-center gap-3 flex-wrap">
-                <div className="flex items-center gap-2 px-4 py-2 rounded-lg border border-white md:border-[#23022E]">
-                  <span className="text-3xl font-bold text-white md:text-[#23022E]">
-                    {isLoadingStats ? '...' : stats.totalOffers.toLocaleString('fr-FR')}
-                  </span>
-                  <span className="text-sm font-medium text-white/70 md:text-[#23022E]/70">offres actives</span>
-                </div>
-                <div className="flex items-center gap-2 px-4 py-2 rounded-lg border border-white md:border-[#23022E]">
-                  <span className="text-3xl font-bold text-white md:text-[#23022E]">
-                    {isLoadingStats ? '...' : stats.totalCompanies.toLocaleString('fr-FR')}
-                  </span>
-                  <span className="text-sm font-medium text-white/70 md:text-[#23022E]/70">entreprises</span>
-                </div>
+                {userRole === 'RECRUITER' || userRole === 'ADMIN' ? (
+                  <>
+                    <div className="flex items-center gap-2 px-4 py-2 rounded-lg border border-white md:border-[#23022E]">
+                      <span className="text-3xl font-bold text-white md:text-[#23022E]">
+                        {isLoadingStats ? '...' : (stats.totalOffers || 0).toLocaleString('fr-FR')}
+                      </span>
+                      <span className="text-sm font-medium text-white/70 md:text-[#23022E]/70">
+                        offres publiées
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 px-4 py-2 rounded-lg border border-white md:border-[#23022E]">
+                      <span className="text-3xl font-bold text-white md:text-[#23022E]">
+                        {isLoadingStats ? '...' : (stats.totalApplications || 0).toLocaleString('fr-FR')}
+                      </span>
+                      <span className="text-sm font-medium text-white/70 md:text-[#23022E]/70">
+                        candidatures reçues
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-center gap-2 px-4 py-2 rounded-lg border border-white md:border-[#23022E]">
+                      <span className="text-3xl font-bold text-white md:text-[#23022E]">
+                        {isLoadingStats ? '...' : (stats.totalOffers || 0).toLocaleString('fr-FR')}
+                      </span>
+                      <span className="text-sm font-medium text-white/70 md:text-[#23022E]/70">offres actives</span>
+                    </div>
+                    <div className="flex items-center gap-2 px-4 py-2 rounded-lg border border-white md:border-[#23022E]">
+                      <span className="text-3xl font-bold text-white md:text-[#23022E]">
+                        {isLoadingStats ? '...' : (stats.totalCompanies || 0).toLocaleString('fr-FR')}
+                      </span>
+                      <span className="text-sm font-medium text-white/70 md:text-[#23022E]/70">entreprises</span>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
@@ -310,11 +373,14 @@ export const HomePage = () => {
             {/* Stats Bar */}
             <div className="mt-8 max-w-4xl mx-auto">
               <StatsBar
-                totalOffers={stats.totalOffers}
+                totalOffers={stats.totalOffers || 0}
                 totalCompanies={stats.totalCompanies}
-                totalApplications={stats.totalApplications}
-                totalApplicants={stats.activeRecruiters}
+                totalApplications={stats.totalApplications || 0}
+                totalApplicants={stats.totalApplicants}
+                pendingApplications={stats.pendingApplications}
+                viewedApplications={stats.viewedApplications}
                 isLoading={isLoadingStats}
+                isRecruiter={userRole === 'RECRUITER' || userRole === 'ADMIN'}
               />
             </div>
           </div>
@@ -451,7 +517,7 @@ export const HomePage = () => {
               <div className="mb-4">
                 <img 
                   src={theme === 'dark' ? '/logo sombre.webp' : '/logo clair.webp'}
-                  alt="Project Handi"
+                  alt="Logo du site YoJob"
                   className="h-28"
                 />
               </div>

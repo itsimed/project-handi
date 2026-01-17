@@ -14,6 +14,7 @@ import { SettingsPage } from './pages/SettingsPage';
 import { RecruiterDashboard } from './pages/RecruiterDashboard';
 import { RecruiterOfferDetailPage } from './pages/RecruiterOfferDetailPage';
 import { PublishOfferPage } from './pages/PublishOfferPage';
+import { EditOfferPage } from './pages/EditOfferPage';
 import { ApplicationDocumentsPage } from './pages/ApplicationDocumentsPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { RoleBasedRoute } from './components/RoleBasedRoute';
@@ -49,6 +50,9 @@ function App()
 
                 {/* 6. Publier une offre - Recruteur uniquement (protégé) */}
                 <Route path="/recruteur/publier-offre" element={<ProtectedRoute><PublishOfferPage /></ProtectedRoute>} />
+
+                {/* 6.1. Modifier une offre - Recruteur uniquement (protégé) */}
+                <Route path="/recruteur/modifier-offre/:id" element={<ProtectedRoute><EditOfferPage /></ProtectedRoute>} />
 
                 {/* 7. Profil utilisateur (protégé) */}
                 <Route path="/profil" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />

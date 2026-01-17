@@ -92,6 +92,12 @@ export const PublishOfferPage = () => {
       return;
     }
 
+    // Validation : au moins une option de compensation handicap
+    if (formData.disabilityCompatible.length === 0) {
+      setError('Veuillez sélectionner au moins une option de compensation handicap');
+      return;
+    }
+
     // Validation : companyId requis
     if (!formData.companyId || formData.companyId === 0) {
       setError('Erreur : Aucune entreprise associée à votre compte. Veuillez contacter un administrateur.');
@@ -286,10 +292,10 @@ export const PublishOfferPage = () => {
             </select>
           </div>
 
-          {/* Compatibilité handicap */}
+          {/* Compensation handicap */}
           <div>
             <label className="block text-sm font-medium mb-3" style={{ color: colors.text }}>
-              Compatibilité handicap
+              Compensation handicap *
             </label>
             <div className="grid grid-cols-2 gap-3">
               {[
@@ -299,6 +305,7 @@ export const PublishOfferPage = () => {
                 { value: 'COGNITIF', label: 'Handicap cognitif' },
                 { value: 'PSYCHIQUE', label: 'Handicap psychique' },
                 { value: 'INVISIBLE', label: 'Handicap invisible' },
+                { value: 'NO_COMPENSATION', label: 'Aucune compensation' },
               ].map((category) => (
                 <button
                   key={category.value}

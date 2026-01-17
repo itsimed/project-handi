@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import { AuthRequest } from '../middlewares/authMiddleware';
 import * as applicationService from '../services/applicationService';
 import prisma from '../config/prisma';
+import { logger } from '../utils/logger';
 
 /**
  * Gère la création d'une nouvelle candidature.
@@ -48,19 +49,26 @@ export const getRecruiterApplications = async (req: AuthRequest, res: Response) 
 {
     try
     {
+        logger.info('[GET_RECRUITER_APPLICATIONS] Début de la récupération des candidatures');
         const recruiterId = req.user?.userId;
+        const userRole = req.user?.role;
+
+        logger.info('[GET_RECRUITER_APPLICATIONS]', { recruiterId, userRole });
 
         if (!recruiterId)
         {
+            logger.warn('[GET_RECRUITER_APPLICATIONS] Utilisateur non identifié');
             return res.status(401).json({ error: "Non identifié" });
         }
 
         const applications = await applicationService.getApplicationsForRecruiter(recruiterId);
         
+        logger.info('[GET_RECRUITER_APPLICATIONS] ✅ Candidatures récupérées', { count: applications.length });
         res.json(applications);
     }
     catch (error: any)
     {
+        logger.error('[GET_RECRUITER_APPLICATIONS] ❌ Erreur', { message: error.message });
         res.status(500).json({ error: error.message });
     }
 };
@@ -147,6 +155,47 @@ export const getMyApplications = async (req: AuthRequest, res: Response) => {
         console.error("Error in getMyApplications:", error);
         res.status(500).json({ 
             message: "Erreur lors de la récupération de vos candidatures" 
+        });
+    }
+};
+
+/**
+ * RÉCUPÉRER LES CANDIDATURES D'UNE OFFRE (Recruteur)
+ * GET /api/v1/applications/offer/:offerId
+ */
+export const getApplicationsByOfferId = async (req: AuthRequest, res: Response) => {
+    try {
+        const { offerId } = req.params;
+        const recruiterId = req.user?.userId;
+
+        if (!recruiterId) {
+            return res.status(401).json({ error: "Utilisateur non identifié." });
+        }
+
+        // Vérifier que l'offre appartient au recruteur
+        const offer = await prisma.offer.findFirst({
+            where: {
+                id: Number(offerId),
+                recruiterId: recruiterId
+            }
+        });
+
+        if (!offer) {
+            return res.status(404).json({ 
+                error: "Offre introuvable",
+                message: "Cette offre n'existe pas ou ne vous appartient pas."
+            });
+        }
+
+        const applications = await applicationService.getApplicationsByOfferId(Number(offerId));
+        
+        res.status(200).json(applications);
+        
+    } catch (error: any) {
+        logger.error("Error in getApplicationsByOfferId:", error);
+        res.status(500).json({ 
+            error: "Erreur lors de la récupération des candidatures",
+            message: error.message
         });
     }
 };

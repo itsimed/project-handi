@@ -5,7 +5,8 @@ import {
     getRecruiterApplications, 
     updateApplicationStatus,
     getMyApplications,
-    getApplicationById
+    getApplicationById,
+    getApplicationsByOfferId
 } from '../controllers/applicationController';
 
 const router = Router();
@@ -39,12 +40,26 @@ router.post(
  * @route   GET /api/v1/applications/recruiter
  * @desc    Permet à un recruteur de voir les candidatures reçues pour son entreprise
  * @access  Privé (Rôle: RECRUITER, ADMIN)
+ * IMPORTANT: Cette route doit être définie AVANT /:id pour éviter les conflits de routage
  */
 router.get(
     '/recruiter', 
     authenticateToken, 
     authorizeRole(['RECRUITER', 'ADMIN']), 
     getRecruiterApplications
+);
+
+/**
+ * @route   GET /api/v1/applications/offer/:offerId
+ * @desc    Récupère toutes les candidatures pour une offre spécifique (Recruteur uniquement pour ses propres offres)
+ * @access  Privé (Rôle: RECRUITER, ADMIN)
+ * IMPORTANT: Cette route doit être définie AVANT /:id pour éviter les conflits de routage
+ */
+router.get(
+    '/offer/:offerId',
+    authenticateToken,
+    authorizeRole(['RECRUITER', 'ADMIN']),
+    getApplicationsByOfferId
 );
 
 /**
@@ -61,7 +76,7 @@ router.get(
 
 /**
  * @route   PUT /api/v1/applications/:id/status
- * @desc    Permet à un recruteur de modifier le statut d'une candidature (ACCEPTED/REJECTED)
+ * @desc    Permet à un recruteur de modifier le statut d'une candidature (VIEWED/NOT_VIEWED)
  * @access  Privé (Rôle: RECRUITER, ADMIN)
  */
 router.put(

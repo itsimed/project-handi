@@ -4,11 +4,12 @@
  * Architecture: React 18 + TypeScript + Tailwind CSS
  */
 
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import apiClient from '../api/apiClient';
 import { Navbar } from '../components/Navbar';
 import { Breadcrumb } from '../components/Breadcrumb';
+import { SearchBarCompact } from '../components/SearchBarCompact';
 import { STORAGE_KEYS } from '../constants';
 import type { User, Offer, Application } from '../types';
 import { CheckIcon, CloseIcon, WaveIcon, DocumentIcon, LocationIcon, UsersIcon, ClockIcon } from '../components/icons';
@@ -26,6 +27,7 @@ interface OfferWithApplications extends Offer {
 export const RecruiterDashboard = () => {
   // ==================== STATE ====================
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { colors } = useTheme();
   const [user, setUser] = useState<User | null>(null);
   const [offers, setOffers] = useState<OfferWithApplications[]>([]);
@@ -35,6 +37,10 @@ export const RecruiterDashboard = () => {
     totalApplications: 0,
     pendingApplications: 0,
   });
+  
+  // Lire les paramètres de recherche depuis l'URL
+  const searchWhat = searchParams.get('what') || '';
+  const searchWhere = searchParams.get('where') || '';
 
   // ==================== EFFECTS ====================
   useEffect(() => {
@@ -51,27 +57,32 @@ export const RecruiterDashboard = () => {
     }
   }, [navigate]);
 
-  useEffect(() => {
-    if (user) {
-      fetchRecruiterOffers();
-      fetchRecruiterApplications();
-    }
-  }, [user]);
-
   // ==================== API CALLS ====================
-  const fetchRecruiterOffers = async () => {
+  const fetchRecruiterOffers = useCallback(async () => {
     try {
       setIsLoadingOffers(true);
-      const response = await apiClient.get('/offers');
+      // Utiliser l'endpoint spécifique recruteur qui retourne toutes les offres (ACTIVE et PAUSED)
+      const response = await apiClient.get('/offers/recruiter');
       
-      // Filtrer les offres du recruteur connecté
-      const recruiterOffers = response.data.filter(
-        (offer: Offer) => offer.recruiterId === user?.id
-      );
+      // Les offres retournées sont déjà filtrées par le backend pour ce recruteur
+      let recruiterOffers = response.data;
+      
+      // Appliquer le filtrage par recherche (titre OU localisation)
+      if (searchWhat || searchWhere) {
+        recruiterOffers = recruiterOffers.filter((offer: Offer) => {
+          const matchesTitle = !searchWhat || 
+            offer.title.toLowerCase().includes(searchWhat.toLowerCase());
+          const matchesLocation = !searchWhere || 
+            offer.location.toLowerCase().includes(searchWhere.toLowerCase());
+          
+          // Logique OU : correspond si titre OU localisation match
+          return matchesTitle || matchesLocation;
+        });
+      }
       
       setOffers(recruiterOffers);
       
-      // Calculer les stats
+      // Calculer les stats (sur toutes les offres du recruteur, pas seulement les filtrées)
       const totalApps = recruiterOffers.reduce(
         (acc: number, offer: any) => acc + (offer._count?.applications || 0),
         0
@@ -87,14 +98,12 @@ export const RecruiterDashboard = () => {
     } finally {
       setIsLoadingOffers(false);
     }
-  };
+  }, [user?.id, searchWhat, searchWhere]);
 
-  const fetchRecruiterApplications = async () => {
+  const fetchRecruiterApplications = useCallback(async () => {
     try {
       const response = await apiClient.get('/applications/recruiter');
       const allApplications = response.data;
-      
-      setApplications(allApplications);
       
       const notViewed = allApplications.filter(
         (app: Application) => app.status === 'NOT_VIEWED'
@@ -102,9 +111,17 @@ export const RecruiterDashboard = () => {
       
       setStats(prev => ({ ...prev, pendingApplications: notViewed }));
     } catch (error) {
+      console.error('Error fetching recruiter applications:', error);
       toastService.error('Erreur lors du chargement des candidatures');
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      fetchRecruiterOffers();
+      fetchRecruiterApplications();
+    }
+  }, [user, fetchRecruiterOffers, fetchRecruiterApplications]);
 
   const handleViewOffer = (offer: OfferWithApplications) => {
     navigate(`/recruteur/offres/${offer.id}`);
@@ -112,6 +129,16 @@ export const RecruiterDashboard = () => {
 
   const handleCreateOffer = () => {
     navigate('/recruteur/publier-offre');
+  };
+
+  /**
+   * Gestion de la recherche depuis la SearchBarCompact
+   */
+  const handleSearch = ({ what, where }: { what: string; where: string }) => {
+    const params = new URLSearchParams();
+    if (what.trim()) params.append('what', what.trim());
+    if (where.trim()) params.append('where', where.trim());
+    setSearchParams(params);
   };
 
   // ==================== RENDER ====================
@@ -157,9 +184,8 @@ export const RecruiterDashboard = () => {
       <main className="container mx-auto px-6 py-12 max-w-7xl">
         {/* Header Section */}
         <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2 flex items-center gap-3" style={{ color: colors.text }}>
+          <h2 className="text-3xl font-bold mb-2" style={{ color: colors.text }}>
             Bonjour {user.firstName}
-            <WaveIcon size={28} style={{ color: colors.text }} aria-label="Salutation" />
           </h2>
           <p style={{ color: colors.text, opacity: 0.7 }}>
             Gérez vos offres d'emploi et consultez les candidatures reçues
@@ -199,6 +225,15 @@ export const RecruiterDashboard = () => {
           </div>
         </div>
 
+        {/* Search Bar */}
+        <div className="mb-6">
+          <SearchBarCompact
+            onSearch={handleSearch}
+            initialWhat={searchWhat}
+            initialWhere={searchWhere}
+          />
+        </div>
+
         {/* Action Button */}
         <div className="mb-8">
           <button
@@ -230,8 +265,17 @@ export const RecruiterDashboard = () => {
               </div>
             ) : offers.length === 0 ? (
               <div className="text-center py-12" style={{ color: colors.text, opacity: 0.6 }}>
-                <p className="mb-2">Aucune offre publiée</p>
-                <p className="text-sm">Cliquez sur le bouton ci-dessus pour créer votre première offre</p>
+                {searchWhat || searchWhere ? (
+                  <>
+                    <p className="mb-2">Aucune offre ne correspond à votre recherche</p>
+                    <p className="text-sm">Essayez avec d'autres mots-clés</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="mb-2">Aucune offre publiée</p>
+                    <p className="text-sm">Cliquez sur le bouton ci-dessus pour créer votre première offre</p>
+                  </>
+                )}
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -259,8 +303,9 @@ export const RecruiterDashboard = () => {
                       <span className="px-2 py-1 text-xs rounded" style={{ backgroundColor: colors.bg, color: colors.text, border: `1px solid ${colors.border}` }}>
                         {getContractLabel(offer.contract)}
                       </span>
-                      <span className="text-sm font-semibold" style={{ color: colors.text, opacity: 0.7 }}>
-                        👥 {offer._count?.applications || 0}
+                      <span className="text-sm font-semibold flex items-center gap-1" style={{ color: colors.text, opacity: 0.7 }}>
+                        <UsersIcon size={16} aria-hidden="true" />
+                        {offer._count?.applications || 0}
                       </span>
                     </div>
                   </button>

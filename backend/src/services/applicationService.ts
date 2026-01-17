@@ -49,7 +49,7 @@ export async function applyToOffer( userId: number, offerId: number )
             {
                 userId,
                 offerId,
-                status: 'PENDING' 
+                status: 'NOT_VIEWED' 
             },
 
             include :
@@ -207,11 +207,67 @@ export async function getApplicationById( applicationId: number, userId: number 
 }
 
 /**
+ * Récupère toutes les candidatures pour une offre spécifique.
+ * @param offerId - ID de l'offre.
+ */
+export async function getApplicationsByOfferId( offerId: number )
+{
+    return prisma.application.findMany
+    (
+        {
+            where :
+            {
+                offerId : offerId
+            },
+
+            include :
+            {
+                user : 
+                {
+                    select : 
+                    {
+                        firstName: true,
+                        lastName: true,
+                        email: true
+                    }
+                },
+
+                offer : 
+                {
+                    select: 
+                    {
+                        title: true,
+                        location: true
+                    }
+                },
+                
+                documents: {
+                    select: {
+                        id: true,
+                        documentType: true,
+                        fileName: true,
+                        mimeType: true
+                    },
+                    orderBy: {
+                        uploadedAt: 'desc'
+                    }
+                }
+            },
+
+            orderBy : 
+            {
+                createdAt: 'desc'
+            }
+        }
+    );
+}
+
+/**
  * Met à jour le statut d'une candidature existante.
  * @param applicationId - ID unique de la candidature.
- * @param status - Nouveau statut (ACCEPTED ou REJECTED).
+ * @param status - Nouveau statut (VIEWED ou NOT_VIEWED).
  */
-export async function updateApplicationStatus( applicationId: number, status: 'ACCEPTED' | 'REJECTED' )
+export async function updateApplicationStatus( applicationId: number, status: 'VIEWED' | 'NOT_VIEWED' )
 {
     return prisma.application.update
     (

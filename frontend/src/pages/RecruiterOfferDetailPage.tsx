@@ -12,7 +12,9 @@ import { useTheme } from '../contexts/AccessibilityContext';
 import { toastService } from '../services/toastService';
 import type { Offer, Application } from '../types';
 import { CheckIcon, CloseIcon, DocumentIcon } from '../components/icons';
+import { Icon } from '../components/Icon';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
+import { ApplicationDocumentsModal } from '../components/ApplicationDocumentsModal';
 
 interface OfferWithApplications extends Offer {
   applications?: Application[];
@@ -28,6 +30,8 @@ export const RecruiterOfferDetailPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isActionLoading, setIsActionLoading] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
+  const [isDocumentsModalOpen, setIsDocumentsModalOpen] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -59,16 +63,19 @@ export const RecruiterOfferDetailPage = () => {
     try {
       setIsActionLoading(true);
       const newStatus = offer.status === 'ACTIVE' ? 'PAUSED' : 'ACTIVE';
-      await apiClient.put(`/offers/${offer.id}`, { status: newStatus });
+      const response = await apiClient.put(`/offers/${offer.id}`, { status: newStatus });
       
+      // Mettre à jour l'offre avec les données retournées par l'API
       setOffer({ ...offer, status: newStatus });
       toastService.success(
         newStatus === 'PAUSED' 
           ? 'Offre mise en pause' 
           : 'Offre réactivée'
       );
-    } catch (error) {
-      toastService.error('Erreur lors de la modification du statut');
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Erreur lors de la modification du statut';
+      toastService.error(errorMessage);
+      console.error('Erreur lors de la mise en pause/réactivation:', error);
     } finally {
       setIsActionLoading(false);
     }
@@ -83,11 +90,13 @@ export const RecruiterOfferDetailPage = () => {
       
       toastService.success('Offre supprimée avec succès');
       navigate('/recruteur/dashboard');
-    } catch (error) {
-      toastService.error('Erreur lors de la suppression de l\'offre');
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Erreur lors de la suppression de l\'offre';
+      toastService.error(errorMessage);
+      console.error('Erreur lors de la suppression:', error);
+      setShowDeleteConfirm(false);
     } finally {
       setIsActionLoading(false);
-      setShowDeleteConfirm(false);
     }
   };
 
@@ -96,32 +105,29 @@ export const RecruiterOfferDetailPage = () => {
     navigate(`/recruteur/modifier-offre/${offer.id}`);
   };
 
-  const downloadAllCVs = async () => {
-    try {
-      setIsActionLoading(true);
-      
-      // Préparer un dossier zip avec tous les CVs
-      const cvLinks = applications
-        .filter(app => app.cvUrl)
-        .map(app => app.cvUrl);
-      
-      if (cvLinks.length === 0) {
-        toastService.error('Aucun CV à télécharger');
-        return;
-      }
+  const handleApplicationClick = (application: Application) => {
+    setSelectedApplication(application);
+    setIsDocumentsModalOpen(true);
+  };
 
-      // Pour chaque CV, télécharger individuellement (ou implémenter un vrai ZIP si besoin)
-      for (const link of cvLinks) {
-        window.open(link, '_blank');
-      }
-      
-      toastService.success(`${cvLinks.length} CV(s) en cours de téléchargement`);
-    } catch (error) {
-      toastService.error('Erreur lors du téléchargement des CVs');
-    } finally {
-      setIsActionLoading(false);
+  const handleStatusUpdate = (applicationId: number, newStatus: 'VIEWED' | 'NOT_VIEWED') => {
+    setApplications(prev => prev.map(app => 
+      app.id === applicationId ? { ...app, status: newStatus } : app
+    ));
+    // Mettre à jour aussi l'offre si elle contient les applications
+    if (offer) {
+      setOffer(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          applications: prev.applications?.map(app => 
+            app.id === applicationId ? { ...app, status: newStatus } : app
+          )
+        };
+      });
     }
   };
+
 
   const getContractLabel = (contract: string | string[]): string => {
     const labels: Record<string, string> = {
@@ -196,58 +202,67 @@ export const RecruiterOfferDetailPage = () => {
         </div>
 
         {/* Actions principales */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8">
           <button
             onClick={handleEditOffer}
             disabled={isActionLoading}
-            className="px-4 py-3 rounded-lg font-medium transition-all"
+            className="px-4 py-3 rounded-lg font-medium transition-all flex items-center gap-2"
             style={{
               backgroundColor: colors.text,
               color: colors.bg
             }}
           >
-            ✏️ Modifier
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+            </svg>
+            Modifier
           </button>
 
           <button
             onClick={handlePauseOffer}
             disabled={isActionLoading}
-            className="px-4 py-3 rounded-lg font-medium border transition-all"
+            className="px-4 py-3 rounded-lg font-medium border transition-all flex items-center gap-2"
             style={{
               borderColor: colors.border,
               backgroundColor: colors.bg,
               color: colors.text
             }}
           >
-            {offer.status === 'ACTIVE' ? '⏸️ Mettre en pause' : '▶️ Réactiver'}
-          </button>
-
-          <button
-            onClick={downloadAllCVs}
-            disabled={isActionLoading || applications.length === 0}
-            className="px-4 py-3 rounded-lg font-medium border transition-all"
-            style={{
-              borderColor: colors.border,
-              backgroundColor: colors.bg,
-              color: colors.text,
-              opacity: applications.length === 0 ? 0.5 : 1,
-              cursor: applications.length === 0 ? 'not-allowed' : 'pointer'
-            }}
-          >
-            📥 Télécharger CVs ({applications.length})
+            {offer.status === 'ACTIVE' ? (
+              <>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <rect x="6" y="4" width="4" height="16" />
+                  <rect x="14" y="4" width="4" height="16" />
+                </svg>
+                Suspendre
+              </>
+            ) : (
+              <>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <polygon points="5 3 19 12 5 21 5 3" />
+                </svg>
+                Réactiver
+              </>
+            )}
           </button>
 
           <button
             onClick={() => setShowDeleteConfirm(true)}
             disabled={isActionLoading}
-            className="px-4 py-3 rounded-lg font-medium border transition-all"
+            className="px-4 py-3 rounded-lg font-medium border transition-all flex items-center gap-2"
             style={{
               borderColor: 'rgba(255,99,99,0.5)',
               backgroundColor: 'rgba(255,99,99,0.05)',
               color: '#ff8a8a'
             }}
           >
-            🗑️ Supprimer
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M3 6h18" />
+              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+            </svg>
+            Supprimer
           </button>
         </div>
 
@@ -300,11 +315,21 @@ export const RecruiterOfferDetailPage = () => {
               {applications.map((app) => (
                 <div
                   key={app.id}
-                  className="border rounded-lg p-4 transition-all hover:border-opacity-100"
+                  onClick={() => handleApplicationClick(app)}
+                  className="border rounded-lg p-4 transition-all cursor-pointer hover:border-opacity-100 hover:scale-[1.01]"
                   style={{
                     borderColor: colors.border,
                     backgroundColor: app.status === 'NOT_VIEWED' ? `${colors.text}08` : 'transparent'
                   }}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleApplicationClick(app);
+                    }
+                  }}
+                  aria-label={`Voir les documents de ${app.user?.firstName} ${app.user?.lastName}`}
                 >
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex-1">
@@ -339,21 +364,23 @@ export const RecruiterOfferDetailPage = () => {
                     Postulé le {new Date(app.createdAt).toLocaleDateString('fr-FR')}
                   </p>
 
-                  {/* Document actions */}
-                  <div className="flex gap-2 flex-wrap">
+                  {/* Document actions - Gardés comme alternative rapide */}
+                  <div className="flex gap-2 flex-wrap" onClick={(e) => e.stopPropagation()}>
                     {app.cvUrl && (
                       <a
                         href={app.cvUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-3 py-2 rounded text-sm font-medium"
+                        className="px-3 py-2 rounded text-sm font-medium flex items-center gap-2"
                         style={{
                           backgroundColor: `${colors.text}15`,
                           color: colors.text,
                           border: `1px solid ${colors.border}`
                         }}
+                        onClick={(e) => e.stopPropagation()}
                       >
-                        📄 Voir le CV
+                        <DocumentIcon size={16} aria-hidden="true" />
+                        Voir le CV
                       </a>
                     )}
                     {app.coverLetterUrl && (
@@ -361,14 +388,16 @@ export const RecruiterOfferDetailPage = () => {
                         href={app.coverLetterUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-3 py-2 rounded text-sm font-medium"
+                        className="px-3 py-2 rounded text-sm font-medium flex items-center gap-2"
                         style={{
                           backgroundColor: `${colors.text}15`,
                           color: colors.text,
                           border: `1px solid ${colors.border}`
                         }}
+                        onClick={(e) => e.stopPropagation()}
                       >
-                        📝 Voir lettre
+                        <Icon name="document" size={16} aria-hidden="true" />
+                        Voir lettre
                       </a>
                     )}
                   </div>
@@ -376,18 +405,20 @@ export const RecruiterOfferDetailPage = () => {
                   {/* Mark as viewed button */}
                   {app.status === 'NOT_VIEWED' && (
                     <button
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         // TODO: Implémenter le marquer comme consulté
                         toastService.success('Marquée comme consultée');
                       }}
-                      className="mt-3 w-full px-3 py-2 rounded text-sm font-medium transition-all"
+                      className="mt-3 w-full px-3 py-2 rounded text-sm font-medium transition-all flex items-center justify-center gap-2"
                       style={{
                         backgroundColor: 'rgba(16,185,129,0.1)',
                         color: '#10b981',
                         border: '1px solid rgba(16,185,129,0.35)'
                       }}
                     >
-                      ✓ Marquer comme consultée
+                      <CheckIcon size={16} aria-hidden="true" />
+                      Marquer comme consultée
                     </button>
                   )}
                 </div>
@@ -448,6 +479,17 @@ export const RecruiterOfferDetailPage = () => {
           </div>
         )}
       </main>
+
+      {/* Application Documents Modal */}
+      <ApplicationDocumentsModal
+        isOpen={isDocumentsModalOpen}
+        onClose={() => {
+          setIsDocumentsModalOpen(false);
+          setSelectedApplication(null);
+        }}
+        application={selectedApplication}
+        onStatusUpdate={handleStatusUpdate}
+      />
 
       <ScrollToTopButton />
     </div>

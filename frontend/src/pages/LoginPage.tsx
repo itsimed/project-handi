@@ -95,8 +95,12 @@ export const LoginPage = () => {
       localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, response.token);
       localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(response.user));
 
-      // Redirection
-      navigate('/dashboard');
+      // Redirection selon le rôle
+      if (response.user.role === 'RECRUITER' || response.user.role === 'ADMIN') {
+        navigate('/');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (error: any) {
       const errorMessage = 
         error.response?.data?.error || 

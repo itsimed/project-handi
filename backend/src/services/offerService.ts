@@ -1,6 +1,6 @@
 // project-handi/backend/src/services/offerService.ts
 
-import { ContractType, RemotePolicy, DisabilityCategory, ExperienceLevel } from '@prisma/client';
+import { ContractType, RemotePolicy, DisabilityCategory, ExperienceLevel, OfferStatus } from '@prisma/client';
 import prisma from '../config/prisma';
 
 /**
@@ -20,9 +20,10 @@ export interface OfferFilters
 /**
  * Récupère la liste des offres d'emploi en appliquant des filtres optionnels.
  * @param filters - Objet contenant les critères de recherche (contrat, ville, etc.)
+ * @param includePaused - Si true, inclut les offres suspendues (par défaut: false, exclut les offres PAUSED)
  * @returns Une promesse contenant le tableau des offres avec les relations entreprise et recruteur.
  */
-export async function getAllOffers(filters?: OfferFilters)
+export async function getAllOffers(filters?: OfferFilters, includePaused: boolean = false)
 {
   return prisma.offer.findMany
   (
@@ -71,6 +72,9 @@ export async function getAllOffers(filters?: OfferFilters)
         createdAt: filters?.dateMin 
           ? { gte: new Date(filters.dateMin) } 
           : undefined,
+        
+        // Filtre status : exclure les offres suspendues sauf si includePaused est true
+        status: includePaused ? undefined : OfferStatus.ACTIVE,
       },
 
       include :
@@ -129,6 +133,7 @@ export async function createNewOffer(offerData: any)
         disabilityCompatible: offerData.disabilityCompatible,
         companyId: offerData.companyId,
         recruiterId: offerData.recruiterId,
+        status: offerData.status || OfferStatus.ACTIVE, // Par défaut ACTIVE si non spécifié
       },
     }
   );
@@ -187,6 +192,53 @@ export async function deleteOffer(id: number)
   (
     {
       where: { id },
+    }
+  );
+}
+
+/**
+ * Récupère toutes les offres d'un recruteur spécifique (ACTIVE et PAUSED).
+ * @param recruiterId - L'identifiant du recruteur.
+ * @returns Une promesse contenant le tableau des offres du recruteur.
+ */
+export async function getRecruiterOffers(recruiterId: number)
+{
+  return prisma.offer.findMany
+  (
+    {
+      where: {
+        recruiterId: recruiterId,
+        // Pas de filtre sur status : inclut ACTIVE et PAUSED
+      },
+      include:
+      {
+        company:
+        {
+          select:
+          {
+            id: true,
+            name: true,
+            sector: true
+          }
+        },
+        recruiter:
+        {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true
+          }
+        },
+        _count: {
+          select: {
+            applications: true
+          }
+        }
+      },
+      orderBy:
+      {
+        createdAt: 'desc'
+      }
     }
   );
 }

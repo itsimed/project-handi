@@ -3,7 +3,7 @@
  * Barre de recherche accessible RGAA en version horizontale
  */
 
-import { useState, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { Icon } from './Icon';
 import { useTheme } from '../contexts/AccessibilityContext';
 
@@ -32,6 +32,15 @@ export const SearchBarCompact: React.FC<SearchBarCompactProps> = ({
   const { colors } = useTheme();
   const [what, setWhat] = useState(initialWhat);
   const [where, setWhere] = useState(initialWhere);
+
+  // Synchroniser les valeurs avec les props initiales quand elles changent
+  useEffect(() => {
+    setWhat(initialWhat);
+  }, [initialWhat]);
+
+  useEffect(() => {
+    setWhere(initialWhere);
+  }, [initialWhere]);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

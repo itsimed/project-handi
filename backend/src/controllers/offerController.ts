@@ -143,11 +143,37 @@ export const getOffers = async( req: Request, res: Response ) =>
 };
 
 /**
+ * Contrôleur pour récupérer toutes les offres du recruteur connecté (ACTIVE et PAUSED).
+ * @param req - Requête authentifiée contenant l'utilisateur.
+ * @param res - Réponse HTTP contenant la liste des offres du recruteur.
+ */
+export const getRecruiterOffers = async (req: AuthRequest, res: Response) => {
+    try {
+        const recruiterId = req.user?.userId;
+
+        if (!recruiterId) {
+            return res.status(401).json({ error: "Utilisateur non identifié." });
+        }
+
+        const offers = await offerService.getRecruiterOffers(recruiterId);
+
+        res.status(200).json(offers);
+    } catch (error: any) {
+        console.error("Erreur récupération offres recruteur:", error);
+        res.status(500).json({
+            error: "Erreur lors de la récupération de vos offres.",
+            message: error.message
+        });
+    }
+};
+
+/**
  * Contrôleur pour récupérer une offre spécifique par son ID.
- * @param req - Requête HTTP contenant l'ID de l'offre dans les paramètres.
+ * Les offres suspendues (PAUSED) ne sont accessibles que par le recruteur propriétaire.
+ * @param req - Requête HTTP contenant l'ID de l'offre dans les paramètres. Peut contenir req.user si authentifié.
  * @param res - Réponse HTTP contenant les détails de l'offre (200 OK) ou une erreur 404.
  */
-export const getOfferById = async( req: Request, res: Response ) => 
+export const getOfferById = async( req: Request | AuthRequest, res: Response ) => 
 {
     try 
     {
@@ -186,6 +212,29 @@ export const getOfferById = async( req: Request, res: Response ) =>
             );
         }
 
+        // Vérifier si l'offre est suspendue
+        if (offer.status === 'PAUSED') {
+            // Si l'utilisateur est authentifié et est le recruteur propriétaire, autoriser l'accès
+            const authReq = req as AuthRequest;
+            const userId = authReq.user?.userId;
+            
+            if (!userId || offer.recruiterId !== userId) {
+                // L'offre est suspendue et l'utilisateur n'est pas le propriétaire
+                // Retourner 404 pour ne pas révéler l'existence de l'offre
+                return res.status
+                (
+                    404
+                )
+                .json
+                (
+                    { 
+                        error: "Offre introuvable",
+                        message: "L'offre demandée n'existe pas."
+                    }
+                );
+            }
+        }
+
         res.status
         (
             200
@@ -214,5 +263,89 @@ export const getOfferById = async( req: Request, res: Response ) =>
                 message: error.message
             }
         );
+    }
+};
+
+/**
+ * Contrôleur pour mettre à jour une offre d'emploi existante.
+ * Vérifie que l'offre appartient au recruteur connecté.
+ * @param req - Requête étendue contenant l'ID de l'offre et les données à mettre à jour.
+ * @param res - Réponse HTTP contenant l'offre mise à jour (200 OK) ou une erreur.
+ */
+export const updateOffer = async (req: AuthRequest, res: Response) => {
+    try {
+        const { id } = req.params;
+        const recruiterId = req.user?.userId;
+        const updateData = req.body;
+
+        if (!recruiterId) {
+            return res.status(401).json({ error: "Utilisateur non identifié." });
+        }
+
+        const offerId = parseInt(id, 10);
+        if (isNaN(offerId)) {
+            return res.status(400).json({ error: "ID d'offre invalide." });
+        }
+
+        // Vérifier que l'offre appartient au recruteur
+        const existingOffer = await offerService.getOfferById(offerId);
+        if (!existingOffer) {
+            return res.status(404).json({ error: "Offre introuvable." });
+        }
+
+        if (existingOffer.recruiterId !== recruiterId) {
+            return res.status(403).json({ error: "Vous n'avez pas le droit de modifier cette offre." });
+        }
+
+        const updatedOffer = await offerService.updateOffer(offerId, updateData);
+        res.status(200).json(updatedOffer);
+    } catch (error: any) {
+        console.error("Erreur modification offre:", error);
+        res.status(500).json({
+            error: "Erreur lors de la modification de l'offre.",
+            message: error.message
+        });
+    }
+};
+
+/**
+ * Contrôleur pour supprimer une offre d'emploi.
+ * Vérifie que l'offre appartient au recruteur connecté.
+ * Les candidatures associées seront supprimées automatiquement via cascade Prisma.
+ * @param req - Requête étendue contenant l'ID de l'offre à supprimer.
+ * @param res - Réponse HTTP contenant un message de succès (200 OK) ou une erreur.
+ */
+export const deleteOffer = async (req: AuthRequest, res: Response) => {
+    try {
+        const { id } = req.params;
+        const recruiterId = req.user?.userId;
+
+        if (!recruiterId) {
+            return res.status(401).json({ error: "Utilisateur non identifié." });
+        }
+
+        const offerId = parseInt(id, 10);
+        if (isNaN(offerId)) {
+            return res.status(400).json({ error: "ID d'offre invalide." });
+        }
+
+        // Vérifier que l'offre appartient au recruteur
+        const existingOffer = await offerService.getOfferById(offerId);
+        if (!existingOffer) {
+            return res.status(404).json({ error: "Offre introuvable." });
+        }
+
+        if (existingOffer.recruiterId !== recruiterId) {
+            return res.status(403).json({ error: "Vous n'avez pas le droit de supprimer cette offre." });
+        }
+
+        await offerService.deleteOffer(offerId);
+        res.status(200).json({ message: "Offre supprimée avec succès" });
+    } catch (error: any) {
+        console.error("Erreur suppression offre:", error);
+        res.status(500).json({
+            error: "Erreur lors de la suppression de l'offre.",
+            message: error.message
+        });
     }
 };

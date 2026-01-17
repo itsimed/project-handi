@@ -28,28 +28,24 @@ export const MyApplicationsPage = () => {
     /**
      * Obtient le label accessible pour le statut
      */
-    const getStatusLabel = (status: 'PENDING' | 'ACCEPTED' | 'REJECTED'): string => {
+    const getStatusLabel = (status: 'VIEWED' | 'NOT_VIEWED'): string => {
         switch (status) {
-            case 'PENDING':
-                return 'En attente de réponse';
-            case 'ACCEPTED':
-                return 'Candidature acceptée';
-            case 'REJECTED':
-                return 'Candidature refusée';
+            case 'VIEWED':
+                return 'Candidature consultée';
+            case 'NOT_VIEWED':
+                return 'Candidature non consultée';
         }
     };
 
     /**
      * Obtient le label visuel pour le statut
      */
-    const getStatusText = (status: 'PENDING' | 'ACCEPTED' | 'REJECTED'): string => {
+    const getStatusText = (status: 'VIEWED' | 'NOT_VIEWED'): string => {
         switch (status) {
-            case 'PENDING':
-                return 'En attente';
-            case 'ACCEPTED':
-                return 'Accepté';
-            case 'REJECTED':
-                return 'Refusé';
+            case 'VIEWED':
+                return 'Consultée';
+            case 'NOT_VIEWED':
+                return 'Non consultée';
         }
     };
 
@@ -178,7 +174,7 @@ export const MyApplicationsPage = () => {
                                                         navigate(`/mes-candidatures/${app.id}`);
                                                     }
                                                 }}
-                                                className="transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+                                                className="cursor-pointer"
                                                 style={{ backgroundColor: colors.bg }}
                                                 role="button"
                                                 tabIndex={0}
@@ -221,10 +217,8 @@ export const MyApplicationsPage = () => {
                                                 >
                                                     <span 
                                                         className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
-                                                            app.status === 'ACCEPTED' 
+                                                            app.status === 'VIEWED' 
                                                                 ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
-                                                                : app.status === 'REJECTED' 
-                                                                ? 'bg-red-500/20 text-red-400 border border-red-500/30' 
                                                                 : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
                                                         }`}
                                                         role="status"

@@ -82,7 +82,18 @@ export const OfferDetailPage = () => {
 
     fetchOffer();
     if (isLoggedIn) {
-      fetchMyApplications();
+      // Vérifier que l'utilisateur est un candidat avant d'appeler fetchMyApplications
+      const userData = localStorage.getItem('userData');
+      if (userData) {
+        try {
+          const user = JSON.parse(userData);
+          if (user.role === 'APPLICANT') {
+            fetchMyApplications();
+          }
+        } catch (error) {
+          // Ignorer les erreurs de parsing
+        }
+      }
     }
   }, [id, isLoggedIn, fetchMyApplications]);
 
@@ -134,6 +145,7 @@ export const OfferDetailPage = () => {
       PSYCHIQUE: 'Handicap psychique',
       COGNITIF: 'Handicap cognitif',
       INVISIBLE: 'Handicap invisible',
+      NO_COMPENSATION: 'Aucune compensation',
     };
     return labels[category] || category;
   };

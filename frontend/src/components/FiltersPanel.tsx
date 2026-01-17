@@ -99,7 +99,6 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
     'AUDITIF',
     'PSYCHIQUE',
     'COGNITIF',
-    'INVISIBLE',
   ];
 
   const getLabel = (value: string): string => {
@@ -124,7 +123,7 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
       AUDITIF: 'Auditif',
       PSYCHIQUE: 'Psychique',
       COGNITIF: 'Cognitif',
-      INVISIBLE: 'Invisible',
+      NO_COMPENSATION: 'Aucune compensation',
     };
     return labels[value] || value;
   };
@@ -145,21 +144,24 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
         aria-label="Filtres de recherche"
         className={`
           w-full max-w-sm md:max-w-md lg:max-w-lg rounded-2xl border-2 
-          max-h-[calc(100vh-4rem)] overflow-hidden
+          overflow-hidden
           fixed
-          top-16 left-0 h-[calc(100vh-4rem)]
+          top-16 left-0
           z-50
           transform transition-transform duration-300 ease-in-out
+          flex flex-col
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         `}
         style={{ 
           backgroundColor: colors.bg,
-          borderColor: colors.border
+          borderColor: colors.border,
+          height: 'calc(100vh - 4rem)',
+          maxHeight: 'calc(100vh - 4rem)'
         }}
       >
         {/* Header du drawer avec bouton fermer */}
         {onClose && (
-          <div className="flex justify-between items-center p-4 border-b" style={{ borderColor: colors.border }}>
+          <div className="flex justify-between items-center p-4 border-b flex-shrink-0" style={{ borderColor: colors.border }}>
             <h2 
               className="text-xl font-bold flex items-center gap-2"
               style={{ color: colors.text }}
@@ -185,8 +187,10 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
         )}
         
       <div 
-        className="h-full overflow-y-auto pr-2 scrollbar-custom"
-        style={{ maxHeight: 'calc(100vh - 4rem)' }}
+        className="flex-1 overflow-y-auto pr-2 scrollbar-custom"
+        style={{ 
+          minHeight: 0
+        }}
       >
         <style>{`
           .scrollbar-custom {
@@ -215,7 +219,7 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
             opacity: 0.7;
           }
         `}</style>
-        <div className="p-6">
+        <div className="px-6 pt-6 pb-8">
         {/* Header avec compteur - Masqué si onClose est fourni (car présent dans le header du drawer) */}
         <div className={`flex justify-between items-center mb-6 ${onClose ? 'hidden' : 'flex'}`}>
         <h2 
@@ -466,7 +470,7 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
           )}
         </div>
 
-        {/* Compatibilité handicap */}
+        {/* Compensation handicap */}
         <div className="border-t pt-4" style={{ borderColor: colors.border }}>
           <button
             type="button"

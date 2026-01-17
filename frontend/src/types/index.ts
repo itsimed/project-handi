@@ -89,6 +89,7 @@ export interface Application {
   user?: User;
   offer?: Offer;
   company?: Company | null;
+  documents?: ApplicationDocument[];
 }
 
 // ==================== DTOs / REQUEST BODIES ====================
