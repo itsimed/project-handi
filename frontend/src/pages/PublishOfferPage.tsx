@@ -304,7 +304,6 @@ export const PublishOfferPage = () => {
                 { value: 'AUDITIF', label: 'Handicap auditif' },
                 { value: 'COGNITIF', label: 'Handicap cognitif' },
                 { value: 'PSYCHIQUE', label: 'Handicap psychique' },
-                { value: 'INVISIBLE', label: 'Handicap invisible' },
                 { value: 'NO_COMPENSATION', label: 'Aucune compensation' },
               ].map((category) => (
                 <button

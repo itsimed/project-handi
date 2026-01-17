@@ -19,7 +19,7 @@ export type DisabilityCategory =
   | 'AUDITIF' 
   | 'PSYCHIQUE' 
   | 'COGNITIF' 
-  | 'INVISIBLE';
+  | 'NO_COMPENSATION';
 
 export type ApplicationStatus = 'VIEWED' | 'NOT_VIEWED';
 

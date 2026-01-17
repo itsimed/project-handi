@@ -44,7 +44,6 @@ enum DisabilityCategory {
   AUDITIF
   PSYCHIQUE
   COGNITIF
-  INVISIBLE
   NO_COMPENSATION
 }
 
