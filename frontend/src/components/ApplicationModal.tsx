@@ -113,12 +113,6 @@ export const ApplicationModal = ({
   };
 
   const handleSubmit = async () => {
-    if (!cvFile) {
-      setError('Le CV est obligatoire pour postuler');
-      toastService.error('Le CV est obligatoire pour postuler');
-      return;
-    }
-
     setSubmitting(true);
     setError(null);
 
@@ -136,16 +130,38 @@ export const ApplicationModal = ({
       }
 
       console.log('✅ Candidature créée, ID:', createdApplicationId);
-      console.log('📎 Upload du CV...');
-      await uploadDocument(createdApplicationId, cvFile, 'CV');
-
-      if (coverLetterFile) {
-        console.log('📎 Upload de la lettre de motivation...');
-        await uploadDocument(createdApplicationId, coverLetterFile, 'COVER_LETTER');
+      
+      // Tenter d'uploader les documents, mais ne pas bloquer si ça échoue
+      let uploadSuccess = true;
+      
+      if (cvFile) {
+        try {
+          console.log('📎 Upload du CV...');
+          await uploadDocument(createdApplicationId, cvFile, 'CV');
+          console.log('✅ CV uploadé');
+        } catch (uploadError: any) {
+          console.warn('⚠️ Échec upload CV:', uploadError.message);
+          uploadSuccess = false;
+        }
       }
 
-      console.log('🎉 Candidature complète !');
-      toastService.success('Candidature envoyée avec succès !');
+      if (coverLetterFile) {
+        try {
+          console.log('📎 Upload de la lettre de motivation...');
+          await uploadDocument(createdApplicationId, coverLetterFile, 'COVER_LETTER');
+          console.log('✅ Lettre uploadée');
+        } catch (uploadError: any) {
+          console.warn('⚠️ Échec upload lettre:', uploadError.message);
+          uploadSuccess = false;
+        }
+      }
+
+      console.log('🎉 Candidature envoyée !');
+      if (uploadSuccess) {
+        toastService.success('Candidature envoyée avec succès !');
+      } else {
+        toastService.warning('Candidature envoyée, mais documents non uploadés. Contactez le recruteur.');
+      }
       onSuccess();
       onClose();
     } catch (err: any) {
