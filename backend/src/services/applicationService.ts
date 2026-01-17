@@ -143,7 +143,9 @@ export async function getApplicationsForRecruiter( recruiterId: number )
                         title: true,
                         location: true
                     }
-                }
+                },
+
+                documents: true  // Inclure les documents (CV et lettre de motivation)
             },
 
             orderBy : 

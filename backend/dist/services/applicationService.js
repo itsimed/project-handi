@@ -102,7 +102,8 @@ async function getApplicationsForRecruiter(recruiterId) {
                     title: true,
                     location: true
                 }
-            }
+            },
+            documents: true // Inclure les documents (CV et lettre de motivation)
         },
         orderBy: {
             createdAt: 'desc'
