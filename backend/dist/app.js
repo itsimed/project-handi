@@ -19,7 +19,6 @@ const cors_1 = __importDefault(require("cors"));
 const routes_1 = __importDefault(require("./routes"));
 const logger_1 = require("./utils/logger");
 // 1. Configuration
-// dotenv est déjà chargé en haut du fichier
 const app = (0, express_1.default)();
 // 2. Middlewares Globaux
 app.use((0, cors_1.default)({ origin: '*' }));

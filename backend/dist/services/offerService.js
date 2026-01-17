@@ -19,21 +19,17 @@ const prisma_1 = __importDefault(require("../config/prisma"));
  * @returns Une promesse contenant le tableau des offres avec les relations entreprise et recruteur.
  */
 async function getAllOffers(filters, includePaused = false) {
-    return prisma_1.default.offer.findMany({
+    const offers = await prisma_1.default.offer.findMany({
         where: {
-            // Filtre contract : accepte une valeur unique ou un tableau, vérifie si au moins un contrat correspond
-            contract: filters?.contract
-                ? Array.isArray(filters.contract)
-                    ? { hasSome: filters.contract }
-                    : { has: filters.contract }
-                : undefined,
-            // Filtre title : recherche partielle insensible à la casse
+            // Note: Les filtres sur contract et disabilityCompatible (JSON) ne sont pas supportés directement par Prisma
+            // Le filtrage sera fait côté application après récupération
+            // Filtre title : recherche partielle (MySQL est case-insensitive par défaut)
             title: filters?.title
-                ? { contains: filters.title, mode: 'insensitive' }
+                ? { contains: filters.title }
                 : undefined,
-            // Filtre location : recherche partielle insensible à la casse
+            // Filtre location : recherche partielle
             location: filters?.location
-                ? { contains: filters.location, mode: 'insensitive' }
+                ? { contains: filters.location }
                 : undefined,
             // Filtre remote : accepte une valeur unique ou un tableau
             remote: filters?.remote
@@ -47,12 +43,7 @@ async function getAllOffers(filters, includePaused = false) {
                     ? { in: filters.experience }
                     : filters.experience
                 : undefined,
-            // Filtre disability : vérifie si au moins une valeur du tableau est présente
-            disabilityCompatible: filters?.disability
-                ? Array.isArray(filters.disability)
-                    ? { hasSome: filters.disability }
-                    : { has: filters.disability }
-                : undefined,
+            // Note: Filtre disability non supporté avec JSON - filtrage côté application
             // Filtre date minimum
             createdAt: filters?.dateMin
                 ? { gte: new Date(filters.dateMin) }
@@ -86,6 +77,23 @@ async function getAllOffers(filters, includePaused = false) {
             createdAt: 'desc'
         }
     });
+    // Filtrage côté application pour les champs JSON
+    let filteredOffers = offers;
+    if (filters?.contract) {
+        const contractsToMatch = Array.isArray(filters.contract) ? filters.contract : [filters.contract];
+        filteredOffers = filteredOffers.filter(offer => {
+            const offerContracts = Array.isArray(offer.contract) ? offer.contract : [];
+            return contractsToMatch.some(ct => offerContracts.includes(ct));
+        });
+    }
+    if (filters?.disability) {
+        const disabilitiesToMatch = Array.isArray(filters.disability) ? filters.disability : [filters.disability];
+        filteredOffers = filteredOffers.filter(offer => {
+            const offerDisabilities = Array.isArray(offer.disabilityCompatible) ? offer.disabilityCompatible : [];
+            return disabilitiesToMatch.some(dis => offerDisabilities.includes(dis));
+        });
+    }
+    return filteredOffers;
 }
 /**
  * Enregistre une nouvelle offre d'emploi dans la base de données.
