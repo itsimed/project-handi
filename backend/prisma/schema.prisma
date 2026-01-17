@@ -174,9 +174,10 @@ model ApplicationDocument {
   mimeType      String       // "application/pdf", "application/msword", etc.
   fileSize      Int          // Taille en bytes
   
-  // Localisation (agnostique du backend de stockage)
-  storageType   String       @default("local") // "local" ou "s3" (futur)
-  storagePath   String       // Chemin relatif ou S3 key
+  // Stockage du fichier
+  storageType   String       @default("database") // "database", "local" ou "s3"
+  storagePath   String?      // Chemin relatif (si local/s3), null si database
+  fileData      Bytes?       // Données binaires du fichier (si database storage)
   
   // Type de document
   documentType  DocumentType // CV ou COVER_LETTER
