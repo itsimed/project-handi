@@ -3,7 +3,7 @@
  * Barre de recherche accessible RGAA en version horizontale
  */
 
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import { Icon } from './Icon';
 import { useTheme } from '../contexts/AccessibilityContext';
 
