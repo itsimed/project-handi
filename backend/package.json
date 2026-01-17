@@ -9,9 +9,11 @@
     "build": "tsc",
     "start": "node dist/app.js",
     "start:tunnel": "node dist/app.js",
+    "start:railway": "bash railway-start.sh",
     "postinstall": "prisma generate",
     "prisma:migrate": "dotenv -e ./.env npx prisma migrate dev",
-    "prisma:generate": "dotenv -e ./.env npx prisma generate"
+    "prisma:generate": "dotenv -e ./.env npx prisma generate",
+    "railway:fix": "prisma migrate resolve --rolled-back 20260117215637_remove_invisible_category || true"
   },
   "dependencies": {
     "@prisma/client": "^6.17.0",

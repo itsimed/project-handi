@@ -40,7 +40,9 @@ async function applyToOffer(userId, offerId) {
         data: {
             userId,
             offerId,
-            status: 'NOT_VIEWED'
+            companyId: offer.companyId, // Lier à l'entreprise de l'offre
+            status: 'NOT_VIEWED',
+            additionalDocs: [], // Passer un tableau vide explicitement
         },
         include: {
             offer: {

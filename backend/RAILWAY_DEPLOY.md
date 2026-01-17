@@ -29,6 +29,12 @@ npm install && npm run build
 ```
 
 ### 2. Start Command
+**Pour réparer automatiquement les migrations:**
+```
+npm run start:railway
+```
+
+**Ou standard (après avoir résolu manuellement):**
 ```
 npm start
 ```

@@ -1,0 +1,2 @@
+release: npm run railway:fix && npx prisma migrate deploy
+web: npm start

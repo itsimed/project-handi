@@ -50,6 +50,13 @@ const createOffer = async (req, res) => {
             return res.status(401)
                 .json({ error: "Utilisateur non identifié." });
         }
+        // Log pour debug
+        console.log('📝 Données reçues pour création offre:', {
+            contract: offerData.contract,
+            contractType: typeof offerData.contract,
+            disabilityCompatible: offerData.disabilityCompatible,
+            disabilityType: typeof offerData.disabilityCompatible
+        });
         const newOffer = await offerService.createNewOffer({
             ...offerData,
             companyId: Number(companyId),
