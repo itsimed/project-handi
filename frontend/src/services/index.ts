@@ -32,7 +32,7 @@ export const authService = {
   /**
    * Inscription utilisateur
    */
-  register: async (userData: RegisterDTO): Promise<{ message: string }> => {
+  register: async (userData: RegisterDTO): Promise<{ message: string; token?: string; user?: any }> => {
     const response = await apiClient.post('/auth/register', userData);
     return response.data;
   },

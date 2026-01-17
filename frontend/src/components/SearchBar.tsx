@@ -3,7 +3,8 @@
  * Inspirée de HelloWork avec deux champs (Quoi ? / Où ?)
  */
 
-import { useState, FormEvent } from 'react';
+import { useState } from 'react';
+import type { FormEvent } from 'react';
 import { Icon } from './Icon';
 import { useTheme } from '../contexts/AccessibilityContext';
 

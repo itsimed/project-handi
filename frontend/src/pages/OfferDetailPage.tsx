@@ -44,14 +44,12 @@ export const OfferDetailPage = () => {
   const [offer, setOffer] = useState<OfferDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [similarOffers, setSimilarOffers] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
     isLoading: isApplying,
     error: applicationError,
     successMessage,
-    applyToOffer,
     clearMessages,
     hasApplied,
     fetchMyApplications,
@@ -70,9 +68,9 @@ export const OfferDetailPage = () => {
         setOffer(response.data);
 
         // Charger les offres similaires (3 premières offres différentes)
-        const similarResponse = await apiClient.get('/offers');
-        const filtered = similarResponse.data.filter((o: any) => o.id !== parseInt(id));
-        setSimilarOffers(filtered.slice(0, 3));
+        await apiClient.get('/offers');
+        // const filtered = similarResponse.data.filter((o: any) => o.id !== parseInt(id));
+        // setSimilarOffers(filtered.slice(0, 3)); // Retiré car non utilisé
       } catch (err: any) {
         setError(err.response?.data?.message || 'Offre introuvable');
       } finally {
@@ -243,13 +241,13 @@ export const OfferDetailPage = () => {
                   {getContractLabels(offer.contract)}
                 </span>
                 <span className="text-sm px-4 py-2 rounded-full border-2 flex items-center gap-2" style={{ borderColor: colors.border, color: colors.text }}>
-                  <Icon name="location" size={16} style={{ color: colors.text }} /> {offer.location}
+                  <Icon name="location" size={16} className="opacity-100" /> {offer.location}
                 </span>
                 <span className="text-sm px-4 py-2 rounded-full border-2 flex items-center gap-2" style={{ borderColor: colors.border, color: colors.text }}>
-                  <Icon name="briefcase" size={16} style={{ color: colors.text }} /> {offer.experience}
+                  <Icon name="briefcase" size={16} className="opacity-100" /> {offer.experience}
                 </span>
                 <span className="text-sm px-4 py-2 rounded-full border-2 flex items-center gap-2" style={{ borderColor: colors.border, color: colors.text }}>
-                  <Icon name="home" size={16} style={{ color: colors.text }} /> {getRemoteLabel(offer.remote)}
+                  <Icon name="home" size={16} className="opacity-100" /> {getRemoteLabel(offer.remote)}
                 </span>
               </div>
 
@@ -261,7 +259,7 @@ export const OfferDetailPage = () => {
               {/* Entreprise */}
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0 border-2" style={{ borderColor: colors.border }} aria-hidden="true">
-                  <Icon name="building" size={32} style={{ color: colors.text }} />
+                  <Icon name="building" size={32} className="opacity-100" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold" style={{ color: colors.text }}>
@@ -322,7 +320,7 @@ export const OfferDetailPage = () => {
             {/* Section Description */}
             <section className="mb-10">
               <h2 className="text-2xl font-bold mb-4 border-l-4 pl-4 flex items-center gap-3" style={{ color: colors.text, borderColor: colors.border }}>
-                <Icon name="document" size={28} style={{ color: colors.text }} />
+                <Icon name="document" size={28} className="opacity-100" />
                 Description du poste
               </h2>
               <div className="p-6 rounded-xl border-2" style={{ borderColor: colors.border }}>
@@ -336,7 +334,7 @@ export const OfferDetailPage = () => {
             {offer.disabilityCompatible && offer.disabilityCompatible.length > 0 && (
               <section className="mb-10">
                 <h2 className="text-2xl font-bold mb-4 border-l-4 pl-4 flex items-center gap-3" style={{ color: colors.text, borderColor: '#10b981' }}>
-                  <Icon name="accessibility" size={28} style={{ color: '#10b981' }} />
+                  <Icon name="accessibility" size={28} className="text-green-500" />
                   Accessibilité
                 </h2>
                 <div className="p-6 rounded-xl border-2" style={{ borderColor: '#10b981', backgroundColor: `${colors.bg}` }}>
@@ -355,7 +353,7 @@ export const OfferDetailPage = () => {
             {/* Informations pratiques */}
             <section className="mb-10">
               <h2 className="text-2xl font-bold mb-4 border-l-4 pl-4 flex items-center gap-3" style={{ color: colors.text, borderColor: colors.border }}>
-                <Icon name="info" size={28} style={{ color: colors.text }} />
+                <Icon name="info" size={28} className="opacity-100" />
                 Informations pratiques
               </h2>
               <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">

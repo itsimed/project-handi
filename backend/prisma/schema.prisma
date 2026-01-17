@@ -2,6 +2,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-arm64-openssl-1.1.x", "linux-arm64-openssl-3.0.x"]
 }
 
 datasource db {
@@ -97,12 +98,12 @@ model Offer {
   title        String
   description  String
   location     String
-  contract     ContractType[]     // Modifié pour accepter plusieurs types de contrat
+  contract     Json               // Tableau de ContractType stocké en JSON
   experience   ExperienceLevel
   remote       RemotePolicy       @default(NO_REMOTE)
   
-  // Filtre spécifique handicap (Tableau d'Enums)
-  disabilityCompatible DisabilityCategory[] 
+  // Filtre spécifique handicap (Tableau stocké en JSON)
+  disabilityCompatible Json               @default("[]") 
 
   status        OfferStatus        @default(ACTIVE)
 
@@ -143,7 +144,7 @@ model Application {
   // Documents de candidature
   cvUrl            String?   // URL du CV
   coverLetterUrl   String?   // URL lettre de motivation
-  additionalDocs   String[]  @default([]) // URLs des pièces jointes supplémentaires
+  additionalDocs   Json      @default("[]") // URLs des pièces jointes stockées en JSON
 
   // L'utilisateur qui postule
   userId    Int

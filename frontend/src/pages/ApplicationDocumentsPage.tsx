@@ -31,7 +31,7 @@ export const ApplicationDocumentsPage = () => {
     }
   };
 
-  const handleUploadSuccess = (document: ApplicationDocument) => {
+  const handleUploadSuccess = (_document: ApplicationDocument) => {
     toastService.success('Document uploadé avec succès');
     loadDocuments();
   };

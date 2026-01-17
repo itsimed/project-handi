@@ -26,18 +26,6 @@ export const CompaniesSection: React.FC<CompaniesSectionProps> = ({
   isLoading,
 }) => {
   /**
-   * Génère les initiales pour le placeholder du logo
-   */
-  const getInitials = (name: string): string => {
-    return name
-      .split(' ')
-      .map((word) => word[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
-  /**
    * Génère une couleur de fond basée sur le nom
    */
   const getColorClass = (name: string): string => {

@@ -32,7 +32,6 @@ export const DashboardPage = () => {
         isLoading: isApplying,
         error: applicationError,
         successMessage,
-        applyToOffer,
         clearMessages,
         hasApplied,
         fetchMyApplications,
@@ -87,15 +86,6 @@ export const DashboardPage = () => {
             }
         }
     }, [isLoggedIn, fetchMyApplications]);
-
-    const handleAuthAction = () => {
-        if (isLoggedIn) {
-            localStorage.removeItem('token');
-            window.location.reload(); 
-        } else {
-            navigate('/login');
-        }
-    };
 
     /**
      * Gestion de la recherche depuis la SearchBarCompact

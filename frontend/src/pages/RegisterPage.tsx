@@ -4,7 +4,8 @@
  * Conforme RGAA - Accessibilité complète
  */
 
-import { useState, FormEvent } from 'react';
+import { useState } from 'react';
+import type { FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../services';
 import type { UserRole } from '../types';
@@ -142,7 +143,7 @@ export const RegisterPage = () => {
     setIsLoading(true);
 
     try {
-      await authService.register({
+      const response = await authService.register({
         email: formData.email,
         password: formData.password,
         firstName: formData.firstName,
@@ -151,12 +152,28 @@ export const RegisterPage = () => {
         ...(formData.role === 'RECRUITER' && formData.companyName && { companyName: formData.companyName }),
       });
 
-      setSuccessMessage(SUCCESS_MESSAGES.REGISTER_SUCCESS);
-      
-      // Redirection vers login après 2 secondes
-      setTimeout(() => {
-        navigate(ROUTES.LOGIN);
-      }, 2000);
+      // Sauvegarder le token automatiquement
+      if (response.token) {
+        localStorage.setItem('token', response.token);
+        setSuccessMessage('Inscription réussie ! Redirection en cours...');
+        
+        // Redirection automatique selon le rôle
+        const redirectDelay = setTimeout(() => {
+          if (formData.role === 'RECRUITER') {
+            navigate('/recruteur/dashboard');
+          } else {
+            navigate(ROUTES.DASHBOARD);
+          }
+        }, 1500);
+
+        return () => clearTimeout(redirectDelay);
+      } else {
+        // Si pas de token, rediriger vers login
+        setSuccessMessage(SUCCESS_MESSAGES.REGISTER_SUCCESS);
+        setTimeout(() => {
+          navigate(ROUTES.LOGIN);
+        }, 2000);
+      }
 
     } catch (error: any) {
       const errorMessage = 

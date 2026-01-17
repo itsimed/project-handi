@@ -6,7 +6,6 @@
 
 import { useLocation, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { STORAGE_KEYS } from '../constants';
 import { useTheme } from '../contexts/AccessibilityContext';
 
 interface BreadcrumbItem {
@@ -23,8 +22,6 @@ const useBreadcrumbs = (): BreadcrumbItem[] => {
   const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbItem[]>([]);
 
   useEffect(() => {
-    const userData = localStorage.getItem(STORAGE_KEYS.USER_DATA);
-    const user = userData ? JSON.parse(userData) : null;
     const pathname = location.pathname;
 
     // Configuration des routes et leurs labels
@@ -127,7 +124,7 @@ export const Breadcrumb = () => {
       className="border-b px-6 py-3"
     >
       <ol className="container mx-auto flex items-center gap-2 text-sm">
-        {breadcrumbs.map((item, index) => (
+        {breadcrumbs.map((item, _index) => (
           <li key={item.path} className="flex items-center gap-2">
             {!item.isLast ? (
               <>

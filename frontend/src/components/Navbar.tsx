@@ -23,6 +23,9 @@ export const Navbar = ({ variant = 'home' }: NavbarProps) => {
   const user = userData ? JSON.parse(userData) : null;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  // Utiliser variant pour des comportements spécifiques si nécessaire
+  console.log('Navbar variant:', variant);
+
   const handleLogout = () => {
     localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
     localStorage.removeItem(STORAGE_KEYS.USER_DATA);
@@ -55,7 +58,7 @@ export const Navbar = ({ variant = 'home' }: NavbarProps) => {
               aria-label="Retour à l'accueil"
             >
               <img 
-                src={theme === 'dark' ? '/logo sombre.webp' : '/logo clair.webp'}
+                src={theme === 'dark' ? `${import.meta.env.BASE_URL}logo sombre.webp` : `${import.meta.env.BASE_URL}logo clair.webp`}
                 alt="Project Handi"
                 className="h-20"
               />
@@ -108,7 +111,7 @@ export const Navbar = ({ variant = 'home' }: NavbarProps) => {
             aria-label="Retour à l'accueil"
           >
             <img 
-              src={theme === 'dark' ? '/logo sombre.webp' : '/logo clair.webp'}
+              src={theme === 'dark' ? `${import.meta.env.BASE_URL}logo sombre.webp` : `${import.meta.env.BASE_URL}logo clair.webp`}
               alt="Project Handi"
               className="h-20"
             />

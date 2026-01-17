@@ -167,7 +167,7 @@ export const UserMenu = ({ user, isOpen, onClose, onLogout }: UserMenuProps) => 
           return (
             <button
               key={item.label}
-              ref={(el) => (menuItemsRef.current[index] = el)}
+              ref={(el) => { menuItemsRef.current[index] = el; }}
               role="menuitem"
               type="button"
               onClick={item.onClick}
