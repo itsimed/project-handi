@@ -447,7 +447,7 @@ export const HomePage = () => {
                   className="group p-6 rounded-2xl transition-all duration-200 border-2"
                   style={{ backgroundColor: colors.bg, borderColor: colors.border }}
                 >
-                  <div className="mb-4 transform group-hover:scale-110 transition-transform duration-200">
+                  <div className="mb-4">
                     {renderIcon(benefit.icon, 48)}
                   </div>
                   <h3 className="text-lg font-semibold mb-2" style={{ color: colors.text }}>
@@ -480,7 +480,7 @@ export const HomePage = () => {
                 Déposez votre CV et soyez visible par les entreprises
               </h2>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <div className="flex justify-center">
                 <button
                   type="button"
                   onClick={() => isLoggedIn ? handleNavigateToDashboard() : navigate('/register')}
@@ -488,15 +488,6 @@ export const HomePage = () => {
                   style={{ backgroundColor: colors.bg, color: colors.text }}
                 >
                   {isLoggedIn ? 'Parcourir les offres' : 'Créer mon compte gratuit'}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleNavigateToDashboard}
-                  className="px-8 py-4 font-semibold rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-2"
-                  style={{ backgroundColor: colors.text, color: colors.bg, borderColor: colors.bg }}
-                >
-                  Explorer les offres
                 </button>
               </div>
 

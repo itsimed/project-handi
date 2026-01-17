@@ -486,7 +486,7 @@ export const FiltersPanel: React.FC<FiltersPanelProps> = ({
               <div style={{ color: '#22c55e' }}>
                 <Icon name="accessibility" size={16} />
               </div>
-              Compatibilité handicap
+              Compensation handicap
               {filters.disabilityCompatible && filters.disabilityCompatible.length > 0 && (
                 <span 
                   className="text-xs px-2 py-0.5 rounded-full"
