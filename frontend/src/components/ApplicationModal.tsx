@@ -87,6 +87,8 @@ export const ApplicationModal = ({
     const token =
       localStorage.getItem('token') || localStorage.getItem('auth_token');
 
+    console.log(`Upload ${documentType} vers ${API_CONFIG.BASE_URL}/documents/upload`);
+
     const response = await fetch(`${API_CONFIG.BASE_URL}/documents/upload`, {
       method: 'POST',
       headers: {
@@ -96,9 +98,18 @@ export const ApplicationModal = ({
     });
 
     if (!response.ok) {
-      const data = await response.json();
-      throw new Error(data.error || "Erreur lors de l'upload");
+      const errorText = await response.text();
+      console.error(`Erreur upload ${documentType}:`, response.status, errorText);
+      let errorData;
+      try {
+        errorData = JSON.parse(errorText);
+      } catch {
+        errorData = { error: errorText || `Erreur HTTP ${response.status}` };
+      }
+      throw new Error(errorData.error || `Erreur lors de l'upload du ${documentType}`);
     }
+
+    console.log(`✅ ${documentType} uploadé avec succès`);
   };
 
   const handleSubmit = async () => {
@@ -112,6 +123,7 @@ export const ApplicationModal = ({
     setError(null);
 
     try {
+      console.log('📤 Création de la candidature pour offre', offerId);
       const applicationResponse = await apiClient.post('/applications', {
         offerId,
       });
@@ -123,16 +135,21 @@ export const ApplicationModal = ({
         throw new Error('Application non créée');
       }
 
+      console.log('✅ Candidature créée, ID:', createdApplicationId);
+      console.log('📎 Upload du CV...');
       await uploadDocument(createdApplicationId, cvFile, 'CV');
 
       if (coverLetterFile) {
+        console.log('📎 Upload de la lettre de motivation...');
         await uploadDocument(createdApplicationId, coverLetterFile, 'COVER_LETTER');
       }
 
+      console.log('🎉 Candidature complète !');
       toastService.success('Candidature envoyée avec succès !');
       onSuccess();
       onClose();
     } catch (err: any) {
+      console.error('❌ Erreur candidature:', err);
       const message =
         err.response?.data?.error || err.message || 'Erreur lors de la candidature';
       setError(message);
