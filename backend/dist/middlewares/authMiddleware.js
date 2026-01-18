@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authorizeRole = exports.authenticateToken = void 0;
+exports.authorizeRole = exports.authenticateTokenOptional = exports.authenticateToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const JWT_SECRET = process.env.JWT_SECRET || 'ma_cle_secrete_super_secure';
 /**
@@ -26,6 +26,28 @@ const authenticateToken = (req, res, next) => {
     }
 };
 exports.authenticateToken = authenticateToken;
+/**
+ * Middleware d'authentification optionnelle : Vérifie le token s'il existe, sinon continue
+ * Permet d'avoir des routes accessibles publiquement mais avec des fonctionnalités supplémentaires si connecté
+ */
+const authenticateTokenOptional = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (!token) {
+        // Pas de token, on continue sans user
+        return next();
+    }
+    try {
+        const decoded = jsonwebtoken_1.default.verify(token, JWT_SECRET);
+        req.user = decoded;
+        next();
+    }
+    catch (error) {
+        // Token invalide, on continue quand même sans user (plutôt que de bloquer)
+        next();
+    }
+};
+exports.authenticateTokenOptional = authenticateTokenOptional;
 /**
  * Middleware d'autorisation : Vérifie si l'utilisateur possède un rôle autorisé
  * Usage : authorizeRole(['RECRUITER', 'ADMIN'])

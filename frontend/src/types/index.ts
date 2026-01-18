@@ -51,6 +51,7 @@ export interface Offer {
   experience: ExperienceLevel;
   remote: RemotePolicy;
   disabilityCompatible: DisabilityCategory[];
+  status?: 'ACTIVE' | 'PAUSED'; // Statut de l'offre
   createdAt: string;
   recruiterId: number;
   companyId: number;

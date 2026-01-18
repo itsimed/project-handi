@@ -2,7 +2,7 @@
 
 import { Router } from 'express';
 
-import { authenticateToken, authorizeRole } from '../middlewares/authMiddleware';
+import { authenticateToken, authenticateTokenOptional, authorizeRole } from '../middlewares/authMiddleware';
 import { getOffers, getOfferById, createOffer, updateOffer, deleteOffer, getRecruiterOffers } from '../controllers/offerController';
 
 const router = Router();
@@ -46,10 +46,10 @@ router.delete('/:id', authenticateToken, authorizeRole(['RECRUITER', 'ADMIN']), 
 /**
  * @route   GET /api/v1/offers/:id
  * @desc    Récupère une offre spécifique par son ID
- * @access  Public (Tous les utilisateurs)
+ * @access  Public (mais authentification optionnelle pour voir les offres en pause si propriétaire)
  * @return  {Object} Détails complets de l'offre avec entreprise et recruteur
  */
-router.get('/:id', getOfferById);
+router.get('/:id', authenticateTokenOptional, getOfferById);
 
 /**
  * @route   POST /api/v1/offers

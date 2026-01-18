@@ -52,7 +52,9 @@ export async function uploadDocument(
 
   // Si existe, supprimer l'ancien fichier
   if (existingDocument) {
-    await storage.deleteFile(existingDocument.storagePath);
+    if (existingDocument.storagePath) {
+      await storage.deleteFile(existingDocument.storagePath);
+    }
     await prisma.applicationDocument.delete({
       where: { id: existingDocument.id },
     });
@@ -60,7 +62,20 @@ export async function uploadDocument(
 
   // Sauvegarder le fichier
   const relativePath = `applications/${applicationId}/${documentType.toLowerCase()}`;
-  const storagePath = await storage.saveFile(file, relativePath);
+  const storageType = process.env.STORAGE_TYPE || 'database';
+  
+  let storagePath: string | null = null;
+  let fileData: Buffer | null = null;
+
+  if (storageType === 'database') {
+    // Stocker directement dans la base de données
+    fileData = file.buffer;
+    storagePath = null;
+  } else {
+    // Stocker sur le filesystem ou S3
+    storagePath = await storage.saveFile(file, relativePath);
+    fileData = null;
+  }
 
   // Enregistrer les métadonnées en DB
   return await prisma.applicationDocument.create({
@@ -70,8 +85,9 @@ export async function uploadDocument(
       originalName: file.originalname,
       mimeType: file.mimetype,
       fileSize: file.size,
-      storageType: process.env.STORAGE_TYPE || 'local',
+      storageType,
       storagePath,
+      fileData,
       documentType,
     },
   });
@@ -105,7 +121,17 @@ export async function getDocument(documentId: number, userId: number) {
   }
 
   // Récupérer le fichier
-  const fileBuffer = await storage.getFile(document.storagePath);
+  let fileBuffer: Buffer;
+  
+  if (document.storageType === 'database' && document.fileData) {
+    // Fichier stocké dans la base de données
+    fileBuffer = Buffer.from(document.fileData);
+  } else if (document.storagePath) {
+    // Fichier stocké sur filesystem ou S3
+    fileBuffer = await storage.getFile(document.storagePath);
+  } else {
+    throw new Error('Fichier introuvable');
+  }
 
   return {
     buffer: fileBuffer,
@@ -132,8 +158,10 @@ export async function deleteDocument(documentId: number, userId: number) {
     throw new Error('Accès non autorisé');
   }
 
-  // Supprimer le fichier physique
-  await storage.deleteFile(document.storagePath);
+  // Supprimer le fichier physique si nécessaire
+  if (document.storagePath) {
+    await storage.deleteFile(document.storagePath);
+  }
 
   // Supprimer l'entrée en DB
   await prisma.applicationDocument.delete({

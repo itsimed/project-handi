@@ -97,12 +97,12 @@ model Offer {
   title        String
   description  String
   location     String
-  contract     Json               // Tableau de ContractType stocké en JSON
+  contract     ContractType[]     // Tableau PostgreSQL natif
   experience   ExperienceLevel
   remote       RemotePolicy       @default(NO_REMOTE)
   
-  // Filtre spécifique handicap (Tableau stocké en JSON)
-  disabilityCompatible Json               @default("[]") 
+  // Filtre spécifique handicap (Tableau PostgreSQL natif)
+  disabilityCompatible DisabilityCategory[] @default([])
 
   status        OfferStatus        @default(ACTIVE)
 
@@ -143,7 +143,7 @@ model Application {
   // Documents de candidature
   cvUrl            String?   // URL du CV
   coverLetterUrl   String?   // URL lettre de motivation
-  additionalDocs   Json      @default("[]") // URLs des pièces jointes stockées en JSON
+  additionalDocs   Json?     // URLs des pièces jointes stockées en JSON
 
   // L'utilisateur qui postule
   userId    Int
@@ -174,9 +174,10 @@ model ApplicationDocument {
   mimeType      String       // "application/pdf", "application/msword", etc.
   fileSize      Int          // Taille en bytes
   
-  // Localisation (agnostique du backend de stockage)
-  storageType   String       @default("local") // "local" ou "s3" (futur)
-  storagePath   String       // Chemin relatif ou S3 key
+  // Stockage du fichier
+  storageType   String       @default("database") // "database", "local" ou "s3"
+  storagePath   String?      // Chemin relatif (si local/s3), null si database
+  fileData      Bytes?       // Données binaires du fichier (si database storage)
   
   // Type de document
   documentType  DocumentType // CV ou COVER_LETTER

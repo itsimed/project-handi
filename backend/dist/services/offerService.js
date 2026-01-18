@@ -100,18 +100,44 @@ async function getAllOffers(filters, includePaused = false) {
  * @param offerData - Les données de l'offre (titre, description, IDs, etc.)
  */
 async function createNewOffer(offerData) {
+    // Conversion en tableaux si nécessaire
+    let contractArray = offerData.contract;
+    if (typeof contractArray === 'string') {
+        try {
+            contractArray = JSON.parse(contractArray);
+        }
+        catch {
+            contractArray = [contractArray];
+        }
+    }
+    if (!Array.isArray(contractArray)) {
+        contractArray = [contractArray];
+    }
+    let disabilityArray = offerData.disabilityCompatible;
+    if (typeof disabilityArray === 'string') {
+        try {
+            disabilityArray = JSON.parse(disabilityArray);
+        }
+        catch {
+            disabilityArray = [disabilityArray];
+        }
+    }
+    if (!Array.isArray(disabilityArray)) {
+        disabilityArray = [disabilityArray];
+    }
+    // Avec PostgreSQL arrays natifs, on passe directement les tableaux
     return prisma_1.default.offer.create({
         data: {
             title: offerData.title,
             description: offerData.description,
             location: offerData.location,
-            contract: offerData.contract,
+            contract: contractArray,
             experience: offerData.experience,
             remote: offerData.remote,
-            disabilityCompatible: offerData.disabilityCompatible,
+            disabilityCompatible: disabilityArray,
             companyId: offerData.companyId,
             recruiterId: offerData.recruiterId,
-            status: offerData.status || client_1.OfferStatus.ACTIVE, // Par défaut ACTIVE si non spécifié
+            status: offerData.status || client_1.OfferStatus.ACTIVE,
         },
     });
 }
@@ -140,9 +166,41 @@ async function getOfferById(id) {
  * @param updateData - Un objet contenant les champs à mettre à jour.
  */
 async function updateOffer(id, updateData) {
+    // Conversion et validation des champs array si présents
+    const processedData = { ...updateData };
+    if (updateData.contract) {
+        let contractArray = updateData.contract;
+        if (typeof contractArray === 'string') {
+            try {
+                contractArray = JSON.parse(contractArray);
+            }
+            catch {
+                contractArray = [contractArray];
+            }
+        }
+        if (!Array.isArray(contractArray)) {
+            contractArray = [contractArray];
+        }
+        processedData.contract = contractArray;
+    }
+    if (updateData.disabilityCompatible) {
+        let disabilityArray = updateData.disabilityCompatible;
+        if (typeof disabilityArray === 'string') {
+            try {
+                disabilityArray = JSON.parse(disabilityArray);
+            }
+            catch {
+                disabilityArray = [disabilityArray];
+            }
+        }
+        if (!Array.isArray(disabilityArray)) {
+            disabilityArray = [disabilityArray];
+        }
+        processedData.disabilityCompatible = disabilityArray;
+    }
     return prisma_1.default.offer.update({
         where: { id },
-        data: updateData,
+        data: processedData,
     });
 }
 /**

@@ -37,6 +37,30 @@ export const authenticateToken = (req: AuthRequest, res: Response, next: NextFun
 };
 
 /**
+ * Middleware d'authentification optionnelle : Vérifie le token s'il existe, sinon continue
+ * Permet d'avoir des routes accessibles publiquement mais avec des fonctionnalités supplémentaires si connecté
+ */
+export const authenticateTokenOptional = (req: AuthRequest, res: Response, next: NextFunction) =>
+{
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+        // Pas de token, on continue sans user
+        return next();
+    }
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET) as { userId: number; role: UserRole };
+        req.user = decoded;
+        next();
+    } catch (error) {
+        // Token invalide, on continue quand même sans user (plutôt que de bloquer)
+        next();
+    }
+};
+
+/**
  * Middleware d'autorisation : Vérifie si l'utilisateur possède un rôle autorisé
  * Usage : authorizeRole(['RECRUITER', 'ADMIN'])
  */

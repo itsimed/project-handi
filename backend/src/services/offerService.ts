@@ -131,6 +131,32 @@ export async function getAllOffers(filters?: OfferFilters, includePaused: boolea
  */
 export async function createNewOffer(offerData: any)
 {
+  // Conversion en tableaux si nécessaire
+  let contractArray = offerData.contract;
+  if (typeof contractArray === 'string') {
+    try {
+      contractArray = JSON.parse(contractArray);
+    } catch {
+      contractArray = [contractArray];
+    }
+  }
+  if (!Array.isArray(contractArray)) {
+    contractArray = [contractArray];
+  }
+
+  let disabilityArray = offerData.disabilityCompatible;
+  if (typeof disabilityArray === 'string') {
+    try {
+      disabilityArray = JSON.parse(disabilityArray);
+    } catch {
+      disabilityArray = [disabilityArray];
+    }
+  }
+  if (!Array.isArray(disabilityArray)) {
+    disabilityArray = [disabilityArray];
+  }
+
+  // Avec PostgreSQL arrays natifs, on passe directement les tableaux
   return prisma.offer.create
   (
     {
@@ -139,13 +165,13 @@ export async function createNewOffer(offerData: any)
         title: offerData.title,
         description: offerData.description,
         location: offerData.location,
-        contract: offerData.contract,
+        contract: contractArray as any,
         experience: offerData.experience,
         remote: offerData.remote,
-        disabilityCompatible: offerData.disabilityCompatible,
+        disabilityCompatible: disabilityArray as any,
         companyId: offerData.companyId,
         recruiterId: offerData.recruiterId,
-        status: offerData.status || OfferStatus.ACTIVE, // Par défaut ACTIVE si non spécifié
+        status: offerData.status || OfferStatus.ACTIVE,
       },
     }
   );
@@ -185,11 +211,44 @@ export async function getOfferById(id: number)
  */
 export async function updateOffer(id: number, updateData: any)
 {
+  // Conversion et validation des champs array si présents
+  const processedData = { ...updateData };
+
+  if (updateData.contract) {
+    let contractArray = updateData.contract;
+    if (typeof contractArray === 'string') {
+      try {
+        contractArray = JSON.parse(contractArray);
+      } catch {
+        contractArray = [contractArray];
+      }
+    }
+    if (!Array.isArray(contractArray)) {
+      contractArray = [contractArray];
+    }
+    processedData.contract = contractArray as any;
+  }
+
+  if (updateData.disabilityCompatible) {
+    let disabilityArray = updateData.disabilityCompatible;
+    if (typeof disabilityArray === 'string') {
+      try {
+        disabilityArray = JSON.parse(disabilityArray);
+      } catch {
+        disabilityArray = [disabilityArray];
+      }
+    }
+    if (!Array.isArray(disabilityArray)) {
+      disabilityArray = [disabilityArray];
+    }
+    processedData.disabilityCompatible = disabilityArray as any;
+  }
+
   return prisma.offer.update
   (
     {
       where: { id },
-      data: updateData,
+      data: processedData,
     }
   );
 }

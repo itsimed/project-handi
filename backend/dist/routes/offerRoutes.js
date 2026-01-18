@@ -40,10 +40,10 @@ router.delete('/:id', authMiddleware_1.authenticateToken, (0, authMiddleware_1.a
 /**
  * @route   GET /api/v1/offers/:id
  * @desc    Récupère une offre spécifique par son ID
- * @access  Public (Tous les utilisateurs)
+ * @access  Public (mais authentification optionnelle pour voir les offres en pause si propriétaire)
  * @return  {Object} Détails complets de l'offre avec entreprise et recruteur
  */
-router.get('/:id', offerController_1.getOfferById);
+router.get('/:id', authMiddleware_1.authenticateTokenOptional, offerController_1.getOfferById);
 /**
  * @route   POST /api/v1/offers
  * @desc    Crée une nouvelle offre d'emploi

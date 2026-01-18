@@ -49,7 +49,9 @@ export async function applyToOffer( userId: number, offerId: number )
             {
                 userId,
                 offerId,
-                status: 'NOT_VIEWED' 
+                companyId: offer.companyId, // Lier à l'entreprise de l'offre
+                status: 'NOT_VIEWED',
+                additionalDocs: [], // Passer un tableau vide explicitement
             },
 
             include :
@@ -141,7 +143,9 @@ export async function getApplicationsForRecruiter( recruiterId: number )
                         title: true,
                         location: true
                     }
-                }
+                },
+
+                documents: true  // Inclure les documents (CV et lettre de motivation)
             },
 
             orderBy : 

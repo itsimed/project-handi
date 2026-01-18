@@ -30,6 +30,14 @@ export const createOffer = async( req: AuthRequest, res: Response ) =>
             );
         }
 
+        // Log pour debug
+        console.log('📝 Données reçues pour création offre:', {
+            contract: offerData.contract,
+            contractType: typeof offerData.contract,
+            disabilityCompatible: offerData.disabilityCompatible,
+            disabilityType: typeof offerData.disabilityCompatible
+        });
+
         const newOffer = await offerService.createNewOffer
         (
             {

@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { DocumentIcon, CloseIcon } from './icons';
+import { API_CONFIG } from '../constants';
 
 interface FileUploadProps {
   applicationId: number;
@@ -63,7 +64,7 @@ export const FileUpload = ({
       formData.append('documentType', documentType);
 
       const token = localStorage.getItem('token') || localStorage.getItem('auth_token');
-      const response = await fetch('http://localhost:4000/api/v1/documents/upload', {
+      const response = await fetch(`${API_CONFIG.BASE_URL}/documents/upload`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
