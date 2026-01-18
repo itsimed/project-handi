@@ -1,8 +1,5 @@
 # Yojob - Plateforme de Recrutement 
 
-[![RGAA](https://img.shields.io/badge/RGAA-Conforme-green)](https://www.numerique.gouv.fr/publications/rgaa-accessibilite/)
-[![WCAG 2.1](https://img.shields.io/badge/WCAG%202.1-AA-blue)](https://www.w3.org/WAI/WCAG21/quickref/)
-
 ## Installation rapide
 
 ### Pour les membres de l'équipe
