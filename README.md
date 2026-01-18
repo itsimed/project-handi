@@ -1,6 +1,4 @@
-# Yojob - Plateforme de Recrutement Inclusive
-
-Plateforme web de recrutement accessible et inclusive, spécialement conçue pour faciliter l'insertion professionnelle des personnes en situation de handicap.
+# Yojob - Plateforme de Recrutement 
 
 [![RGAA](https://img.shields.io/badge/RGAA-Conforme-green)](https://www.numerique.gouv.fr/publications/rgaa-accessibilite/)
 [![WCAG 2.1](https://img.shields.io/badge/WCAG%202.1-AA-blue)](https://www.w3.org/WAI/WCAG21/quickref/)
