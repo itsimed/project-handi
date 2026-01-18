@@ -1,15 +1,15 @@
-# 🦽 Project Handi - Plateforme de Recrutement Inclusive
+# Project Handi - Plateforme de Recrutement Inclusive
 
 Plateforme web de recrutement accessible et inclusive, spécialement conçue pour faciliter l'insertion professionnelle des personnes en situation de handicap.
 
 [![RGAA](https://img.shields.io/badge/RGAA-Conforme-green)](https://www.numerique.gouv.fr/publications/rgaa-accessibilite/)
 [![WCAG 2.1](https://img.shields.io/badge/WCAG%202.1-AA-blue)](https://www.w3.org/WAI/WCAG21/quickref/)
 
-## � Installation rapide
+## Installation rapide
 
-### ⚡ Pour les membres de l'équipe
+### Pour les membres de l'équipe
 
-**📖 Consultez [INSTALLATION.md](INSTALLATION.md) pour le guide complet**
+**Consultez [INSTALLATION.md](INSTALLATION.md) pour le guide complet**
 
 ```bash
 # 1. Cloner et installer
@@ -27,9 +27,9 @@ npx prisma generate
 # Terminal 2: cd frontend && npm run dev
 ```
 
-✅ **Pas besoin de Docker** (base PostgreSQL Neon Cloud partagée)
+**Pas besoin de Docker** (base PostgreSQL Neon Cloud partagée)
 
-### 🧪 Comptes de test
+### Comptes de test
 
 | Rôle | Email | Mot de passe |
 |------|-------|--------------|
@@ -38,7 +38,7 @@ npx prisma generate
 
 ---
 
-## �📋 Table des matières
+## Table des matières
 
 - [Fonctionnalités](#fonctionnalités)
 - [Technologies utilisées](#technologies-utilisées)
@@ -53,31 +53,31 @@ npx prisma generate
 
 ---
 
-## ✨ Fonctionnalités
+## Fonctionnalités
 
 ### Pour les Candidats
-- 🔍 **Recherche d'offres** : Barre de recherche avec filtres avancés (contrat, expérience, télétravail, handicap)
-- ♿ **Filtrage par accessibilité** : Recherche d'offres compatibles avec différents types de handicap
-- 📄 **Candidature en ligne** : Postulation simplifiée avec gestion des documents (CV, lettre de motivation)
-- 📊 **Suivi des candidatures** : Tableau de bord pour suivre l'état de ses candidatures
-- 📱 **Responsive** : Interface adaptée mobile, tablette et desktop
+- **Recherche d'offres** : Barre de recherche avec filtres avancés (contrat, expérience, télétravail, handicap)
+- **Filtrage par accessibilité** : Recherche d'offres compatibles avec différents types de handicap
+- **Candidature en ligne** : Postulation simplifiée avec gestion des documents (CV, lettre de motivation)
+- **Suivi des candidatures** : Tableau de bord pour suivre l'état de ses candidatures
+- **Responsive** : Interface adaptée mobile, tablette et desktop
 
 ### Pour les Recruteurs
-- 📝 **Création d'offres** : Publication d'offres avec précision sur l'accessibilité
-- 👥 **Gestion des candidatures** : Consultation et gestion des candidatures reçues
-- 🏢 **Profil entreprise** : Mise en avant de la politique d'inclusion de l'entreprise
+- **Création d'offres** : Publication d'offres avec précision sur l'accessibilité
+- **Gestion des candidatures** : Consultation et gestion des candidatures reçues
+- **Profil entreprise** : Mise en avant de la politique d'inclusion de l'entreprise
 
 ### Accessibilité (RGAA/WCAG AA)
-- ✅ Navigation clavier complète
-- ✅ Lecteurs d'écran compatibles
-- ✅ Contrastes respectés (ratio 4.5:1 minimum)
-- ✅ Focus visible sur tous les éléments interactifs
-- ✅ HTML sémantique
-- ✅ ARIA labels appropriés
+- Navigation clavier complète
+- Lecteurs d'écran compatibles
+- Contrastes respectés (ratio 4.5:1 minimum)
+- Focus visible sur tous les éléments interactifs
+- HTML sémantique
+- ARIA labels appropriés
 
 ---
 
-## 🛠️ Technologies utilisées
+## Technologies utilisées
 
 ### Frontend
 - **React 18** avec TypeScript
@@ -99,7 +99,7 @@ npx prisma generate
 
 ---
 
-## 📦 Prérequis
+## Prérequis
 
 Avant de commencer, assurez-vous d'avoir installé :
 
@@ -116,7 +116,7 @@ npm --version   # doit afficher 9.x.x ou supérieur
 
 ---
 
-## 🚀 Installation
+## Installation
 
 ### 1. Cloner le repository
 
@@ -141,7 +141,7 @@ npm install
 
 ---
 
-## 🎯 Lancement du projet
+## Lancement du projet
 
 ### Méthode 1 : Lancement complet (Recommandé)
 
@@ -154,7 +154,7 @@ cd backend
 cp .env.example .env
 
 # Le fichier .env contient déjà la connexion à la base Neon Cloud partagée
-# ⚠️ Ne modifiez RIEN dans ce fichier (sauf si l'administrateur vous le demande)
+# Ne modifiez RIEN dans ce fichier (sauf si l'administrateur vous le demande)
 
 # Générer le client Prisma
 npx prisma generate
@@ -163,7 +163,7 @@ npx prisma generate
 npx prisma migrate deploy
 ```
 
-⚠️ **Note** : La base de données Neon Cloud est déjà peuplée avec des données de test. Pas besoin de `npx prisma db seed`.
+**Note** : La base de données Neon Cloud est déjà peuplée avec des données de test. Pas besoin de `npx prisma db seed`.
 
 #### Étape 2 : Lancer le serveur backend
 
@@ -201,7 +201,7 @@ npm run dev
 
 ---
 
-## 🧪 Accès et test de l'application
+## Accès et test de l'application
 
 ### Accès à l'application
 
@@ -240,14 +240,14 @@ Mot de passe: password123
 ### Données de test disponibles
 
 Le seed a créé :
-- ✅ 10 offres d'emploi variées (CDI, CDD, Stage, Alternance, Intérim)
-- ✅ 5 entreprises dans différents secteurs
-- ✅ 6 utilisateurs (3 candidats + 3 recruteurs)
-- ✅ 5 candidatures existantes pour tester le suivi
+- 10 offres d'emploi variées (CDI, CDD, Stage, Alternance, Intérim)
+- 5 entreprises dans différents secteurs
+- 6 utilisateurs (3 candidats + 3 recruteurs)
+- 5 candidatures existantes pour tester le suivi
 
 ---
 
-## 📁 Structure du projet
+## Structure du projet
 
 ```
 project-handi/
@@ -292,7 +292,7 @@ project-handi/
 
 ---
 
-## 🔌 API Endpoints
+## API Endpoints
 
 ### Authentification
 - `POST /api/v1/auth/register` - Inscription
@@ -320,7 +320,7 @@ project-handi/
 
 ---
 
-## 🧪 Tests
+## Tests
 
 ```bash
 # Backend (à venir)
@@ -334,20 +334,20 @@ npm test
 
 ---
 
-## ♿ Accessibilité
+## Accessibilité
 
 Ce projet respecte les normes **RGAA** (Référentiel Général d'Amélioration de l'Accessibilité) et **WCAG 2.1 niveau AA**.
 
 ### Bonnes pratiques implémentées
 
-- ✅ **HTML sémantique** : `<header>`, `<nav>`, `<main>`, `<article>`, `<section>`
-- ✅ **ARIA labels** : `aria-label`, `aria-labelledby`, `aria-live`, `role`
-- ✅ **Navigation clavier** : Tab, Shift+Tab, Enter, Espace
-- ✅ **Focus visible** : Anneaux de focus avec bon contraste
-- ✅ **Textes alternatifs** : Toutes les icônes décoratives marquées `aria-hidden="true"`
-- ✅ **Contrastes** : Ratio minimum 4.5:1 pour le texte normal, 7:1 pour certains éléments
-- ✅ **Formulaires** : Labels associés, instructions claires, messages d'erreur explicites
-- ✅ **Responsive** : Adaptable de 320px à 4K
+- **HTML sémantique** : `<header>`, `<nav>`, `<main>`, `<article>`, `<section>`
+- **ARIA labels** : `aria-label`, `aria-labelledby`, `aria-live`, `role`
+- **Navigation clavier** : Tab, Shift+Tab, Enter, Espace
+- **Focus visible** : Anneaux de focus avec bon contraste
+- **Textes alternatifs** : Toutes les icônes décoratives marquées `aria-hidden="true"`
+- **Contrastes** : Ratio minimum 4.5:1 pour le texte normal, 7:1 pour certains éléments
+- **Formulaires** : Labels associés, instructions claires, messages d'erreur explicites
+- **Responsive** : Adaptable de 320px à 4K
 
 ### Tester l'accessibilité
 
@@ -357,7 +357,7 @@ Ce projet respecte les normes **RGAA** (Référentiel Général d'Amélioration 
 
 ---
 
-## 🛠️ Commandes utiles
+## Commandes utiles
 
 ### Backend
 
@@ -407,7 +407,7 @@ npx prisma generate
 
 ---
 
-## 🐛 Dépannage
+## Dépannage
 
 ### Problème : Le backend ne se connecte pas à la base de données
 
@@ -433,7 +433,7 @@ kill -9 <PID>
 **Solution** :
 ```bash
 cd backend
-npx prisma migrate reset  # ⚠️ Supprime toutes les données
+npx prisma migrate reset  # Supprime toutes les données
 npx prisma migrate dev
 npx prisma db seed
 ```
@@ -447,7 +447,7 @@ npx prisma db seed
 
 ---
 
-## 👥 Contribution
+## Contribution
 
 ### Workflow Git
 
@@ -485,29 +485,3 @@ git commit -m "feat: ajout du système de filtres avancés"
 git commit -m "fix: correction du calcul des contrastes"
 git commit -m "docs: mise à jour du README avec Docker"
 ```
-
----
-
-## 📝 Licence
-
-Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
-
----
-
-## 📞 Support
-
-Pour toute question ou problème :
-- 📧 Email : support@project-handi.fr
-- 🐛 Issues : [GitHub Issues](URL_DU_REPO/issues)
-
----
-
-## 🙏 Remerciements
-
-- Équipe de développement
-- Utilisateurs testeurs
-- Communauté open source
-
----
-
-**Fait avec ❤️ pour une société plus inclusive**
